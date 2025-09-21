@@ -1,0 +1,257 @@
+spring:
+  application:
+    name: smart-itinerary-planner
+  profiles:
+    active: dev
+  devtools:
+    restart:
+      enabled: true
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/smart-itinerary-planner
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 40
+
+itinerary:
+  weatherRankThreshold: 18
+  patchLimit: 10
+  purge:
+    enabled: true
+    defaultCriteria: WITHIN_DATE_RANGE
+    purgeCascade:
+      enabled: false
+  externalApi:
+    ticketmaster:
+      apiKey: ${TICKETMASTER_API_KEY}
+      baseUrl: https://app.ticketmaster.com/discovery/v2/
+    virtualCrossing:
+      apiKey: ${WEATHER_API_KEY}
+      baseUrl: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/
+    openStreetMap:
+      apiKey: ${OPEN_STREET_MAP_API_KEY}
+      baseUrl: https://api.opentripmap.com/0.1/
+  attraction:
+    rate: 3
+    limit: 10
+    kinds: monuments, tourist_object, historic_architecture, beaches, sculptures, view_points, historic_object
+  cityRadius:
+    defaultRadius: 15  # in km
+    radiusMapping:
+      # Very large / sparse countries (bigger radius to catch spread-out POIs)
+      US: 25
+      CA: 25
+      RU: 25
+      AU: 25
+      CN: 22
+      BR: 22
+      IN: 20
+      ID: 20
+      MX: 20
+      AR: 18
+      ZA: 18
+      NG: 18
+      ET: 18
+      EG: 18
+      PK: 18
+      SD: 20
+      SS: 20
+      CD: 20
+      KZ: 20
+      UZ: 18
+      IR: 18
+      IQ: 16
+      SA: 18
+      DZ: 18
+      LY: 18
+      MA: 15
+      KE: 18
+      TZ: 18
+      UG: 18
+      MZ: 18
+      AO: 18
+      ZM: 15
+      ZW: 15
+      NA: 15
+      BW: 15
+      CM: 15
+      GH: 15
+      CI: 15
+      NE: 18
+      ML: 18
+      MR: 18
+      TD: 18
+
+      # Medium/large and/or polycentric countries
+      TR: 16
+      UA: 18
+      PL: 15
+      ES: 15
+      FR: 15
+      IT: 12
+      DE: 12
+      GB: 12
+      IE: 12
+      SE: 15
+      NO: 15
+      FI: 15
+      RO: 15
+      BG: 12
+      GR: 12
+      PT: 12
+      CZ: 12
+      SK: 12
+      AT: 12
+      HU: 12
+      RS: 12
+      BA: 12
+      HR: 12
+      SI: 12
+      BY: 15
+      GE: 12
+      AM: 12
+      AZ: 12
+
+      # Southeast & East Asia
+      TH: 15
+      VN: 15
+      MY: 15
+      PH: 15
+      KH: 12
+      LA: 15
+      MM: 18
+      LK: 12
+      NP: 12
+      BT: 12
+      MN: 18
+      KR: 12
+      KP: 12
+      JP: 12
+
+      # Americas (rest)
+      CO: 18
+      PE: 18
+      CL: 18
+      VE: 18
+      EC: 15
+      BO: 18
+      PY: 15
+      UY: 12
+      CU: 12
+      DO: 12
+      HT: 12
+      GT: 12
+      SV: 10
+      HN: 12
+      NI: 12
+      CR: 12
+      PA: 12
+
+      # Middle East
+      AE: 15
+      QA: 12
+      KW: 12
+      OM: 15
+      BH: 10
+      JO: 12
+      LB: 12
+      IL: 12
+      SY: 15
+      YE: 18
+
+      # Central Asia
+      TM: 18
+      TJ: 15
+      KG: 15
+      AF: 18
+
+      # North Africa (rest)
+      TN: 12
+      EH: 18
+
+      # East / Horn of Africa (rest)
+      SO: 18
+      ER: 15
+      DJ: 12
+
+      # West & Central Africa (rest)
+      BF: 15
+      GM: 10
+      GN: 15
+      GW: 12
+      LR: 12
+      SL: 12
+      SN: 12
+      TG: 12
+      BJ: 12
+      GQ: 12
+      GA: 12
+      CG: 15
+      ST: 10
+      CF: 18
+
+      # Southern Africa (rest)
+      LS: 10
+      SZ: 10
+      MW: 12
+      RE: 10
+      YT: 10
+      MU: 10
+      SC: 10
+      MG: 15
+
+      # Smaller European countries / dense urban form
+      NL: 10
+      BE: 10
+      CH: 12
+      DK: 12
+      LU: 10
+      MC: 5
+      LI: 8
+      SM: 8
+      AD: 8
+      MT: 10
+      VA: 5
+      IS: 12
+      EE: 12
+      LV: 12
+      LT: 12
+      MD: 12
+      AL: 12
+      MK: 12
+      ME: 12
+      XK: 12
+
+      # Caribbean & small island states
+      AG: 8
+      BB: 8
+      BS: 10
+      DM: 8
+      GD: 8
+      KN: 8
+      LC: 8
+      VC: 8
+      TT: 10
+      JM: 10
+      BZ: 12
+
+      # Oceania / Pacific islands
+      NZ: 12
+      PG: 15
+      FJ: 10
+      WS: 10
+      TO: 10
+      KI: 10
+      TV: 10
+      SB: 12
+      VU: 10
+      NR: 8
+      MH: 10
+      FM: 10
+      PW: 10
+
+      # City-states / territories commonly queried
+      SG: 8
+      HK: 10
+      MO: 8

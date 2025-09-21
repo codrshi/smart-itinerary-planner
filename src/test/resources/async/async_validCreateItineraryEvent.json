@@ -1,0 +1,129 @@
+{
+  "userRef": null,
+  "attractions": [
+    {
+      "name": "Notre Dame",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["other", "unclassified_objects", "interesting_places", "historic_object"],
+      "note": "-"
+    },
+    {
+      "name": "Charlemagne et ses leudes",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["historic", "monuments_and_memorials", "urban_environment", "cultural", "interesting_places", "sculptures", "monuments"],
+      "note": "-"
+    },
+    {
+      "name": "Palais épiscopal de Paris",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["religion", "palaces", "architecture", "historic_architecture", "other_temples", "interesting_places"],
+      "note": "-"
+    },
+    {
+      "name": "Cathedral of Notre Dame",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["religion", "architecture", "historic_architecture", "cathedrals", "churches", "interesting_places", "destroyed_objects", "catholic_churches"],
+      "note": "-"
+    },
+    {
+      "name": "Notre Dame",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["view_points", "other", "interesting_places"],
+      "note": "-"
+    },
+    {
+      "name": "Palais de l'Archevêché de Paris",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["religion", "palaces", "architecture", "historic_architecture", "other_temples", "interesting_places"],
+      "note": "-"
+    },
+    {
+      "name": "Le Grenier de Notre-Dame",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["religion", "architecture", "historic_architecture", "cathedrals", "churches", "interesting_places", "restaurants", "foods", "catholic_churches", "tourist_facilities", "other_buildings_and_structures"],
+      "note": "-"
+    },
+    {
+      "name": "Hôtel de la Motte-Montgaubert",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["historic_architecture", "architecture", "interesting_places", "other_buildings_and_structures"],
+      "note": "-"
+    },
+    {
+      "name": "La fontaine de la Vierge",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["fountains", "historic", "monuments_and_memorials", "urban_environment", "cultural", "interesting_places", "sculptures", "monuments"],
+      "note": "-"
+    },
+    {
+      "name": "Le Colbert",
+      "date": null,
+      "activityType": "attraction",
+      "kinds": ["architecture", "historic_architecture", "accomodations", "interesting_places", "other_hotels", "other_buildings_and_structures"],
+      "note": "-"
+    }
+  ],
+  "events": [
+    {
+      "name": "Counting Crows",
+      "date": "2025-10-09",
+      "activityType": "event",
+      "venue": "Olympia Hall, 28 Boulevard des Capucines",
+      "isFamilyFriendly": false,
+      "category": "Music / Alternative / Alternative Rock",
+      "note": "-"
+    }
+  ],
+  "dateToWeatherMap": {
+    "2025-10-01": "TYPE_42",
+    "2025-10-02": "TYPE_42",
+    "2025-10-03": "TYPE_42",
+    "2025-10-04": "TYPE_42",
+    "2025-10-05": "TYPE_42",
+    "2025-10-06": "TYPE_42",
+    "2025-10-07": "TYPE_42",
+    "2025-10-08": "TYPE_42",
+    "2025-10-09": "TYPE_42",
+    "2025-10-10": "TYPE_42",
+    "2025-10-11": "TYPE_42",
+    "2025-10-12": "TYPE_42",
+    "2025-10-13": "TYPE_42",
+    "2025-10-14": "TYPE_42",
+    "2025-10-15": "TYPE_42",
+    "2025-10-16": "TYPE_42",
+    "2025-10-17": "TYPE_42",
+    "2025-10-18": "TYPE_42",
+    "2025-10-19": "TYPE_42",
+    "2025-10-20": "TYPE_42",
+    "2025-10-21": "TYPE_42",
+    "2025-10-22": "TYPE_42",
+    "2025-10-23": "TYPE_42",
+    "2025-10-24": "TYPE_42",
+    "2025-10-25": "TYPE_42",
+    "2025-10-26": "TYPE_42",
+    "2025-10-27": "TYPE_42",
+    "2025-10-28": "TYPE_42",
+    "2025-10-29": "TYPE_42",
+    "2025-10-30": "TYPE_42"
+  },
+  "timePeriod": {
+    "startDate": "2025-10-01",
+    "endDate": "2025-10-30"
+  },
+  "location": {
+    "city": "Paris",
+    "country": "France",
+    "countryCode": "FR",
+    "radius": 15
+  },
+  "itineraryId": "ITIX-FR-IKP-999E9YMN6DFZWUFL9"
+}

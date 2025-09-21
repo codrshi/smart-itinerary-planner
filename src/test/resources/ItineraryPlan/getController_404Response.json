@@ -1,0 +1,7 @@
+{
+  "errorCode": 10006,
+  "message": "No itinerary found for the given request.",
+  "path": "/itinerary/ITIX-FR-NE1QVFROWHKBCFLXWCXNY",
+  "traceId": null,
+  "timestamp": "2025-09-13T16:53:30.6005458"
+}

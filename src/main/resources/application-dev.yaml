@@ -1,0 +1,5 @@
+itinerary:
+  async:
+    corePoolSize: 5
+    maxPoolSize: 10
+    queueCapacity: 50
