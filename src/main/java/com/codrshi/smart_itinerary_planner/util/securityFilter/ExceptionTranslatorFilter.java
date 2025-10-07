@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.util.securityFilter;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.controller.UserController;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -16,7 +17,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class ExceptionTranslatorFilter extends OncePerRequestFilter {
@@ -41,21 +46,24 @@ public class ExceptionTranslatorFilter extends OncePerRequestFilter {
                                  Exception ex) throws IOException {
 
         int status = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-        String traceId = RequestContext.getCurrentContext().getTraceId();
 
         if (ex instanceof BadCredentialsException || ex instanceof UsernameNotFoundException) {
             status = HttpServletResponse.SC_UNAUTHORIZED;
         }
 
-        Map<String, Object> errorResponse = Map.of(
-                "message", ex.getMessage(),
-                "timestamp", Instant.now().toString(),
-                "path", request.getRequestURI(),
-                "traceId", traceId
-        );
+        Map<String, Object> links = Map.of("login", Map.of("href", linkTo(methodOn(UserController.class).login(null)).toUri().toString()));
+
+        Map<String, Object> map = new LinkedHashMap<>();
+
+        map.put("message", ex.getMessage());
+        map.put("path", request.getRequestURI());
+        map.put("traceId", RequestContext.getCurrentContext().getTraceId());
+        map.put("timestamp", Instant.now().toString());
+        map.put("_links", links);
 
         response.setStatus(status);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        objectMapper.writeValue(response.getWriter(), errorResponse);
+
+        objectMapper.writeValue(response.getWriter(), map);
     }
 }

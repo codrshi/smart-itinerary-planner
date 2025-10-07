@@ -1,10 +1,8 @@
 package com.codrshi.smart_itinerary_planner.dto;
 
-import com.codrshi.smart_itinerary_planner.dto.implementation.CreateItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.UserRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.UserRegistrationRequestDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
-@JsonDeserialize(as = UserRequestDTO.class)
 public interface IUserRequestDTO {
     String getUsername();
 

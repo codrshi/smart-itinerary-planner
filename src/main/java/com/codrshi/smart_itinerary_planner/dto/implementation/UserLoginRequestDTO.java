@@ -7,11 +7,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class UserRequestDTO implements IUserRequestDTO {
+public class UserLoginRequestDTO implements IUserRequestDTO {
     @NotBlank(message = "username is either null or empty")
-    @ValidUsername
     private String username;
     @NotBlank(message = "password is either null or empty")
-    @ValidPassword
     private String password;
 }

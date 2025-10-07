@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.config;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.controller.UserController;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.securityFilter.ExceptionTranslatorFilter;
 import com.codrshi.smart_itinerary_planner.util.ItineraryAuthenticationProvider;
@@ -8,6 +9,7 @@ import com.codrshi.smart_itinerary_planner.service.implementation.ItineraryUserD
 import com.codrshi.smart_itinerary_planner.util.securityFilter.JwtTokenValidatorFilter;
 import com.codrshi.smart_itinerary_planner.util.securityFilter.TraceIdHeaderFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +31,13 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Configuration
 @EnableWebSecurity
@@ -54,9 +62,9 @@ public class SecurityConfig {
 
         http.exceptionHandling(ex -> ex
                 .authenticationEntryPoint((req, res, e) ->
-                                                  writeError(res, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage()))
+                                                  writeError(req, res, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage()))
                 .accessDeniedHandler((req, res, e) ->
-                                             writeError(res, HttpServletResponse.SC_FORBIDDEN, e.getMessage()))
+                                             writeError(req, res, HttpServletResponse.SC_FORBIDDEN, e.getMessage()))
         );
         http.formLogin(formLogin -> formLogin.disable());
 
@@ -88,14 +96,20 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    private void writeError(HttpServletResponse response, int status, String msg) throws IOException {
+    private void writeError(HttpServletRequest request, HttpServletResponse response, int status, String msg) throws IOException {
         response.setStatus(status);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getWriter(), Map.of(
-                "errorCode", status,
-                "message", msg,
-                "timestamp", Instant.now().toString(),
-                "traceId", RequestContext.getCurrentContext().getTraceId()
-        ));
+
+        Map<String, Object> links = Map.of("login", Map.of("href", linkTo(methodOn(UserController.class).login(null)).toUri().toString()));
+
+        Map<String, Object> map = new LinkedHashMap<>();
+
+        map.put("message", msg);
+        map.put("path", request.getRequestURI());
+        map.put("traceId", RequestContext.getCurrentContext().getTraceId());
+        map.put("timestamp", Instant.now().toString());
+        map.put("_links", links);
+
+        new ObjectMapper().writeValue(response.getWriter(), map);
     }
 }

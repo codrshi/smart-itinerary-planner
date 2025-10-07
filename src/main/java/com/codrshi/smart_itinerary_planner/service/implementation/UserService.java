@@ -1,8 +1,9 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
 import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
+import com.codrshi.smart_itinerary_planner.dto.IUserLoginResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.IUserRegistrationResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.IUserRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.User;
 import com.codrshi.smart_itinerary_planner.exception.ResourceAlreadyExistException;
 import com.codrshi.smart_itinerary_planner.repository.IUserRepository;
@@ -45,7 +46,7 @@ public class UserService implements IUserService {
     private JwtService jwtService;
 
     @Override
-    public IUserResponseDTO createUser(IUserRequestDTO userRequestDTO) {
+    public IUserRegistrationResponseDTO createUser(IUserRequestDTO userRequestDTO) {
         String username = userRequestDTO.getUsername();
         String password = userRequestDTO.getPassword();
 
@@ -65,7 +66,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public IUserResponseDTO authenticate(IUserRequestDTO userRequestDTO) {
+    public IUserLoginResponseDTO authenticate(IUserRequestDTO userRequestDTO) {
         String username = userRequestDTO.getUsername();
         String password = userRequestDTO.getPassword();
 

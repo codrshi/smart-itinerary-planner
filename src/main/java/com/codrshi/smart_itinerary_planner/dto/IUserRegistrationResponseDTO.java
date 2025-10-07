@@ -2,18 +2,10 @@ package com.codrshi.smart_itinerary_planner.dto;
 
 import java.util.Date;
 
-public interface IUserResponseDTO {
+public interface IUserRegistrationResponseDTO {
     String getUsername();
 
     void setUsername(String username);
-
-    Date getTokenExpiryDate();
-
-    void setTokenExpiryDate(Date tokenExpiryDate);
-
-    String getToken();
-
-    void setToken(String token);
 
     String getAssignedRoles();
 

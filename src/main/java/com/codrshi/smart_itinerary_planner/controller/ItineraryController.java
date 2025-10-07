@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.IItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.IUserLoginResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.GetItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.PatchItineraryRequestDTO;
@@ -17,6 +18,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +33,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(Constant.BASE_URI)
@@ -46,26 +53,48 @@ public class ItineraryController {
     @Autowired
     private IPatchItineraryService patchItineraryService;
 
-    // TODO: add HATEOS links
+    @Autowired
+    private PagedResourcesAssembler<IItineraryResponseDTO> pagedResourcesAssembler;
+
     // TODO: internationalization support
     @PostMapping
-    public ResponseEntity<ICreateItineraryResponseDTO> createItinerary(@Valid @RequestBody ICreateItineraryRequestDTO createItineraryEventDTO) {
+    public ResponseEntity<EntityModel<ICreateItineraryResponseDTO>> createItinerary(@Valid @RequestBody ICreateItineraryRequestDTO createItineraryEventDTO) {
         ICreateItineraryResponseDTO createItineraryResponseDTO = createItineraryService.createItinerary(createItineraryEventDTO);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(createItineraryResponseDTO);
+
+        EntityModel<ICreateItineraryResponseDTO> responseModel = EntityModel.of(createItineraryResponseDTO,
+                                                                          linkTo(methodOn(ItineraryController.class).getItinerary(createItineraryResponseDTO.getItineraryId())).withRel("print itinerary"),
+                                                                                linkTo(methodOn(ItineraryController.class).getItineraries(null,null)).withRel("print itineraries"));
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseModel);
     }
 
     @GetMapping(Constant.GET_ENDPOINT)
-    public ResponseEntity<IItineraryResponseDTO> getItinerary(@PathVariable String itineraryId) {
+    public ResponseEntity<EntityModel<IItineraryResponseDTO>> getItinerary(@PathVariable String itineraryId) {
         IItineraryResponseDTO itineraryResponseDTO = getItineraryService.getItinerary(itineraryId);
-        return ResponseEntity.status(HttpStatus.OK).body(itineraryResponseDTO);
+
+        EntityModel<IItineraryResponseDTO> responseModel = EntityModel.of(itineraryResponseDTO,
+                                                                                linkTo(methodOn(ItineraryController.class).createItinerary(null)).withRel("create itinerary"),
+                                                                                linkTo(methodOn(ItineraryController.class).getItineraries(null,null)).withRel("print itineraries"),
+                                                                                linkTo(methodOn(ItineraryController.class).patchItinerary(itineraryId, null,null)).withRel("update itinerary"),
+                                                                                linkTo(methodOn(ItineraryController.class).deleteItinerary(itineraryId)).withRel("delete itinerary"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseModel);
     }
 
     @GetMapping
-    public ResponseEntity<Page<IItineraryResponseDTO>> getItineraries(@Valid GetItineraryRequestDTO getItineraryRequestDTO,
-                                                                      Pageable pageable) {
+    public ResponseEntity<PagedModel<EntityModel<IItineraryResponseDTO>>> getItineraries(@Valid GetItineraryRequestDTO getItineraryRequestDTO,
+                                                                                         Pageable pageable) {
         System.out.println(getItineraryRequestDTO);
         Page<IItineraryResponseDTO> itineraries = getItineraryService.getItineraries(getItineraryRequestDTO, pageable);
-        return ResponseEntity.status(HttpStatus.OK).body(itineraries);
+
+        PagedModel<EntityModel<IItineraryResponseDTO>> responseModel = pagedResourcesAssembler.toModel(itineraries, itinerary ->
+                EntityModel.of(itinerary,
+                               linkTo(methodOn(ItineraryController.class).patchItinerary(itinerary.getItineraryId(),
+                                                                                         null,null)).withRel("modify itinerary"),
+                               linkTo(methodOn(ItineraryController.class).deleteItinerary(itinerary.getItineraryId())).withRel("delete itinerary")
+                ));
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseModel);
     }
 
     @DeleteMapping(Constant.DELETE_ENDPOINT)
@@ -75,22 +104,32 @@ public class ItineraryController {
     }
 
     @DeleteMapping
-    public ResponseEntity<IDeleteItineraryResponseDTO> deleteItineraries(@Valid DeleteItineraryRequestDTO deleteItineraryRequestDTO ) {
+    public ResponseEntity<EntityModel<IDeleteItineraryResponseDTO>> deleteItineraries(@Valid DeleteItineraryRequestDTO deleteItineraryRequestDTO ) {
         IDeleteItineraryResponseDTO deleteItineraryResponseDTO = deleteItineraryService.deleteItineraries(deleteItineraryRequestDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(deleteItineraryResponseDTO);
+
+        EntityModel<IDeleteItineraryResponseDTO> responseModel = EntityModel.of(deleteItineraryResponseDTO,
+                                                                          linkTo(methodOn(ItineraryController.class).createItinerary(null)).withRel("create itinerary"));
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseModel);
     }
 
     @PatchMapping(Constant.PATCH_ENDPOINT)
-    public ResponseEntity<IItineraryResponseDTO> patchItinerary(@PathVariable String itineraryId,
+    public ResponseEntity<EntityModel<IItineraryResponseDTO>> patchItinerary(@PathVariable String itineraryId,
                                                @Valid @RequestBody PatchItineraryRequestDTO patchItineraryRequestDTO,
                                                @RequestHeader HttpHeaders httpHeaders) {
 
         IItineraryResponseDTO iItineraryResponseDTO = patchItineraryService.patchItinerary(itineraryId, patchItineraryRequestDTO);
 
-        ResponseEntity<IItineraryResponseDTO> responseEntity;
+        ResponseEntity<EntityModel<IItineraryResponseDTO>> responseEntity;
 
         if(Constant.PREFER_HEADER_REPRESENTATION.equalsIgnoreCase(httpHeaders.getFirst(Constant.PREFER_HEADER))) {
-            responseEntity = ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(iItineraryResponseDTO);
+            EntityModel<IItineraryResponseDTO> responseModel = EntityModel.of(iItineraryResponseDTO,
+                                                                              linkTo(methodOn(ItineraryController.class).createItinerary(null)).withRel("create itinerary"),
+                                                                              linkTo(methodOn(ItineraryController.class).getItinerary(itineraryId)).withRel("print itinerary"),
+                                                                              linkTo(methodOn(ItineraryController.class).getItineraries(null,null)).withRel("print itineraries"),
+                                                                              linkTo(methodOn(ItineraryController.class).deleteItinerary(itineraryId)).withRel("delete itinerary"));
+
+            responseEntity = ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(responseModel);
         } else {
             responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
