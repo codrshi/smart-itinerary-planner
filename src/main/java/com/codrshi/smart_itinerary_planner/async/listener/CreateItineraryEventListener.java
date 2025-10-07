@@ -61,6 +61,11 @@ public class CreateItineraryEventListener {
                                                                                        dateToWeatherMap);
 
         Itinerary itinerary = itineraryMapper.mapToItineraryEntity(createItineraryEventDTO, activities);
-        itineraryRepository.save(itinerary);
+        Itinerary savedItinerary = itineraryRepository.save(itinerary);
+
+        //TODO: handle error in async flow
+        if(savedItinerary == null ||savedItinerary.getDocId() == null){
+            throw new RuntimeException("Failed to create itinerary");
+        }
     }
 }

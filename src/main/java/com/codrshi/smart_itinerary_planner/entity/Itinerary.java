@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@CompoundIndex(name = "unique_itineraryId_per_user", def = "{'itineraryId': 1, 'userRef.userId': 1}")
+@CompoundIndex(name = "unique_itineraryId_per_user", def = "{'itineraryId': 1, 'userRef': 1}")
 public class Itinerary extends Audit{
     @Id
     private String docId;
@@ -26,5 +26,5 @@ public class Itinerary extends Audit{
     private ITimePeriodDTO timePeriod;
     private int totalDays;
     private List<IActivityDTO> activities;
-    private IUserRefDTO userRef;
+    private String userRef;
 }

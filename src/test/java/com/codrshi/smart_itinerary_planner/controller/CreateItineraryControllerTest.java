@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -33,7 +34,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
         when(createItineraryService.createItinerary(any())).thenReturn(createItineraryResponseDTO);
 
         mockMvc.perform(post(URI)
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON).with(csrf())
                                 .content(objectMapper.writeValueAsString(createItineraryRequestDTO)))
                 .andExpect(status().isAccepted())
                 .andExpect(content().json(objectMapper.writeValueAsString(createItineraryResponseDTO)));
@@ -50,7 +51,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
         when(createItineraryService.createItinerary(any())).thenThrow(new RuntimeException());
 
         mockMvc.perform(post(URI)
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON).with(csrf())
                                 .content(objectMapper.writeValueAsString(createItineraryRequestDTO)))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.errorCode").value(expectedErrorCode))
@@ -64,7 +65,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
                                                                   CreateItineraryRequestDTO.class);
 
         mockMvc.perform(post(URI)
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON).with(csrf())
                                 .content(objectMapper.writeValueAsString(createItineraryRequestDTO)))
                                                  //.replace(DateRangeCriteria.SAME_CITY.getValue(), "INVALID")))
                 .andExpect(status().isBadRequest())
@@ -83,7 +84,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
                                                                   CreateItineraryRequestDTO.class);
 
         mockMvc.perform(post(URI)
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON).with(csrf())
                                 .content(objectMapper.writeValueAsString(createItineraryRequestDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(
@@ -98,7 +99,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
         final String invalidDate = "2025-%06AND01";
 
         mockMvc.perform(post(URI)
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON).with(csrf())
                                 .content(objectMapper.writeValueAsString(createItineraryRequestDTO).replace("2025-06-01", invalidDate)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(

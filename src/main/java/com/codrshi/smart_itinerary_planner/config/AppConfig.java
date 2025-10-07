@@ -7,6 +7,7 @@ import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.codrshi.smart_itinerary_planner.util.PatchRequestDeserializer;
 import com.codrshi.smart_itinerary_planner.util.PatchDataRegistry;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.ICoordinateMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;
@@ -25,13 +26,16 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
 @Configuration
-@EnableMongoAuditing
+@EnableMongoAuditing(auditorAwareRef = "auditorAware")
 @EnableAsync
 @EnableConfigurationProperties(ItineraryProperties.class)
 public class AppConfig {
@@ -95,9 +99,8 @@ public class AppConfig {
     }
 
     @Bean
-    public AuditorAware<String> auditorProvider() {
-        //fetch logged-in user from spring SecurityContext
-        return () -> Optional.of("system_user");
+    public AuditorAware<String> auditorAware() {
+        return () -> Optional.of(RequestContext.getCurrentContext().getUsername());
     }
 
     @Bean

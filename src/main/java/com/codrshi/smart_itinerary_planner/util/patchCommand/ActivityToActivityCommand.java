@@ -1,46 +1,34 @@
 package com.codrshi.smart_itinerary_planner.util.patchCommand;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
+import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
+import com.codrshi.smart_itinerary_planner.util.ActivityLookup;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ActivityToActivityCommand implements IPatchCommand {
-    private Map<String, ActivityNode> activityAdjacencyMap;
+    private ActivityLookup activityLookup;
 
-    public ActivityToActivityCommand(Map<String, ActivityNode> activityAdjacencyMap) {
-        this.activityAdjacencyMap = activityAdjacencyMap;
+    public ActivityToActivityCommand(ActivityLookup activityLookup) {
+        this.activityLookup = activityLookup;
     }
 
     @Override
     public void execute(String sourceId, String targetId) {
 
-        ActivityNode sourceNode = activityAdjacencyMap.get(sourceId);
-        ActivityNode targetNode = activityAdjacencyMap.get(targetId);
-
-        if(!activityAdjacencyMap.containsKey(sourceId) || !activityAdjacencyMap.containsKey(targetId) || sourceNode == null) {
+        if(sourceId.equals(targetId) || !activityLookup.containsActivity(sourceId) || !activityLookup.containsActivity(targetId)){
             return;
         }
 
-        if(targetNode == null) {
-            activityAdjacencyMap.put(targetId, sourceNode);
-        }
-        else {
-            ActivityNode tailNode = getTailNode(targetNode);
-            tailNode.setNext(sourceNode);
-        }
+        IActivityDTO sourceActivity = activityLookup.fromActivityId(sourceId);
+        IActivityDTO targetActivity = activityLookup.fromActivityId(targetId);
 
-        activityAdjacencyMap.put(sourceId, null);
-    }
+        List<IPointOfInterestDTO> poiList = sourceActivity.getPointOfInterests();
 
-    private ActivityNode getTailNode(ActivityNode node) {
-        if(node == null) {
-            return null;
-        }
-
-        ActivityNode tailNode = node;
-        while(tailNode.getNext() != null) {
-            tailNode = tailNode.getNext();
-        }
-        return tailNode;
+        targetActivity.getPointOfInterests().addAll(poiList);
+        sourceActivity.setPointOfInterests(new ArrayList<>());
     }
 }

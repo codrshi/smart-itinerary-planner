@@ -11,7 +11,8 @@ public enum ErrorCode {
     MISSING_WEATHER_DATA(10007, "Weather details were fetched for %s day(s) instead of %s day(s)."),
     INVALID_ITINERARY_ID_FORMAT(10008, "Invalid itinerary ID format. Expected format: %s, actual value: %s"),
     INVALID_ENUM_INSTANCE(10009, "Invalid %s value: %s, valid values are: %s"),
-    MISSING_DATE_WHEN_CRITERIA_PROVIDED(10010, "Expected both 'startDate' and 'endDate' when dateRangeCriteria is provided.");
+    MISSING_DATE_WHEN_CRITERIA_PROVIDED(10010, "Expected both 'startDate' and 'endDate' when dateRangeCriteria is provided."),
+    RESOURCE_ALREADY_EXIST(10011, "%s already exists for the given request.");
 
     private final int code;
     private final String messageTemplate;

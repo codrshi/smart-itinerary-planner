@@ -1,0 +1,27 @@
+[ {
+  "activityId" : "ACT-2",
+  "activityDate" : "2020-01-02",
+  "weatherType" : null,
+  "activityNote" : "-",
+  "pointOfInterests" : [ {
+    "activityType" : "event",
+    "poiId" : "POI-2",
+    "name" : null,
+    "date" : null,
+    "activityType" : null,
+    "venue" : null,
+    "category" : null,
+    "note" : null,
+    "familyFriendly" : false
+  }, {
+    "activityType" : "event",
+    "poiId" : "POI-1",
+    "name" : null,
+    "date" : null,
+    "activityType" : null,
+    "venue" : null,
+    "category" : null,
+    "note" : null,
+    "familyFriendly" : false
+  } ]
+} ]

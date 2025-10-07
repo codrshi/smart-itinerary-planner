@@ -31,9 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ValidationServiceTest extends BaseTest {
 
-    @Autowired
-    private ValidationService validationService;
-
     @DisplayName("Should throw IllegalArgumentException when itineraryId is null or blank")
     @ParameterizedTest
     @NullSource

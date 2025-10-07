@@ -40,13 +40,12 @@ public class UpdateNotePatchHandler extends PatchHandler<UpdateNotePatchDataDTO>
 
         });
 
-        return activities.stream().map(activity -> {
-            IActivityDTO patchedActivity = new ActivityDTO(activity);
-            patchedActivity.setActivityNote(idToNoteMap.get(patchedActivity.getActivityId()));
-            patchedActivity.getPointOfInterests().forEach(poi -> poi.setNote(idToNoteMap.get(poi.getPoiId())));
+        activities.forEach(activity -> {
+            activity.setActivityNote(idToNoteMap.get(activity.getActivityId()));
+            activity.getPointOfInterests().forEach(poi -> poi.setNote(idToNoteMap.get(poi.getPoiId())));
+        });
 
-            return patchedActivity;
-        }).toList();
+        return activities;
     }
 
     @Override

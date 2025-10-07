@@ -1,15 +1,11 @@
 package com.codrshi.smart_itinerary_planner.service.implementation.patchHandler;
 
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
-import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.MoveResourcePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
-import com.codrshi.smart_itinerary_planner.util.ActivityUtil;
-import com.codrshi.smart_itinerary_planner.util.patchCommand.ActivityNode;
+import com.codrshi.smart_itinerary_planner.util.ActivityLookup;
 import com.codrshi.smart_itinerary_planner.util.patchCommand.PatchCommandDispatcher;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,12 +17,9 @@ public class MoveResourcePatchHandler extends PatchHandler<MoveResourcePatchData
     @Override
     protected List<IActivityDTO> applyPatch(List<IActivityDTO> activities, List<MoveResourcePatchDataDTO> patchDataList) {
         final Map<String, String> ACTIVITY_DATE_TO_ID_LOOKUP = createActivityDateToIdMap(activities);
-        Map<String, IActivityDTO> idToActivityMap = getIdToActivityMap(activities);
-        Map<String, ActivityNode> activityAdjacencyMap = getActivityAdjacencyMap(activities);
-        Map<String, String> poiToActivityIdMap = getPoIIdToActivityIdMap(activities);
-        PatchCommandDispatcher patchCommandDispatcher = new PatchCommandDispatcher(activityAdjacencyMap,
-                                                                                   poiToActivityIdMap, idToActivityMap);
-        List<IActivityDTO> patchedActivities = new ArrayList<>();
+
+        ActivityLookup activityLookup = new ActivityLookup(activities);
+        PatchCommandDispatcher patchCommandDispatcher = new PatchCommandDispatcher(activityLookup);
 
         for (MoveResourcePatchDataDTO patch : patchDataList) {
             String source = patch.getSource();
@@ -38,29 +31,7 @@ public class MoveResourcePatchHandler extends PatchHandler<MoveResourcePatchData
             patchCommandDispatcher.dispatch(sourceId, targetId);
         }
 
-
-        idToActivityMap.forEach((id, activity) -> {
-
-            if(activity == null) {
-                return;
-            }
-
-            List<IPointOfInterestDTO> patchedPoiList = new ArrayList<>();
-            for (ActivityNode node = activityAdjacencyMap.get(id); node != null; node = node.getNext()) {
-                IActivityDTO nextActivity = idToActivityMap.get(node.getActivityId());
-                if (nextActivity != null) {
-                    patchedPoiList.addAll(nextActivity.getPointOfInterests());
-                }
-            }
-
-            if(!patchedPoiList.isEmpty()) {
-                IActivityDTO patchedActivity = new ActivityDTO(activity);
-                patchedActivity.setPointOfInterests(patchedPoiList);
-                patchedActivities.add(patchedActivity);
-            }
-        });
-
-        return patchedActivities;
+        return activityLookup.getFilteredActivities();
     }
 
     @Override
@@ -69,20 +40,5 @@ public class MoveResourcePatchHandler extends PatchHandler<MoveResourcePatchData
                 .flatMap(patchData ->
                                  Stream.of(patchData.getSource(), patchData.getTarget()))
                 .toList();
-    }
-
-    private Map<String, IActivityDTO> getIdToActivityMap(List<IActivityDTO> activities) {
-        return activities.stream().collect(Collectors.toMap(IActivityDTO::getActivityId,activity -> activity));
-    }
-
-    private Map<String, ActivityNode> getActivityAdjacencyMap(List<IActivityDTO> activities) {
-        return activities.stream().collect(Collectors.toMap(IActivityDTO::getActivityId, activity -> new ActivityNode(activity.getActivityId())));
-    }
-
-    private Map<String, String> getPoIIdToActivityIdMap(List<IActivityDTO> activities) {
-        Map<String, String> poiToActivityIdMap = new HashMap<>();
-        activities.forEach(activity -> activity.getPointOfInterests().forEach(poi -> poiToActivityIdMap.put(poi.getPoiId(), activity.getActivityId())));
-
-        return poiToActivityIdMap;
     }
 }

@@ -2,6 +2,7 @@ package com.codrshi.smart_itinerary_planner.util.patchCommand;
 
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.MoveResourcePatchDataDTO;
+import com.codrshi.smart_itinerary_planner.util.ActivityLookup;
 import com.codrshi.smart_itinerary_planner.util.ActivityUtil;
 
 import java.util.List;
@@ -11,10 +12,9 @@ public class PatchCommandDispatcher {
     private IPatchCommand poiToActivityCommand;
     private IPatchCommand activityToActivityCommand;
 
-    public PatchCommandDispatcher(Map<String, ActivityNode> activityAdjacencyMap,
-                                  Map<String, String> poiToActivityIdMap, Map<String, IActivityDTO> idToActivityMap) {
-        this.poiToActivityCommand = new PoiToActivityCommand(poiToActivityIdMap, idToActivityMap);
-        this.activityToActivityCommand = new ActivityToActivityCommand(activityAdjacencyMap);
+    public PatchCommandDispatcher(ActivityLookup activityLookup) {
+        this.poiToActivityCommand = new PoiToActivityCommand(activityLookup);
+        this.activityToActivityCommand = new ActivityToActivityCommand(activityLookup);
     }
 
     public void dispatch(String sourceId, String targetId) {

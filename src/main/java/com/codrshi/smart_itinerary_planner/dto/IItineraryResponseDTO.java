@@ -23,7 +23,7 @@ public interface IItineraryResponseDTO {
 
     void setActivities(List<IActivityDTO> activities);
 
-    IUserRefDTO getUserRef();
+    String getUserRef();
 
-    void setUserRef(IUserRefDTO userRef);
+    void setUserRef(String userRef);
 }

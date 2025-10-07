@@ -30,9 +30,8 @@ public class DeleteResourcePatchHandler extends PatchHandler<DeleteResourcePatch
                                     .toList())
                             .orElse(null);
 
-                    IActivityDTO copy = new ActivityDTO(activity);
-                    copy.setPointOfInterests(filteredpoiList);
-                    return copy;
+                    activity.setPointOfInterests(filteredpoiList);
+                    return activity;
                 })
                 .toList();
     }

@@ -9,11 +9,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ItineraryResponseDTO implements IItineraryResponseDTO {
+public class GetItineraryResponseDTO implements IItineraryResponseDTO {
     private String itineraryId;
     private String destination;
     private ITimePeriodDTO timePeriod;
     private int totalDays;
     private List<IActivityDTO> activities;
-    private IUserRefDTO userRef;
+    private String userRef;
 }

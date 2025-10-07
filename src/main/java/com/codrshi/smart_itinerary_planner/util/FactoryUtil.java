@@ -9,6 +9,8 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.dto.implementation.AttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.EventDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
@@ -25,6 +27,9 @@ public class FactoryUtil {
 
     @Autowired
     private CounterManager counterManager;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public Map<LocalDate, IActivityDTO> initializeDateToActivityMap(Map<LocalDate, WeatherType> dateToWeatherMap) {
         return dateToWeatherMap.entrySet().stream()
@@ -44,6 +49,10 @@ public class FactoryUtil {
                         Comparator.comparingInt((IActivityDTO activity) -> activity.getWeatherType().getRank())
                                 .thenComparingInt(activity -> activity.getPointOfInterests().size()));
 
+    }
+
+    public <T> T copy(T object, Class<T> clazz) throws JsonProcessingException {
+        return objectMapper.readValue(objectMapper.writeValueAsString(object), clazz);
     }
 
     public static IPointOfInterestDTO copyPoi(IPointOfInterestDTO poi) {

@@ -15,5 +15,5 @@ public class PatchItineraryResponseDTO implements IItineraryResponseDTO {
     private ITimePeriodDTO timePeriod;
     private int totalDays;
     private List<IActivityDTO> activities;
-    private IUserRefDTO userRef;
+    private String userRef;
 }

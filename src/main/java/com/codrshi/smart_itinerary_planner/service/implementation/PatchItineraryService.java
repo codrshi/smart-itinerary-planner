@@ -1,11 +1,9 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.common.enums.PatchOperation;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPatchItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.PatchItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
@@ -13,15 +11,17 @@ import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;
 import com.codrshi.smart_itinerary_planner.service.IPatchItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
+import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.PatchDataRegistry;
+import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
+import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
-import static com.codrshi.smart_itinerary_planner.common.enums.PatchOperation.UPDATE_NOTE;
 
 @Service
 public class PatchItineraryService implements IPatchItineraryService {
@@ -32,6 +32,12 @@ public class PatchItineraryService implements IPatchItineraryService {
     @Autowired
     private ItineraryRepository itineraryRepository;
 
+    @Autowired
+    private FactoryUtil factoryUtil;
+
+    @Autowired
+    private IItineraryMapper itineraryMapper;
+
     @Override
     public IItineraryResponseDTO patchItinerary(String itineraryId, IPatchItineraryRequestDTO patchItineraryRequestDTO) {
         System.out.println(patchItineraryRequestDTO);
@@ -41,20 +47,31 @@ public class PatchItineraryService implements IPatchItineraryService {
         Itinerary itinerary = itineraryRepository.findByItineraryId(itineraryId)
                 .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY));
 
-        Itinerary patchedItinerary = dispatch(patchItineraryRequestDTO, itinerary);
-
+        List<IActivityDTO> patchedActivities = dispatch(patchItineraryRequestDTO, itinerary);
+        updateItineraryInRepository(patchedActivities, itineraryId);
+        
         //save itinerary
-        return new PatchItineraryResponseDTO();
+        return itineraryMapper.mapToPatchItineraryResponseDTO(itinerary, patchedActivities);
     }
 
-    private Itinerary dispatch(IPatchItineraryRequestDTO patchItineraryRequestDTO, Itinerary itinerary) {
+    private void updateItineraryInRepository(List<IActivityDTO> patchedActivities, String itineraryId) {
+        Query query = QueryBuilder.builder(itineraryId);
+        itineraryRepository.updateActivities(query, patchedActivities);
+    }
+
+    private List<IActivityDTO> dispatch(IPatchItineraryRequestDTO patchItineraryRequestDTO, Itinerary itinerary) {
+        Itinerary patchedItinerary;
+        try {
+            patchedItinerary = factoryUtil.copy(itinerary, Itinerary.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         String patchOperation = patchItineraryRequestDTO.getPatchOperation().getValue();
         PatchHandler patchHandler = PatchDataRegistry.getHandlerObject(patchOperation);
 
-        List<IActivityDTO> patchedActivities = patchHandler.handle(itinerary.getActivities(),
+        return patchHandler.handle(patchedItinerary.getActivities(),
                                                                    patchItineraryRequestDTO.getPatchData());
 
-        itinerary.setActivities(patchedActivities);
-        return itinerary;
     }
 }

@@ -7,6 +7,7 @@ import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.CreateItineraryEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.CreateItineraryRequestDTO;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +19,7 @@ public class CreateItineraryEventListenerTest extends BaseTest {
     @Test
     public void testHandleCreateItineraryEvent() {
         ICreateItineraryEventDTO createItineraryEventDTO = getJsonObject("async/async_validCreateItineraryEvent.json",
-                                                                               CreateItineraryEventDTO.class);
+                                                                         new TypeReference<CreateItineraryEventDTO>() {});
 
         createItineraryEventListener.handleCreateItineraryEvent(new CreateItineraryEvent("test",
                                                                                          createItineraryEventDTO));

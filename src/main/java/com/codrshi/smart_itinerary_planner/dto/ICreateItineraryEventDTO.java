@@ -7,26 +7,26 @@ import java.util.List;
 import java.util.Map;
 
 public interface ICreateItineraryEventDTO {
-    public IUserRefDTO getUserRef();
-    public void setUserRef(IUserRefDTO userRef);
+    String getUserRef();
+    void setUserRef(String userRef);
 
-    public List<IAttractionDTO> getAttractions();
-    public void setAttractions(List<IAttractionDTO> attractions);
+    List<IAttractionDTO> getAttractions();
+    void setAttractions(List<IAttractionDTO> attractions);
 
-    public List<IEventDTO> getEvents();
-    public void setEvents(List<IEventDTO> events);
+    List<IEventDTO> getEvents();
+    void setEvents(List<IEventDTO> events);
 
-    public Map<LocalDate, WeatherType> getDateToWeatherMap();
-    public void setDateToWeatherMap(Map<LocalDate, WeatherType> dateToWeatherMap);
+    Map<LocalDate, WeatherType> getDateToWeatherMap();
+    void setDateToWeatherMap(Map<LocalDate, WeatherType> dateToWeatherMap);
 
-    public ITimePeriodDTO getTimePeriod();
-    public void setTimePeriod(ITimePeriodDTO timePeriod);
+    ITimePeriodDTO getTimePeriod();
+    void setTimePeriod(ITimePeriodDTO timePeriod);
 
-    public ILocationDTO getLocation();
-    public void setLocation(ILocationDTO location);
+    ILocationDTO getLocation();
+    void setLocation(ILocationDTO location);
 
-    public String getItineraryId();
-    public void setItineraryId(String itineraryId);
+    String getItineraryId();
+    void setItineraryId(String itineraryId);
 
 
 }

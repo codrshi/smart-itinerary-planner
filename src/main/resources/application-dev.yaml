@@ -1,5 +1,22 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/smart-itinerary-planner
+  devtools:
+    restart:
+      enabled: true
+
 itinerary:
   async:
     corePoolSize: 5
     maxPoolSize: 10
     queueCapacity: 50
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web: DEBUG
+        boot: DEBUG
+        data: DEBUG

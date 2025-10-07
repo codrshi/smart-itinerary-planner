@@ -1,10 +1,13 @@
 package com.codrshi.smart_itinerary_planner.util;
 
+import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
+import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IFilterRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.IGetItineraryRequestDTO;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,13 +18,24 @@ import java.util.regex.Pattern;
 public class QueryBuilder {
     private QueryBuilder() {}
 
-    public static final String CITY = "location.city";
-    public static final String START_DATE = "timePeriod.startDate";
-    public static final String END_DATE = "timePeriod.endDate";
-    public static final String COUNTRY = "location.country";
-    public static final String COUNTRY_CODE = "location.countryCode";
+    private static final String CITY = "location.city";
+    private static final String START_DATE = "timePeriod.startDate";
+    private static final String END_DATE = "timePeriod.endDate";
+    private static final String COUNTRY = "location.country";
+    private static final String COUNTRY_CODE = "location.countryCode";
+    private static final String ITINERARY_ID = "itineraryId";
+    private static final String USER_REF_ID = "userRef";
+
+    public static Query builder(String itineraryId) {
+        String userRef = RequestContext.getCurrentContext().getUsername();
+        Query query = new Query();
+        query.addCriteria(Criteria.where(ITINERARY_ID).is(itineraryId).and(USER_REF_ID).is(userRef));
+
+        return query;
+    }
 
     public static Query builder(IFilterRequestDTO filterRequestDTO) {
+        String userRef = RequestContext.getCurrentContext().getUsername();
         Query query = new Query();
         List<Criteria> criteriaList = new ArrayList<>();
         String city = filterRequestDTO.getCity();
@@ -48,6 +62,8 @@ public class QueryBuilder {
         if(!criteriaList.isEmpty()) {
             query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
         }
+
+        query.addCriteria(Criteria.where(USER_REF_ID).is(userRef));
 
         return query;
     }

@@ -81,15 +81,18 @@ public class ItineraryController {
     }
 
     @PatchMapping(Constant.PATCH_ENDPOINT)
-    public ResponseEntity<?> patchItinerary(@PathVariable String itineraryId,
+    public ResponseEntity<IItineraryResponseDTO> patchItinerary(@PathVariable String itineraryId,
                                                @Valid @RequestBody PatchItineraryRequestDTO patchItineraryRequestDTO,
                                                @RequestHeader HttpHeaders httpHeaders) {
 
         IItineraryResponseDTO iItineraryResponseDTO = patchItineraryService.patchItinerary(itineraryId, patchItineraryRequestDTO);
 
-        ResponseEntity<?> responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        ResponseEntity<IItineraryResponseDTO> responseEntity;
+
         if(Constant.PREFER_HEADER_REPRESENTATION.equalsIgnoreCase(httpHeaders.getFirst(Constant.PREFER_HEADER))) {
             responseEntity = ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(iItineraryResponseDTO);
+        } else {
+            responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 
         return responseEntity;

@@ -1,0 +1,11 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: INFO
+        web: INFO
+        boot: INFO
+        data: INFO
+
+security:
+  require-ssl: true

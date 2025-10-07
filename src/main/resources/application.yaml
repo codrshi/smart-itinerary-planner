@@ -3,16 +3,15 @@ spring:
     name: smart-itinerary-planner
   profiles:
     active: dev
-  devtools:
-    restart:
-      enabled: true
   data:
-    mongodb:
-      uri: mongodb://localhost:27017/smart-itinerary-planner
     web:
       pageable:
         default-page-size: 10
         max-page-size: 40
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%X{X-Trace-Id}] - %msg%n"
 
 itinerary:
   weatherRankThreshold: 18

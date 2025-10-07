@@ -23,5 +23,5 @@ public class ItineraryHistory extends Audit{
     private ITimePeriodDTO timePeriod;
     private int totalDays;
     private List<IActivityDTO> plans;
-    private IUserRefDTO userRef;
+    private String userRef;
 }

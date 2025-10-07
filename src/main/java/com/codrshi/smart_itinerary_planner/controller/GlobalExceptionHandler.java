@@ -12,11 +12,13 @@ import com.codrshi.smart_itinerary_planner.exception.InvalidItineraryIdFormatExc
 import com.codrshi.smart_itinerary_planner.exception.MissingWeatherDataException;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.password.CompromisedPasswordException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,7 +39,7 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(errorMessages.toString())
                 .path(request.getRequestURI())
-                .traceId(request.getHeader(Constant.HEADER_TRACE_ID))
+                .traceId(RequestContext.getCurrentContext().getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -49,7 +51,7 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(ex.getMostSpecificCause().getMessage())
                 .path(request.getRequestURI())
-                .traceId(request.getHeader(Constant.HEADER_TRACE_ID))
+                .traceId(RequestContext.getCurrentContext().getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -64,7 +66,7 @@ public class GlobalExceptionHandler {
                 .errorCode(ex.getErrorCode())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(request.getHeader(Constant.HEADER_TRACE_ID))
+                .traceId(RequestContext.getCurrentContext().getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -77,11 +79,23 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message("Invalid request: " + ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(request.getHeader(Constant.HEADER_TRACE_ID))
+                .traceId(RequestContext.getCurrentContext().getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
         System.out.println(ex);
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CompromisedPasswordException.class)
+    ResponseEntity<?> handleCompromisedPasswordException(CompromisedPasswordException ex, HttpServletRequest request) {
+        IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
+                .message("The password is known to be compromised. Please use a stronger password.")
+                .path(request.getRequestURI())
+                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .timestamp(LocalDateTime.now())
+                .build();
+
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
     }
 
@@ -91,7 +105,7 @@ public class GlobalExceptionHandler {
                 .errorCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                 .message(ErrorCode.INTERNAL_SERVER_ERROR.getMessageTemplate())
                 .path(request.getRequestURI())
-                .traceId(request.getHeader(Constant.HEADER_TRACE_ID))
+                .traceId(RequestContext.getCurrentContext().getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 

@@ -3,7 +3,7 @@ package com.codrshi.smart_itinerary_planner.controller;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import com.codrshi.smart_itinerary_planner.dto.IItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.GetItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -30,10 +31,10 @@ public class GetItineraryControllerTest extends ControllerBaseTest{
     void givenGetItineraryController_whenCorrectRequest_ThenOkResponse() {
 
         IItineraryResponseDTO getItineraryResponseDTO = getJsonObject("ItineraryPlan/controller_validGetResponse.json",
-                                                                      ItineraryResponseDTO.class);
+                                                                      GetItineraryResponseDTO.class);
         when(getItineraryService.getItinerary(any())).thenReturn(getItineraryResponseDTO);
 
-        mockMvc.perform(get(URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+        mockMvc.perform(get(URL).contentType(MediaType.APPLICATION_JSON).with(csrf())).andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(getItineraryResponseDTO)));
     }
 
@@ -46,7 +47,7 @@ public class GetItineraryControllerTest extends ControllerBaseTest{
 
         when(getItineraryService.getItinerary(any())).thenThrow(new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY));
 
-        mockMvc.perform(get(URL).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isNotFound())
+        mockMvc.perform(get(URL).contentType(MediaType.APPLICATION_JSON).with(csrf())).andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.errorCode").value(expectedErrorCode))
                 .andExpect(jsonPath("$.message").value(expectedErrorMessage));
     }

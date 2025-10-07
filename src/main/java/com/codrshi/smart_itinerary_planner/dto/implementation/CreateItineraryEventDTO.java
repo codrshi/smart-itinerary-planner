@@ -18,7 +18,7 @@ import java.util.Map;
 @Data
 @Builder
 public class CreateItineraryEventDTO implements ICreateItineraryEventDTO {
-    private IUserRefDTO userRef;
+    private String userRef;
     private List<IAttractionDTO> attractions;
     private List<IEventDTO> events;
     private Map<LocalDate, WeatherType> dateToWeatherMap;

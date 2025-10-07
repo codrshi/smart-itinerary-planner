@@ -11,6 +11,7 @@ import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.CreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.CreateItineraryEventDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.UserRefDTO;
 import com.codrshi.smart_itinerary_planner.service.IExternalApiService;
 import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
@@ -19,8 +20,10 @@ import com.codrshi.smart_itinerary_planner.util.ItineraryIdGenerator;
 import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.codrshi.smart_itinerary_planner.common.enums.ItineraryStatus;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -83,10 +86,13 @@ public class CreateItineraryService implements ICreateItineraryService {
                                              String itineraryId, List<IEventDTO> events,
                                              List<IAttractionDTO> attractions,
                                              Map<LocalDate, WeatherType> dateToWeatherMap) {
+
+        String userRef = RequestContext.getCurrentContext().getUsername();
+
         ICreateItineraryEventDTO createItineraryEventDTO =
                 CreateItineraryEventDTO.builder().location(locationDTO).timePeriod(timePeriodDTO)
                         .itineraryId(itineraryId).events(events).attractions(attractions)
-                        .dateToWeatherMap(dateToWeatherMap).build();
+                        .dateToWeatherMap(dateToWeatherMap).userRef(userRef).build();
 
         CreateItineraryEvent createItineraryEvent = new CreateItineraryEvent(this, createItineraryEventDTO);
         publisher.publishEvent(createItineraryEvent);

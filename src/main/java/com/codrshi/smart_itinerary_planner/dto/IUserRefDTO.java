@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = UserRefDTO.class)
 public interface IUserRefDTO {
-    String getUserId();
+    String getId();
 
-    void setUserId(String userId);
+    void setId(String id);
 }

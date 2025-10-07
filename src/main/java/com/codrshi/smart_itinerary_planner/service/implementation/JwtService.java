@@ -1,0 +1,51 @@
+package com.codrshi.smart_itinerary_planner.service.implementation;
+
+import com.codrshi.smart_itinerary_planner.common.Constant;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.stream.Collectors;
+
+@Service
+public class JwtService {
+    private final SecretKey secretKey;
+
+    public JwtService(){
+        String envKey = System.getenv(Constant.JWT_SECRET_KEY);
+
+        if (envKey == null || envKey.isBlank()) {
+            throw new IllegalStateException(Constant.JWT_SECRET_KEY + " environment variable not set.");
+        }
+
+        secretKey = Keys.hmacShaKeyFor(envKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public String generateToken(Authentication authentication, Instant now) {
+
+        return Jwts.builder().subject(authentication.getName())
+                .claim(Constant.USERNAME, authentication.getName())
+                .claim(Constant.AUTHORITIES, authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.joining(",")))
+                .issuer(Constant.APPLICATION_NAME).issuedAt(Date.from(now))
+                .expiration(Date.from(now.plus(8, ChronoUnit.HOURS)))
+                .signWith(secretKey).compact();
+    }
+
+    public Claims parseToken(String jwtToken) {
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(jwtToken)
+                .getPayload();
+    }
+}
