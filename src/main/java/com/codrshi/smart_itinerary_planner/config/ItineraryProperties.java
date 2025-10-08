@@ -18,7 +18,8 @@ public class ItineraryProperties {
     private int weatherRankThreshold;
     private int patchLimit;
     private PurgeProperties purge;
-    private Map<String, ExternalApiProperty> externalApi;
+    private ApiProperty internalApi;
+    private Map<String, ApiProperty> externalApi;
     private EndpointProperties endpoint;
     private String baseUrl;
     private CityRadiusProperties cityRadius;
@@ -27,10 +28,11 @@ public class ItineraryProperties {
 
     @ConstructorBinding
     public ItineraryProperties(int weatherRankThreshold, int patchLimit, PurgeProperties purge,
-                               Map<String, ExternalApiProperty> externalApi,
+                               ApiProperty internalApi, Map<String, ApiProperty> externalApi,
                                EndpointProperties endpoint, String baseUrl, CityRadiusProperties cityRadius, AttractionProperties attraction, AsyncProperties async) {
         this.weatherRankThreshold = weatherRankThreshold;
         this.purge = purge;
+        this.internalApi = internalApi;
         this.externalApi = externalApi;
         this.endpoint = endpoint;
         this.baseUrl = baseUrl;
@@ -59,7 +61,7 @@ public class ItineraryProperties {
     @Getter
     @AllArgsConstructor
     @ToString
-    public static class ExternalApiProperty {
+    public static class ApiProperty {
         private String apiKey;
         private String baseUrl;
     }

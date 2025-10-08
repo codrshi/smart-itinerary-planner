@@ -4,7 +4,10 @@ import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.repository.ItineraryRepositoryCustomQuery;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +45,13 @@ public class ItineraryRepositoryCustomQueryImpl implements ItineraryRepositoryCu
     public void updateActivities(Query query, List<IActivityDTO> activities) {
         Update update = new Update().set(Constant.ACTIVITIES, activities)
                             .set("updatedAt", LocalDate.now())
-                            .set("updatedBy", Constant.SYSTEM_USER);
-        mongoTemplate.updateFirst(query, update, Itinerary.class);
+                            .set("updatedBy", RequestContext.getCurrentContext().getUsername())
+                            .inc(Constant.VERSION, 1);
+
+        UpdateResult result = mongoTemplate.updateFirst(query, update, Itinerary.class);
+
+        if(result.getModifiedCount() == 0) {
+            throw new OptimisticLockingFailureException("Itinerary was modified by another process.");
+        }
     }
 }

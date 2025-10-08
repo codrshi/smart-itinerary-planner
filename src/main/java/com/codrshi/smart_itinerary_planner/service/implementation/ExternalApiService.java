@@ -93,7 +93,7 @@ public class ExternalApiService implements IExternalApiService {
     }
 
     private String buildUrl(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
-        ItineraryProperties.ExternalApiProperty externalApiProperty =
+        ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_VIRTUALCROSSING);
 
 
@@ -111,7 +111,7 @@ public class ExternalApiService implements IExternalApiService {
     }
 
     private String buildUrl(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO) {
-        ItineraryProperties.ExternalApiProperty externalApiProperty =
+        ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_TICKETMASTER);
         String startDateTime = timePeriodDTO.getStartDate().toString() + "T00:00:00Z";
         String endDateTime = timePeriodDTO.getEndDate().toString() + "T23:59:59Z";
@@ -126,7 +126,7 @@ public class ExternalApiService implements IExternalApiService {
     }
 
     private String buildUrl(ILocationDTO locationDTO) {
-        ItineraryProperties.ExternalApiProperty externalApiProperty =
+        ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
 
         return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + OPENSTREETMAP_GET_COORDINATES)
@@ -137,7 +137,7 @@ public class ExternalApiService implements IExternalApiService {
     }
 
     private String buildUrl(ILocationDTO locationDTO, ICoordinateDTO coordinateDTO) {
-        ItineraryProperties.ExternalApiProperty externalApiProperty =
+        ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
         ItineraryProperties.AttractionProperties attractionProperties = itineraryProperties.getAttraction();
 

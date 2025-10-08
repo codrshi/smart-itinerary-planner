@@ -1,5 +1,6 @@
 package com.codrshi.smart_itinerary_planner.util;
 
+import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
 import com.codrshi.smart_itinerary_planner.dto.request.IFilterRequestDTO;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -22,10 +23,10 @@ public class QueryBuilder {
     private static final String ITINERARY_ID = "itineraryId";
     private static final String USER_REF_ID = "userRef";
 
-    public static Query builder(String itineraryId) {
+    public static Query builder(String itineraryId, Long version) {
         String userRef = RequestContext.getCurrentContext().getUsername();
         Query query = new Query();
-        query.addCriteria(Criteria.where(ITINERARY_ID).is(itineraryId).and(USER_REF_ID).is(userRef));
+        query.addCriteria(Criteria.where(ITINERARY_ID).is(itineraryId).and(USER_REF_ID).is(userRef).and(Constant.VERSION).is(version));
 
         return query;
     }

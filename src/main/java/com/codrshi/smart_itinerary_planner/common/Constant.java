@@ -30,6 +30,7 @@ public class Constant {
     public static final String USERNAME = "username";
     public static final String AUTHORITIES = "authorities";
     public static final String BEARER_TOKEN_PREFIX = "Bearer ";
+    public static final String VERSION = "version";
 
     public static final String THREAD_PREFIX = "SIP-TaskExecutor-";
     public static final String ITINERARY_ID_PREFIX = "ITIX-";

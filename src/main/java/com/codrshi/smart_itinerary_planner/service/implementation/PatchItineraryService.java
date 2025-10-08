@@ -47,14 +47,14 @@ public class PatchItineraryService implements IPatchItineraryService {
                 .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY));
 
         List<IActivityDTO> patchedActivities = dispatch(patchItineraryRequestDTO, itinerary);
-        updateItineraryInRepository(patchedActivities, itineraryId);
+        updateItineraryInRepository(patchedActivities, itineraryId, itinerary.getVersion());
         
         //save itinerary
         return itineraryMapper.mapToPatchItineraryResponseDTO(itinerary, patchedActivities);
     }
 
-    private void updateItineraryInRepository(List<IActivityDTO> patchedActivities, String itineraryId) {
-        Query query = QueryBuilder.builder(itineraryId);
+    private void updateItineraryInRepository(List<IActivityDTO> patchedActivities, String itineraryId, Long version) {
+        Query query = QueryBuilder.builder(itineraryId, version);
         itineraryRepository.updateActivities(query, patchedActivities);
     }
 

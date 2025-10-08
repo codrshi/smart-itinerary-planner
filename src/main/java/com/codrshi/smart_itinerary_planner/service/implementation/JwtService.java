@@ -1,9 +1,11 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -19,8 +21,11 @@ import java.util.stream.Collectors;
 public class JwtService {
     private final SecretKey secretKey;
 
+    @Autowired
+    private ItineraryProperties itineraryProperties;
+
     public JwtService(){
-        String envKey = System.getenv(Constant.JWT_SECRET_KEY);
+        String envKey = itineraryProperties.getInternalApi().getApiKey();
 
         if (envKey == null || envKey.isBlank()) {
             throw new IllegalStateException(Constant.JWT_SECRET_KEY + " environment variable not set.");

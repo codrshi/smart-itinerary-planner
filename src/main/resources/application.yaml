@@ -21,6 +21,8 @@ itinerary:
     defaultCriteria: WITHIN_DATE_RANGE
     purgeCascade:
       enabled: false
+  internalApi:
+    apiKey: ${JWT_SECRET_KEY}
   externalApi:
     ticketmaster:
       apiKey: ${TICKETMASTER_API_KEY}
