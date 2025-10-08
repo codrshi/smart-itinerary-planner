@@ -13,6 +13,20 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%X{X-Trace-Id}] - %msg%n"
 
+resilience4j:
+  circuitbreaker:
+    instances:
+      weatherApiCB:
+        register-health-indicator: true
+        sliding-window-type: count_based
+        sliding-window-size: 1        # consider only last 1 request
+        failure-rate-threshold: 100   # trigger open state when 100% of last 1 request fails
+        wait-duration-in-open-state: 1h
+        permitted-number-of-calls-in-half-open-state: 1
+        automatic-transition-from-open-to-half-open-enabled: true
+        record-exceptions:
+          - com.codrshi.smart_itinerary_planner.exception.QuotaExceededException
+
 itinerary:
   weatherRankThreshold: 18
   patchLimit: 10

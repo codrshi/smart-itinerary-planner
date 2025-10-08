@@ -12,7 +12,8 @@ public enum ErrorCode {
     INVALID_ITINERARY_ID_FORMAT(10008, "Invalid itinerary ID format. Expected format: %s, actual value: %s"),
     INVALID_ENUM_INSTANCE(10009, "Invalid %s value: %s, valid values are: %s"),
     MISSING_DATE_WHEN_CRITERIA_PROVIDED(10010, "Expected both 'startDate' and 'endDate' when dateRangeCriteria is provided."),
-    RESOURCE_ALREADY_EXIST(10011, "%s already exists for the given request.");
+    RESOURCE_ALREADY_EXIST(10011, "%s already exists for the given request."),
+    QUOTA_EXCEEDED(10012, "Weather API quota exceeded on %s");
 
     private final int code;
     private final String messageTemplate;

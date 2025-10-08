@@ -21,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.password.CompromisedPasswordException;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -88,10 +90,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler(CompromisedPasswordException.class)
-    ResponseEntity<?> handleCompromisedPasswordException(CompromisedPasswordException ex, HttpServletRequest request) {
+    @ExceptionHandler({CompromisedPasswordException.class, UsernameNotFoundException.class})
+    ResponseEntity<?> authenticationException(AuthenticationException ex, HttpServletRequest request) {
+
+        String errorMessage = ex.getMessage();
+        if(ex instanceof CompromisedPasswordException) {
+            errorMessage = "The password is known to be compromised. Please use a stronger password.";
+        }
+
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .message("The password is known to be compromised. Please use a stronger password.")
+                .message(errorMessage)
                 .path(request.getRequestURI())
                 .traceId(RequestContext.getCurrentContext().getTraceId())
                 .timestamp(LocalDateTime.now())

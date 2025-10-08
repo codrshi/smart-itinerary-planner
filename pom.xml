@@ -32,6 +32,7 @@
         <jjwt.version>0.13.0</jjwt.version>
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
         <aventrix-jnanoid.version>2.0.0</aventrix-jnanoid.version>
+        <resiliency4j.version>2.3.0</resiliency4j.version>
 	</properties>
 
 	<dependencies>
@@ -132,6 +133,11 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-spring-boot3</artifactId>
+            <version>${resiliency4j.version}</version>
         </dependency>
     </dependencies>
 

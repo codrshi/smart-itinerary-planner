@@ -1,9 +1,12 @@
 package com.codrshi.smart_itinerary_planner.common.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public enum WeatherType {
+    TYPE_0("Unknown", 0, WeatherCondition.UNKNOWN),
     TYPE_1("Blowing Or Drifting Snow", 42, WeatherCondition.HAZARDOUS),
     TYPE_2("Drizzle", 22, WeatherCondition.UNFAVOURABLE),
     TYPE_3("Heavy Drizzle", 23, WeatherCondition.UNFAVOURABLE),
@@ -71,9 +74,14 @@ public enum WeatherType {
         return LOOKUP_MAP.get(label);
     }
 
-    public static String weatherDescription(WeatherType weatherType) {
-        return String.format("%s with %s.", weatherType.getWeatherCondition().getDescription(), weatherType.getLabel());
+    @JsonValue
+    public String weatherDescription() {
+        if(getRank() == 0) {
+            return getWeatherCondition().getDescription();
+        }
+        return String.format("%s with %s.", getWeatherCondition().getDescription(), getLabel());
     }
+
     public String getLabel() {
         return label;
     }

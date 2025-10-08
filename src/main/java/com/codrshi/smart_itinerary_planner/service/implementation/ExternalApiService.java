@@ -10,19 +10,24 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.response.OpenTripM
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.OpenTripMapCoordinateResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.TicketMasterEventResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.VirtualCrossingWeatherResponseDTO;
+import com.codrshi.smart_itinerary_planner.exception.QuotaExceededException;
 import com.codrshi.smart_itinerary_planner.service.IExternalApiService;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.ICoordinateMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IWeatherMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +63,10 @@ public class ExternalApiService implements IExternalApiService {
     public ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO) {
         final String URL = buildUrl(locationDTO);
 
-        OpenTripMapCoordinateResponseDTO openTripMapCoordinateResponseDTO = restTemplate.getForObject(URL, OpenTripMapCoordinateResponseDTO.class);
+        ResponseEntity<OpenTripMapCoordinateResponseDTO> response =
+                restTemplate.getForEntity(URL, OpenTripMapCoordinateResponseDTO.class);
 
-        return coordinateMapper.mapToCoordinateDTO(openTripMapCoordinateResponseDTO);
+        return coordinateMapper.mapToCoordinateDTO(response.getBody());
 
     }
 
@@ -68,28 +74,50 @@ public class ExternalApiService implements IExternalApiService {
     public List<IEventDTO> getTicketmasterEvents(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO) {
         final String URL = buildUrl(locationDTO, timePeriodDTO);
 
-        TicketMasterEventResponseDTO ticketMasterEventResponseDTO = restTemplate.getForObject(URL, TicketMasterEventResponseDTO.class);
+        ResponseEntity<TicketMasterEventResponseDTO> response = restTemplate.getForEntity(URL,
+                                                                                          TicketMasterEventResponseDTO.class);
 
-        return eventMapper.mapToEventDTO(ticketMasterEventResponseDTO);
+        return eventMapper.mapToEventDTO(response.getBody());
     }
 
-    @SneakyThrows
     @Override
     public List<IAttractionDTO> getOpenStreetMapAttractions(ILocationDTO locationDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(locationDTO, coordinateDTO);
 
-        OpenTripMapAttractionResponseDTO openTripMapAttractionResponseDTO = restTemplate.getForObject(URL, OpenTripMapAttractionResponseDTO.class);
+        ResponseEntity<OpenTripMapAttractionResponseDTO> response =
+                restTemplate.getForEntity(URL, OpenTripMapAttractionResponseDTO.class);
 
-        return attractionMapper.mapToAttractionDTO(openTripMapAttractionResponseDTO);
+        return attractionMapper.mapToAttractionDTO(response.getBody());
     }
 
     @Override
+    @CircuitBreaker(name = "weatherApiCB", fallbackMethod = "getVirtualCrossingWeatherFallback")
     public Map<LocalDate, WeatherType> getVirtualCrossingWeather(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(timePeriodDTO, coordinateDTO);
 
-        VirtualCrossingWeatherResponseDTO virtualCrossingWeatherResponseDTO = restTemplate.getForObject(URL, VirtualCrossingWeatherResponseDTO.class);
+        ResponseEntity<VirtualCrossingWeatherResponseDTO> response =
+                restTemplate.getForEntity(URL, VirtualCrossingWeatherResponseDTO.class);
 
-        return weatherMapper.mapDateToWeather(virtualCrossingWeatherResponseDTO);
+        if(response.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) {
+            throw new QuotaExceededException(LocalDate.now().toString());
+        }
+
+        return weatherMapper.mapDateToWeather(response.getBody());
+    }
+
+    public Map<LocalDate, WeatherType> getVirtualCrossingWeatherFallback(ITimePeriodDTO timePeriodDTO,
+                                                                         ICoordinateDTO coordinateDTO, Throwable ex) {
+
+        Map<LocalDate, WeatherType> response = new HashMap<>();
+
+        LocalDate startDate = timePeriodDTO.getStartDate();
+        LocalDate endDate = timePeriodDTO.getEndDate();
+
+        for(LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate=currentDate.plusDays(1)) {
+            response.put(currentDate, WeatherType.TYPE_0);
+        }
+
+        return response;
     }
 
     private String buildUrl(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {

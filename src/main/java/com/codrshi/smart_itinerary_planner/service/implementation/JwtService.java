@@ -21,10 +21,7 @@ import java.util.stream.Collectors;
 public class JwtService {
     private final SecretKey secretKey;
 
-    @Autowired
-    private ItineraryProperties itineraryProperties;
-
-    public JwtService(){
+    public JwtService(@Autowired ItineraryProperties itineraryProperties){
         String envKey = itineraryProperties.getInternalApi().getApiKey();
 
         if (envKey == null || envKey.isBlank()) {

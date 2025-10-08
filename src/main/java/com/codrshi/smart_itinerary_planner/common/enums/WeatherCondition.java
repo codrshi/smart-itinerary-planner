@@ -5,7 +5,8 @@ public enum WeatherCondition {
     FINE("Fine weather"),
     DISRUPTIVE("Disruptive weather"),
     UNFAVOURABLE("Unfavourable weather"),
-    HAZARDOUS("Hazardous weather");
+    HAZARDOUS("Hazardous weather"),
+    UNKNOWN("Unknown weather");
     private final String description;
 
     WeatherCondition(String description) {

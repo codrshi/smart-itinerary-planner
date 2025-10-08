@@ -1,6 +1,8 @@
 package com.codrshi.smart_itinerary_planner.controller;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
+import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
@@ -55,6 +57,8 @@ public class ItineraryController {
     private PagedResourcesAssembler<IItineraryResponseDTO> pagedResourcesAssembler;
 
     // TODO: internationalization support
+    // TODO: Scheduler task to purge itineraries after a certain period from creation.
+    // TODO: Rate limiting using redis
     @PostMapping
     public ResponseEntity<EntityModel<ICreateItineraryResponseDTO>> createItinerary(@Valid @RequestBody ICreateItineraryRequestDTO createItineraryEventDTO) {
         ICreateItineraryResponseDTO createItineraryResponseDTO = createItineraryService.createItinerary(createItineraryEventDTO);
