@@ -18,11 +18,14 @@ import com.codrshi.smart_itinerary_planner.util.mapper.ICoordinateMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IWeatherMapper;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -40,6 +43,9 @@ public class ExternalApiService implements IExternalApiService {
     private static final String TICKETMASTER_GET_EVENTS = "events.json";
     private static final String OPENSTREETMAP_GET_COORDINATES = "en/places/geoname";
     private static final String OPENSTREETMAP_GET_ATTRACTIONS = "en/places/radius";
+
+    public static final String ERR_MSG_5XX_SERVER_ERROR = "External API server error occurred for %s. Retry will be " +
+            "triggered.";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -60,38 +66,59 @@ public class ExternalApiService implements IExternalApiService {
     private IWeatherMapper weatherMapper;
 
     @Override
+    @Retry(name = "externalApiRetry")
+    @TimeLimiter(name = "externalApiTimeout")
     public ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO) {
         final String URL = buildUrl(locationDTO);
 
         ResponseEntity<OpenTripMapCoordinateResponseDTO> response =
                 restTemplate.getForEntity(URL, OpenTripMapCoordinateResponseDTO.class);
 
+        if(response.getStatusCode().is5xxServerError()) {
+            // print String.format(ERR_MSG_5XX_SERVER_ERROR, KEY_OPENSTREETMAP)
+            throw new HttpServerErrorException(null);
+        }
+
         return coordinateMapper.mapToCoordinateDTO(response.getBody());
 
     }
 
     @Override
+    @Retry(name = "externalApiRetry")
+    @TimeLimiter(name = "externalApiTimeout")
     public List<IEventDTO> getTicketmasterEvents(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO) {
         final String URL = buildUrl(locationDTO, timePeriodDTO);
 
         ResponseEntity<TicketMasterEventResponseDTO> response = restTemplate.getForEntity(URL,
                                                                                           TicketMasterEventResponseDTO.class);
 
+        if(response.getStatusCode().is5xxServerError()) {
+            throw new HttpServerErrorException(null);
+        }
+
         return eventMapper.mapToEventDTO(response.getBody());
     }
 
     @Override
+    @Retry(name = "externalApiRetry")
+    @TimeLimiter(name = "externalApiTimeout")
     public List<IAttractionDTO> getOpenStreetMapAttractions(ILocationDTO locationDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(locationDTO, coordinateDTO);
 
         ResponseEntity<OpenTripMapAttractionResponseDTO> response =
                 restTemplate.getForEntity(URL, OpenTripMapAttractionResponseDTO.class);
 
+        if(response.getStatusCode().is5xxServerError()) {
+            throw new HttpServerErrorException(null);
+        }
+
         return attractionMapper.mapToAttractionDTO(response.getBody());
     }
 
     @Override
+    @Retry(name = "externalApiRetry")
     @CircuitBreaker(name = "weatherApiCB", fallbackMethod = "getVirtualCrossingWeatherFallback")
+    @TimeLimiter(name = "externalApiTimeout")
     public Map<LocalDate, WeatherType> getVirtualCrossingWeather(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(timePeriodDTO, coordinateDTO);
 
@@ -100,6 +127,8 @@ public class ExternalApiService implements IExternalApiService {
 
         if(response.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) {
             throw new QuotaExceededException(LocalDate.now().toString());
+        } else if(response.getStatusCode().is5xxServerError()) {
+            throw new HttpServerErrorException(null);
         }
 
         return weatherMapper.mapDateToWeather(response.getBody());
@@ -119,6 +148,8 @@ public class ExternalApiService implements IExternalApiService {
 
         return response;
     }
+
+
 
     private String buildUrl(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
         ItineraryProperties.ApiProperty externalApiProperty =
