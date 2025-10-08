@@ -2,8 +2,8 @@ package com.codrshi.smart_itinerary_planner.controller;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
-import com.codrshi.smart_itinerary_planner.dto.IItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.GetItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;

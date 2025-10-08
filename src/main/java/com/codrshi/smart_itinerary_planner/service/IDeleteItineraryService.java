@@ -1,7 +1,7 @@
 package com.codrshi.smart_itinerary_planner.service;
 
-import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IDeleteItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
 
 public interface IDeleteItineraryService {
     void deleteItinerary(String itineraryId);

@@ -1,10 +1,7 @@
 package com.codrshi.smart_itinerary_planner.util.mapper.implementation;
 
-import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserRefDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.UserRefDTO;
 import com.codrshi.smart_itinerary_planner.entity.ItineraryHistory;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryHistoryMapper;

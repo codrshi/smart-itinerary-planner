@@ -3,12 +3,11 @@ package com.codrshi.smart_itinerary_planner.util.mapper.implementation;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.AttractionDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.OpenTripMapAttractionResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.OpenTripMapAttractionResponseDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.ActivityType;
 import com.codrshi.smart_itinerary_planner.util.CounterManager;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 import java.util.Collections;

@@ -1,8 +1,8 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IDeleteItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;

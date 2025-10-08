@@ -1,9 +1,9 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
 import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
-import com.codrshi.smart_itinerary_planner.dto.IUserLoginResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserRegistrationResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IUserLoginResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IUserRegistrationResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IUserRequestDTO;
 import com.codrshi.smart_itinerary_planner.entity.User;
 import com.codrshi.smart_itinerary_planner.exception.ResourceAlreadyExistException;
 import com.codrshi.smart_itinerary_planner.repository.IUserRepository;

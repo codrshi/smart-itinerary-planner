@@ -1,20 +1,15 @@
 package com.codrshi.smart_itinerary_planner.service;
 
 import com.codrshi.smart_itinerary_planner.BaseTest;
-import com.codrshi.smart_itinerary_planner.controller.ItineraryController;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.LocationDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.TicketMasterEventResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.TicketMasterEventResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.TimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.service.implementation.ExternalApiService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 

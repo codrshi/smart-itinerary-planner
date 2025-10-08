@@ -1,13 +1,9 @@
 package com.codrshi.smart_itinerary_planner.util;
 
-import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
-import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
-import com.codrshi.smart_itinerary_planner.dto.IFilterRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.IGetItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IFilterRequestDTO;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

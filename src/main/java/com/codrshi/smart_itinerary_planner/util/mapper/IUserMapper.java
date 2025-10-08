@@ -1,15 +1,11 @@
 package com.codrshi.smart_itinerary_planner.util.mapper;
 
 import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
-import com.codrshi.smart_itinerary_planner.dto.IUserLoginResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserRegistrationResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.UserLoginResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.UserRegistrationResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.UserLoginResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.UserRegistrationResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.ObjectFactory;
 import org.springframework.security.core.Authentication;
 
 import java.util.Date;

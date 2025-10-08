@@ -1,8 +1,7 @@
 package com.codrshi.smart_itinerary_planner.controller;
 
-import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.dto.IErrorResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ErrorResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IErrorResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.ErrorResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.BadRequestException;
 import com.codrshi.smart_itinerary_planner.exception.BaseException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidCountryException;
@@ -16,7 +15,9 @@ import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.password.CompromisedPasswordException;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -44,7 +46,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -56,7 +58,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler({InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
@@ -71,8 +73,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        System.out.println(ex);
-        return new ResponseEntity<>(errorResponseDTO, ex.getHttpStatus());
+        return ResponseEntity.status(ex.getHttpStatus()).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler(ServletException.class)
@@ -84,8 +85,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        System.out.println(ex);
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler(CompromisedPasswordException.class)
@@ -97,7 +97,7 @@ public class GlobalExceptionHandler {
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler(Exception.class)
@@ -111,6 +111,13 @@ public class GlobalExceptionHandler {
                 .build();
 
         ex.printStackTrace(new PrintStream(System.out));
-        return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(getContentType(request)).body(errorResponseDTO);
+    }
+
+    private MediaType getContentType(HttpServletRequest request) {
+        String acceptHeader = Optional.ofNullable(request.getHeader(HttpHeaders.ACCEPT))
+                .orElse(MediaType.APPLICATION_JSON_VALUE);
+
+        return MediaType.parseMediaType(acceptHeader);
     }
 }

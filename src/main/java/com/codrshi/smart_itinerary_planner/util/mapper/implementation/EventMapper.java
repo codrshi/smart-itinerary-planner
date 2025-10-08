@@ -3,7 +3,7 @@ package com.codrshi.smart_itinerary_planner.util.mapper.implementation;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.EventDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.TicketMasterEventResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.TicketMasterEventResponseDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.ActivityType;
 import com.codrshi.smart_itinerary_planner.util.CounterManager;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;

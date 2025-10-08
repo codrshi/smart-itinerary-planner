@@ -1,7 +1,6 @@
 package com.codrshi.smart_itinerary_planner.util.annotation;
 
-import com.codrshi.smart_itinerary_planner.util.DateUtils;
-import com.codrshi.smart_itinerary_planner.util.LocationValidator;
+import com.codrshi.smart_itinerary_planner.util.annotation.implementation.LocationValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 

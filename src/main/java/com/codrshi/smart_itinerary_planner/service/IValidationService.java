@@ -1,11 +1,8 @@
 package com.codrshi.smart_itinerary_planner.service;
 
 import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
-import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.IFilterRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.IGetItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.IPatchDataDTO;
-import com.codrshi.smart_itinerary_planner.dto.IPatchItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IFilterRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IPatchItineraryRequestDTO;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;

@@ -1,15 +1,13 @@
 package com.codrshi.smart_itinerary_planner.controller;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserLoginResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.GetItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.PatchItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.PatchItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.request.DeleteItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.request.GetItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.request.PatchItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IDeleteItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;

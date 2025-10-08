@@ -1,15 +1,8 @@
 package com.codrshi.smart_itinerary_planner.service;
 
-import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPatchDataDTO;
-import com.codrshi.smart_itinerary_planner.dto.IPatchItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.PatchItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.entity.Itinerary;
-import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
-import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
 import java.util.Comparator;
 import java.util.List;

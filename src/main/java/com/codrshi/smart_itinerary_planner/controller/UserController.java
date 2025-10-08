@@ -1,10 +1,10 @@
 package com.codrshi.smart_itinerary_planner.controller;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.dto.IUserLoginResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserRegistrationResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.UserLoginRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.UserRegistrationRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IUserLoginResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IUserRegistrationResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.request.UserLoginRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.request.UserRegistrationRequestDTO;
 import com.codrshi.smart_itinerary_planner.service.IUserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

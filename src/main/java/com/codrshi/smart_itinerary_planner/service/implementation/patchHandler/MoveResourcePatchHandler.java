@@ -4,12 +4,10 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.MoveResourcePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import com.codrshi.smart_itinerary_planner.util.ActivityLookup;
-import com.codrshi.smart_itinerary_planner.util.patchCommand.PatchCommandDispatcher;
+import com.codrshi.smart_itinerary_planner.util.patch.PatchCommandDispatcher;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MoveResourcePatchHandler extends PatchHandler<MoveResourcePatchDataDTO> {

@@ -2,11 +2,10 @@ package com.codrshi.smart_itinerary_planner.util.mapper;
 
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
-import com.codrshi.smart_itinerary_planner.dto.IDeleteItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.IItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.GetItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.PatchItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.DeleteItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.PatchItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
 import org.mapstruct.Mapper;

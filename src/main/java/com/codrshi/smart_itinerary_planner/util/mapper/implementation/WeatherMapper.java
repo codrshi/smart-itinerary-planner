@@ -1,6 +1,6 @@
 package com.codrshi.smart_itinerary_planner.util.mapper.implementation;
 
-import com.codrshi.smart_itinerary_planner.dto.implementation.VirtualCrossingWeatherResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.VirtualCrossingWeatherResponseDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.mapper.IWeatherMapper;
 
