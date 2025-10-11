@@ -27,6 +27,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 @Service
 public class CreateItineraryService implements ICreateItineraryService {
@@ -43,17 +46,42 @@ public class CreateItineraryService implements ICreateItineraryService {
     @Autowired
     private LocationUtil locationUtil;
 
+    @Autowired
+    private Executor taskExecutor;
+
     @Override
     public ICreateItineraryResponseDTO createItinerary(ICreateItineraryRequestDTO createItineraryEventDTO) {
 
         ITimePeriodDTO timePeriodDTO = createItineraryEventDTO.getTimePeriod();
         ILocationDTO locationDTO = locationUtil.buildLocation(createItineraryEventDTO.getCity(), createItineraryEventDTO.getCountry());
 
-        ICoordinateDTO coordinateDTO = externalApiService.getOpenStreetMapCoordinate(locationDTO);
-        List<IEventDTO> events = externalApiService.getTicketmasterEvents(locationDTO, timePeriodDTO);
-        List<IAttractionDTO> attractions = externalApiService.getOpenStreetMapAttractions(locationDTO, coordinateDTO);
-        // TODO: Itinerary generation support when weather not available
-        Map<LocalDate, WeatherType> dateToWeatherMap = externalApiService.getVirtualCrossingWeather(timePeriodDTO, coordinateDTO);
+        CompletableFuture<List<IEventDTO>> eventsFuture =
+                CompletableFuture.supplyAsync(() -> externalApiService.getTicketmasterEvents(locationDTO,
+                                                                                             timePeriodDTO), taskExecutor);
+
+        CompletableFuture<ICoordinateDTO> coordinateFuture = CompletableFuture.supplyAsync(
+                () -> externalApiService.getOpenStreetMapCoordinate(locationDTO), taskExecutor);
+
+        CompletableFuture<List<IAttractionDTO>> attractionsFuture =
+                coordinateFuture.thenComposeAsync(coordinateDTO -> CompletableFuture.supplyAsync(
+                        () -> externalApiService.getOpenStreetMapAttractions(locationDTO, coordinateDTO),
+                        taskExecutor));
+
+        CompletableFuture<Map<LocalDate, WeatherType>> weatherFuture =
+                coordinateFuture.thenComposeAsync(coordinateDTO -> CompletableFuture.supplyAsync(
+                        () -> externalApiService.getVirtualCrossingWeather(timePeriodDTO, coordinateDTO),
+                        taskExecutor));
+
+        CompletableFuture.allOf(eventsFuture, attractionsFuture, weatherFuture).join();
+
+        List<IEventDTO> events = eventsFuture.join();
+        List<IAttractionDTO> attractions = attractionsFuture.join();
+        Map<LocalDate, WeatherType> dateToWeatherMap = weatherFuture.join();
+//        ICoordinateDTO coordinateDTO = externalApiService.getOpenStreetMapCoordinate(locationDTO);
+//        List<IEventDTO> events = externalApiService.getTicketmasterEvents(locationDTO, timePeriodDTO);
+//        List<IAttractionDTO> attractions = externalApiService.getOpenStreetMapAttractions(locationDTO, coordinateDTO);
+//
+//        Map<LocalDate, WeatherType> dateToWeatherMap = externalApiService.getVirtualCrossingWeather(timePeriodDTO, coordinateDTO);
 
         validationService.validateExternalApiResponse(events.size(), attractions.size(), dateToWeatherMap.size(),
                                                       DateUtils.countDays(timePeriodDTO));

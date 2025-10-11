@@ -82,6 +82,7 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
                     .activityId(counterManager.nextActivityId())
                     .activityDate(date)
                     .weatherType(dateToWeatherMap.get(date))
+                    .pointOfInterests(new ArrayList<>())
                     .build());
             List<IPointOfInterestDTO> poiList = activityDTO.getPointOfInterests();
 

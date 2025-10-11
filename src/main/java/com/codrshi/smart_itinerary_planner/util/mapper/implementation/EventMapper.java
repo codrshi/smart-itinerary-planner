@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class EventMapper implements IEventMapper {
 
@@ -31,24 +32,45 @@ public class EventMapper implements IEventMapper {
     public IEventDTO mapToEventDTO(TicketMasterEventResponseDTO.Event event) {
         IEventDTO eventDTO = new EventDTO();
 
-        if(event==null)
-            return eventDTO;
+        if (event == null) return eventDTO;
 
-        TicketMasterEventResponseDTO.Venue rawVenue = event.get_embedded().getVenues().get(0);
-        TicketMasterEventResponseDTO.Classification rawClassification = event.getClassifications().get(0);
+        String venue = Optional.ofNullable(event.get_embedded())
+                .map(TicketMasterEventResponseDTO.EmbeddedVenue::getVenues)
+                .filter(v -> !v.isEmpty())
+                .map(v -> v.get(0))
+                .filter(v -> v.getAddress() != null)
+                .map(v -> v.getName() + ", " + v.getAddress().getLine1())
+                .orElse(null);
 
-        LocalDate date = event.getDates().getStart().getLocalDate();
-        String venue = rawVenue.getName() + ", " + rawVenue.getAddress().getLine1();
-        String category = String.join(" / ", rawClassification.getSegment().getName(),
-                                      rawClassification.getGenre().getName(),
-                                      rawClassification.getSubGenre().getName());
+        TicketMasterEventResponseDTO.Classification classification = Optional.ofNullable(event.getClassifications())
+                .filter(c -> !c.isEmpty())
+                .map(c -> c.get(0))
+                .orElse(null);
 
+        boolean isFamilyFriendly = Optional.ofNullable(classification)
+                .map(TicketMasterEventResponseDTO.Classification::isFamily)
+                .orElse(false);
+
+        String category = Optional.ofNullable(classification)
+                .filter(c -> c.getSegment() != null && c.getGenre() != null && c.getSubGenre() != null)
+                .map(c -> String.join(" / ",
+                                      c.getSegment().getName(),
+                                      c.getGenre().getName(),
+                                      c.getSubGenre().getName()))
+                .orElse(null);
+
+        LocalDate date = Optional.ofNullable(event.getDates())
+                .map(TicketMasterEventResponseDTO.Dates::getStart)
+                .map(TicketMasterEventResponseDTO.Start::getLocalDate)
+                .orElse(null);
+
+        // Build DTO
         eventDTO.setPoiId(counterManager.nextPoiId());
         eventDTO.setName(event.getName());
         eventDTO.setCategory(category);
         eventDTO.setVenue(venue);
         eventDTO.setDate(date);
-        eventDTO.setFamilyFriendly(rawClassification.isFamily());
+        eventDTO.setFamilyFriendly(isFamilyFriendly);
         eventDTO.setActivityType(ActivityType.EVENT);
         eventDTO.setNote(Constant.EMPTY_NOTE);
 

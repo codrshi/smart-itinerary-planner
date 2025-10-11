@@ -49,6 +49,7 @@ public class CreateItineraryEventListener {
     @EventListener
     @Async
     public void handleCreateItineraryEvent(CreateItineraryEvent event) {
+        // TODO: add to sync flow
         ICreateItineraryEventDTO createItineraryEventDTO = event.getCreateItineraryEventDTO();
 
         List<IEventDTO> events = createItineraryEventDTO.getEvents();

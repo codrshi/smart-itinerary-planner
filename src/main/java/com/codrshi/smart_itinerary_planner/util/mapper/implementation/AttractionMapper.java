@@ -9,9 +9,11 @@ import com.codrshi.smart_itinerary_planner.util.CounterManager;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class AttractionMapper implements IAttractionMapper {
 
@@ -31,11 +33,13 @@ public class AttractionMapper implements IAttractionMapper {
     private IAttractionDTO mapToAttractionDTO(OpenTripMapAttractionResponseDTO.Feature feature) {
         IAttractionDTO attractionDTO = new AttractionDTO();
 
-        if(feature == null) {
+        if(feature == null || feature.getProperties() == null)  {
             return attractionDTO;
         }
 
-        List<String> kinds = Arrays.stream(feature.getProperties().getKinds().split(",")).toList();
+        List<String> kinds = Optional.ofNullable(feature.getProperties().getKinds())
+                .map(k -> Arrays.stream(k.split(",")).toList())
+                .orElseGet(ArrayList::new);
 
         attractionDTO.setPoiId(counterManager.nextPoiId());
         attractionDTO.setName(feature.getProperties().getName());
