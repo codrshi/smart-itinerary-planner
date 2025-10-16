@@ -2,16 +2,12 @@ spring:
   application:
     name: smart-itinerary-planner
   profiles:
-    active: dev
+    active: ${ACTIVE_PROFILE:default}
   data:
     web:
       pageable:
         default-page-size: 10
         max-page-size: 40
-
-logging:
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} [%X{X-Trace-Id}] - %msg%n"
 
 resilience4j:
   timeLimiter:

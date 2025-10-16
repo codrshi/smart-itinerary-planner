@@ -1,7 +1,7 @@
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/smart-itinerary-planner
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017/smart-itinerary-planner
   devtools:
     restart:
       enabled: true
@@ -20,3 +20,5 @@ logging:
         web: DEBUG
         boot: DEBUG
         data: DEBUG
+  pattern:
+    console: "%cyan(%d{HH:mm:ss}) %highlight([%thread]) %highlight(%-5level) %green(%logger{36}) %magenta([%X{X-Trace-Id}]) - %msg%n"
