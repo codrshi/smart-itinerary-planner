@@ -1,0 +1,8 @@
+Hi %s,
+
+Please find below the summarized itinerary for your trip to %s from %s to %s:
+
+%s
+
+Best Regards,
+Smart Itinerary Planner

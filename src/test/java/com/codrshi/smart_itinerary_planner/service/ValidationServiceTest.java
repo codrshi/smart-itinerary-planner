@@ -39,7 +39,7 @@ public class ValidationServiceTest extends BaseTest {
                 IllegalArgumentException.class,
                 () -> validationService.validateItineraryId(invalidId, HttpStatus.BAD_REQUEST)
         );
-        assertEquals(Constant.ERR_MSG_MISSING_ITINERARY_ID, ex.getMessage());
+        assertEquals(String.format(Constant.ERR_MSG_MISSING_FIELD, "itineraryId"), ex.getMessage());
     }
 
     @DisplayName("Should throw InvalidItineraryIdFormatException for IDs not matching regex")

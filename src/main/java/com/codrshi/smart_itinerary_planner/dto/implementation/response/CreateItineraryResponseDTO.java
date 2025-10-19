@@ -12,5 +12,6 @@ public class CreateItineraryResponseDTO implements ICreateItineraryResponseDTO {
     private String destination;
     private ITimePeriodDTO timePeriodDTO;
     private String itineraryId;
-    private ItineraryStatus itineraryStatus;
+    private int eventsFound;
+    private int attractionsFound;
 }

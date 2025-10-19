@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
+import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.dto.implementation.AttractionDTO;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
@@ -51,14 +53,20 @@ public class FactoryUtil {
 
     }
 
-    public <T> T copy(T object, Class<T> clazz) throws JsonProcessingException {
-        return objectMapper.readValue(objectMapper.writeValueAsString(object), clazz);
+    public static Map<LocalDate, WeatherType> defaultDateToWeatherMap(ITimePeriodDTO timePeriodDTO) {
+        Map<LocalDate, WeatherType> response = new HashMap<>();
+
+        LocalDate startDate = timePeriodDTO.getStartDate();
+        LocalDate endDate = timePeriodDTO.getEndDate();
+
+        for(LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate=currentDate.plusDays(1)) {
+            response.put(currentDate, WeatherType.TYPE_0);
+        }
+
+        return response;
     }
 
-    public static IPointOfInterestDTO copyPoi(IPointOfInterestDTO poi) {
-        return switch (poi.getActivityType()) {
-            case ATTRACTION -> new AttractionDTO((IAttractionDTO) poi);
-            case EVENT     -> new EventDTO((IEventDTO) poi);
-        };
+    public <T> T copy(T object, Class<T> clazz) throws JsonProcessingException {
+        return objectMapper.readValue(objectMapper.writeValueAsString(object), clazz);
     }
 }

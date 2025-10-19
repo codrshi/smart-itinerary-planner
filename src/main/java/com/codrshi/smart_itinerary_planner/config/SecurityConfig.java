@@ -1,23 +1,14 @@
 package com.codrshi.smart_itinerary_planner.config;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.controller.UserController;
 import com.codrshi.smart_itinerary_planner.util.ErrorResponseBuilder;
-import com.codrshi.smart_itinerary_planner.util.RequestContext;
-import com.codrshi.smart_itinerary_planner.util.securityFilter.ExceptionTranslatorFilter;
-import com.codrshi.smart_itinerary_planner.util.ItineraryAuthenticationProvider;
-import com.codrshi.smart_itinerary_planner.service.implementation.ItineraryUserDetailsService;
-import com.codrshi.smart_itinerary_planner.util.securityFilter.JwtTokenValidatorFilter;
-import com.codrshi.smart_itinerary_planner.util.securityFilter.TraceIdHeaderFilter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import jakarta.servlet.http.HttpServletRequest;
+import com.codrshi.smart_itinerary_planner.security.filter.ExceptionTranslatorFilter;
+import com.codrshi.smart_itinerary_planner.security.ItineraryAuthenticationProvider;
+import com.codrshi.smart_itinerary_planner.security.filter.JwtTokenValidatorFilter;
+import com.codrshi.smart_itinerary_planner.security.filter.TraceIdHeaderFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.hateoas.MediaTypes;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
@@ -33,16 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import java.io.IOException;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
-
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Configuration
 @EnableWebSecurity
@@ -84,11 +66,6 @@ public class SecurityConfig {
     @Bean
     public CompromisedPasswordChecker compromisedPasswordChecker() {
         return new HaveIBeenPwnedRestApiPasswordChecker();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return new ItineraryUserDetailsService();
     }
 
     @Bean

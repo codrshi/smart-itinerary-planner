@@ -4,6 +4,8 @@ import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.CreateItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.DeleteItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
@@ -19,13 +21,10 @@ import java.util.List;
 @Mapper(componentModel = "spring", imports = {DateUtils.class, Instant.class, WeatherType.class})
 public interface IItineraryMapper {
 
-    @Mapping(target = "totalDays", expression = "java(DateUtils.countDays(event.getTimePeriod()))")
-    //@Mapping(target = "createdAt", expression = "java(Instant.now())")
-    //@Mapping(target = "updatedAt", expression = "java(Instant.now())")
-    @Mapping(target = "createdBy", expression = "java(event.getUserRef())")
-    @Mapping(target = "updatedBy", expression = "java(event.getUserRef())")
-    @Mapping(target = "activities", source = "activities")
-    Itinerary mapToItineraryEntity(ICreateItineraryEventDTO event, List<IActivityDTO> activities);
+    @Mapping(target = "eventsFound", source = "eventsFound")
+    @Mapping(target = "attractionsFound", source = "attractionsFound")
+    @Mapping(target = "destination", expression = "java(itinerary.getLocation().getDestination())")
+    CreateItineraryResponseDTO mapToCreateItineraryResponseDTO(Itinerary itinerary, int eventsFound, int attractionsFound);
 
     @Mapping(target = "destination", expression = "java(itinerary.getLocation().getDestination())")
     GetItineraryResponseDTO mapToGetItineraryResponseDTO(Itinerary itinerary);
@@ -41,6 +40,7 @@ public interface IItineraryMapper {
 
         return responseDTO;
     }
+
 //    @ObjectFactory
 //    default IItineraryResponseDTO getItineraryResponseDTO() {
 //        return new GetItineraryResponseDTO();

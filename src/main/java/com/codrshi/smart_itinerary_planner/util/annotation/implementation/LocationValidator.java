@@ -16,4 +16,8 @@ public class LocationValidator implements ConstraintValidator<ValidLocation, Str
 
         return location.matches(LOCATION_REGEX);
     }
+
+    public static boolean isValid(String location) {
+        return location.matches(LOCATION_REGEX);
+    }
 }

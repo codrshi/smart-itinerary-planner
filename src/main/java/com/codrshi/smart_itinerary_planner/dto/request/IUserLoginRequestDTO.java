@@ -1,6 +1,6 @@
 package com.codrshi.smart_itinerary_planner.dto.request;
 
-public interface IUserRequestDTO {
+public interface IUserLoginRequestDTO {
     String getUsername();
 
     void setUsername(String username);

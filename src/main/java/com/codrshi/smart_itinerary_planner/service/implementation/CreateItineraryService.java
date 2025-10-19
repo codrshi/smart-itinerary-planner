@@ -1,25 +1,24 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
-import com.codrshi.smart_itinerary_planner.async.event.CreateItineraryEvent;
+import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.CreateItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.CreateItineraryEventDTO;
+import com.codrshi.smart_itinerary_planner.entity.Itinerary;
+import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;
 import com.codrshi.smart_itinerary_planner.service.IExternalApiService;
 import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
 import com.codrshi.smart_itinerary_planner.util.ItineraryIdGenerator;
 import com.codrshi.smart_itinerary_planner.util.LocationUtil;
-import com.codrshi.smart_itinerary_planner.common.enums.ItineraryStatus;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
+import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 @Service
 public class CreateItineraryService implements ICreateItineraryService {
@@ -44,10 +42,19 @@ public class CreateItineraryService implements ICreateItineraryService {
     private IValidationService validationService;
 
     @Autowired
+    private ConstructActivitiesService constructActivitiesService;
+
+    @Autowired
     private LocationUtil locationUtil;
 
     @Autowired
     private Executor taskExecutor;
+
+    @Autowired
+    private ItineraryRepository itineraryRepository;
+
+    @Autowired
+    private IItineraryMapper itineraryMapper;
 
     @Override
     public ICreateItineraryResponseDTO createItinerary(ICreateItineraryRequestDTO createItineraryEventDTO) {
@@ -55,6 +62,7 @@ public class CreateItineraryService implements ICreateItineraryService {
         ITimePeriodDTO timePeriodDTO = createItineraryEventDTO.getTimePeriod();
         ILocationDTO locationDTO = locationUtil.buildLocation(createItineraryEventDTO.getCity(), createItineraryEventDTO.getCountry());
 
+        //TODO: handle error thrown by CompletableFuture
         CompletableFuture<List<IEventDTO>> eventsFuture =
                 CompletableFuture.supplyAsync(() -> externalApiService.getTicketmasterEvents(locationDTO,
                                                                                              timePeriodDTO), taskExecutor);
@@ -86,41 +94,30 @@ public class CreateItineraryService implements ICreateItineraryService {
         validationService.validateExternalApiResponse(events.size(), attractions.size(), dateToWeatherMap.size(),
                                                       DateUtils.countDays(timePeriodDTO));
 
+        List<IActivityDTO> activities = constructActivitiesService.constructActivities(events, attractions,
+                                                                                       dateToWeatherMap);
+
+        Itinerary itinerary = constructItinerary(locationDTO, timePeriodDTO, activities);
+        Itinerary savedItinerary = itineraryRepository.save(itinerary);
+
+        if(savedItinerary == null ||savedItinerary.getDocId() == null){
+            throw new RuntimeException("Failed to persist itinerary.");
+        }
+
+        return itineraryMapper.mapToCreateItineraryResponseDTO(savedItinerary, events.size(), attractions.size());
+    }
+
+    private Itinerary constructItinerary(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO,
+                                    List<IActivityDTO> activities) {
         String itineraryId = ItineraryIdGenerator.generateItineraryId(locationDTO.getCountryCode());
-
-        publishCreateItineraryEvent(locationDTO, timePeriodDTO, itineraryId, events, attractions, dateToWeatherMap);
-
-        ICreateItineraryResponseDTO createItineraryResponseDTO = createResponseDTO(
-                locationDTO, timePeriodDTO, itineraryId);
-
-        return createItineraryResponseDTO;
-    }
-
-    private ICreateItineraryResponseDTO createResponseDTO(ILocationDTO locationDTO,
-                                                                              ITimePeriodDTO timePeriodDTO,
-                                                                              String itineraryId) {
-        ICreateItineraryResponseDTO createItineraryResponseDTO = new CreateItineraryResponseDTO();
-        createItineraryResponseDTO.setDestination(locationDTO.getDestination());
-        createItineraryResponseDTO.setTimePeriodDTO(timePeriodDTO);
-        createItineraryResponseDTO.setItineraryId(itineraryId);
-        createItineraryResponseDTO.setItineraryStatus(ItineraryStatus.STARTED);
-        return createItineraryResponseDTO;
-    }
-
-
-    private void publishCreateItineraryEvent(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO,
-                                             String itineraryId, List<IEventDTO> events,
-                                             List<IAttractionDTO> attractions,
-                                             Map<LocalDate, WeatherType> dateToWeatherMap) {
-
         String userRef = RequestContext.getCurrentContext().getUsername();
 
-        ICreateItineraryEventDTO createItineraryEventDTO =
-                CreateItineraryEventDTO.builder().location(locationDTO).timePeriod(timePeriodDTO)
-                        .itineraryId(itineraryId).events(events).attractions(attractions)
-                        .dateToWeatherMap(dateToWeatherMap).userRef(userRef).build();
-
-        CreateItineraryEvent createItineraryEvent = new CreateItineraryEvent(this, createItineraryEventDTO);
-        publisher.publishEvent(createItineraryEvent);
+        return Itinerary.builder()
+                .itineraryId(itineraryId)
+                .location(locationDTO)
+                .timePeriod(timePeriodDTO)
+                .totalDays(DateUtils.countDays(timePeriodDTO))
+                .activities(activities)
+                .userRef(userRef).build();
     }
 }

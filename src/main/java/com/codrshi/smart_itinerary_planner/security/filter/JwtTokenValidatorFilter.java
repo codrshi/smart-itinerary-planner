@@ -1,15 +1,14 @@
-package com.codrshi.smart_itinerary_planner.util.securityFilter;
+package com.codrshi.smart_itinerary_planner.security.filter;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
-import com.codrshi.smart_itinerary_planner.service.implementation.JwtService;
+import com.codrshi.smart_itinerary_planner.security.JwtService;
+import com.codrshi.smart_itinerary_planner.security.Principle;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,12 +38,15 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
             jwt = jwt.substring(7);
             Claims claims = jwtService.parseToken(jwt);
             String username = claims.getSubject();
+            String email = claims.get(Constant.EMAIL, String.class);
             String authorities = claims.get(Constant.AUTHORITIES, String.class);
 
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username, null,
-                                                                                    AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                                                new Principle(username, email),
+                                                null,
+                                                AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         catch (Exception e){
             throw new BadCredentialsException("Invalid or expired authentication token.");

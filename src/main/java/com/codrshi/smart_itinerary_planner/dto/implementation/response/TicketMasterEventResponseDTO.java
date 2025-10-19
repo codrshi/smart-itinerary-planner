@@ -3,6 +3,7 @@ package com.codrshi.smart_itinerary_planner.dto.implementation.response;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,7 +30,7 @@ public class TicketMasterEventResponseDTO {
 
     @Data
     public static class Start {
-        private LocalDate localDate;
+        private LocalDateTime dateTime;
     }
 
     @Data

@@ -13,6 +13,7 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.response.VirtualCr
 import com.codrshi.smart_itinerary_planner.exception.QuotaExceededException;
 import com.codrshi.smart_itinerary_planner.service.IExternalApiService;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
+import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.ICoordinateMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;
@@ -79,6 +80,8 @@ public class ExternalApiService implements IExternalApiService {
             throw new HttpServerErrorException(null);
         }
 
+        System.out.println("getOpenStreetMapCoordinate:");
+        System.out.println(response.getBody());
         return coordinateMapper.mapToCoordinateDTO(response.getBody());
 
     }
@@ -96,6 +99,8 @@ public class ExternalApiService implements IExternalApiService {
             throw new HttpServerErrorException(null);
         }
 
+        System.out.println("getTicketmasterEvents:");
+        System.out.println(response.getBody());
         return eventMapper.mapToEventDTO(response.getBody());
     }
 
@@ -112,6 +117,8 @@ public class ExternalApiService implements IExternalApiService {
             throw new HttpServerErrorException(null);
         }
 
+        System.out.println("getOpenStreetMapAttractions:");
+        System.out.println(response.getBody());
         return attractionMapper.mapToAttractionDTO(response.getBody());
     }
 
@@ -131,25 +138,16 @@ public class ExternalApiService implements IExternalApiService {
             throw new HttpServerErrorException(null);
         }
 
+        System.out.println("getVirtualCrossingWeather:");
+        System.out.println(response.getBody());
         return weatherMapper.mapDateToWeather(response.getBody());
     }
 
     public Map<LocalDate, WeatherType> getVirtualCrossingWeatherFallback(ITimePeriodDTO timePeriodDTO,
                                                                          ICoordinateDTO coordinateDTO, Throwable ex) {
 
-        Map<LocalDate, WeatherType> response = new HashMap<>();
-
-        LocalDate startDate = timePeriodDTO.getStartDate();
-        LocalDate endDate = timePeriodDTO.getEndDate();
-
-        for(LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate=currentDate.plusDays(1)) {
-            response.put(currentDate, WeatherType.TYPE_0);
-        }
-
-        return response;
+        return FactoryUtil.defaultDateToWeatherMap(timePeriodDTO);
     }
-
-
 
     private String buildUrl(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
         ItineraryProperties.ApiProperty externalApiProperty =

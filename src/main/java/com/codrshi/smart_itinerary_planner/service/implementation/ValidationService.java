@@ -16,6 +16,7 @@ import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.ActivityUtil;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
+import com.codrshi.smart_itinerary_planner.util.annotation.implementation.LocationValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class ValidationService implements IValidationService {
     @Override
     public void validateItineraryId(String itineraryId, HttpStatus httpStatus) {
         if(itineraryId == null || itineraryId.isBlank()) {
-            throw new IllegalArgumentException(Constant.ERR_MSG_MISSING_ITINERARY_ID);
+            throw new IllegalArgumentException(String.format(Constant.ERR_MSG_MISSING_FIELD, "itineraryId"));
         }
 
         if(!itineraryId.matches(Constant.ITINERARY_ID_REGEX)) {
@@ -109,6 +110,16 @@ public class ValidationService implements IValidationService {
         }
     }
 
+    public void validateLocation(String location, String locationType) {
+        if(location == null || location.isBlank()) {
+            throw new BadRequestException(String.format(Constant.ERR_MSG_MISSING_FIELD, locationType));
+        }
+
+        if(!LocationValidator.isValid(location)) {
+            throw new BadRequestException(String.format(Constant.ERR_MSG_INVALID_LOCATION, locationType));
+        }
+    }
+
     private void validateDateRangeCriteria(DateRangeCriteria dateRangeCriteria, LocalDate startDate, LocalDate endDate) {
         if(dateRangeCriteria != null && (startDate == null || endDate == null)) {
             throw new BadRequestException(ErrorCode.MISSING_DATE_WHEN_CRITERIA_PROVIDED);
@@ -120,6 +131,4 @@ public class ValidationService implements IValidationService {
             throw new InvalidDateRangeException(HttpStatus.BAD_REQUEST, startDate, endDate);
         }
     }
-
-
 }

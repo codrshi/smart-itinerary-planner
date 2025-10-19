@@ -14,8 +14,4 @@ public interface IEventDTO extends IPointOfInterestDTO {
     boolean isFamilyFriendly();
 
     void setFamilyFriendly(boolean familyFriendly);
-
-    String getCategory();
-
-    void setCategory(String category);
 }

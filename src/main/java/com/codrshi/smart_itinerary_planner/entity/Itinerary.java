@@ -4,6 +4,7 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.dto.IUserRefDTO;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@Builder
 @CompoundIndex(name = "unique_itineraryId_per_user", def = "{'itineraryId': 1, 'userRef': 1}")
 public class Itinerary extends Audit{
     @Id

@@ -4,6 +4,20 @@ spring:
       pageable:
         default-page-size: 10
         max-page-size: 40
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: sparc.expenses@gmail.com
+    password: dummyKey
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  ai:
+    openai:
+      api-key: dummyKey
 
 itinerary:
   async:

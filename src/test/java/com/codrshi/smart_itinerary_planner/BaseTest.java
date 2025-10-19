@@ -5,9 +5,9 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.EventDTO;
-import com.codrshi.smart_itinerary_planner.service.IUserService;
+import com.codrshi.smart_itinerary_planner.security.Principle;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
-import com.codrshi.smart_itinerary_planner.service.implementation.JwtService;
+import com.codrshi.smart_itinerary_planner.security.JwtService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -34,6 +34,8 @@ import java.util.stream.Stream;
 @Import(TestConfig.class)
 public class BaseTest {
 
+    public static final String DUMMY_EMAIL = "dummy@gmail.com";
+
     @MockitoBean
     protected RestTemplate restTemplate;
 
@@ -49,7 +51,7 @@ public class BaseTest {
     @BeforeAll
     public static void setup() {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                Constant.SYSTEM_USER, null, new ArrayList<>());
+                new Principle(Constant.SYSTEM_USER, DUMMY_EMAIL), null, new ArrayList<>());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 

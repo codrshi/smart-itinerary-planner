@@ -17,6 +17,8 @@ import com.codrshi.smart_itinerary_planner.util.mapper.implementation.Coordinate
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.EventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.ItineraryHistoryMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.WeatherMapper;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -32,12 +34,8 @@ import java.util.concurrent.Executor;
 
 @Configuration
 @EnableMongoAuditing(auditorAwareRef = "auditorAware")
-@EnableAsync
 @EnableConfigurationProperties(ItineraryProperties.class)
 public class AppConfig {
-
-    @Autowired
-    private ItineraryProperties itineraryProperties;
 
     @Bean
     public IItineraryHistoryMapper itineraryHistoryMapper() {
@@ -97,16 +95,5 @@ public class AppConfig {
     @Bean
     public AuditorAware<String> auditorAware() {
         return () -> Optional.of(RequestContext.getCurrentContext().getUsername());
-    }
-
-    @Bean
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(itineraryProperties.getAsync().getCorePoolSize());
-        executor.setMaxPoolSize(itineraryProperties.getAsync().getMaxPoolSize());
-        executor.setQueueCapacity(itineraryProperties.getAsync().getQueueCapacity());
-        executor.setThreadNamePrefix(Constant.THREAD_PREFIX);
-        executor.initialize();
-        return executor;
     }
 }

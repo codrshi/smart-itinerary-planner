@@ -1,4 +1,4 @@
-package com.codrshi.smart_itinerary_planner.util.securityFilter;
+package com.codrshi.smart_itinerary_planner.security.filter;
 
 import com.codrshi.smart_itinerary_planner.util.ErrorResponseBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;

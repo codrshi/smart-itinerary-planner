@@ -56,9 +56,10 @@ public class ItineraryController {
     @Autowired
     private PagedResourcesAssembler<IItineraryResponseDTO> pagedResourcesAssembler;
 
-    // TODO: internationalization support
+    // TODO: i18n support
     // TODO: Scheduler task to purge itineraries after a certain period from creation.
     // TODO: Rate limiting using redis
+    // TODO: Add @Retryable
     @PostMapping
     public ResponseEntity<EntityModel<ICreateItineraryResponseDTO>> createItinerary(@Valid @RequestBody ICreateItineraryRequestDTO createItineraryEventDTO) {
         ICreateItineraryResponseDTO createItineraryResponseDTO = createItineraryService.createItinerary(createItineraryEventDTO);
@@ -67,7 +68,7 @@ public class ItineraryController {
                                                                           linkTo(methodOn(ItineraryController.class).getItinerary(createItineraryResponseDTO.getItineraryId())).withRel("print itinerary"),
                                                                                 linkTo(methodOn(ItineraryController.class).getItineraries(null,null)).withRel("print itineraries"));
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(responseModel);
+        return ResponseEntity.status(HttpStatus.OK).body(responseModel);
     }
 
     @GetMapping(Constant.GET_ENDPOINT)

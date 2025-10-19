@@ -12,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EventMapper implements IEventMapper {
 
@@ -51,23 +54,27 @@ public class EventMapper implements IEventMapper {
                 .map(TicketMasterEventResponseDTO.Classification::isFamily)
                 .orElse(false);
 
-        String category = Optional.ofNullable(classification)
-                .filter(c -> c.getSegment() != null && c.getGenre() != null && c.getSubGenre() != null)
-                .map(c -> String.join(" / ",
-                                      c.getSegment().getName(),
-                                      c.getGenre().getName(),
-                                      c.getSubGenre().getName()))
-                .orElse(null);
+        List<String> categories = Stream.of(
+                        Optional.ofNullable(classification).map(TicketMasterEventResponseDTO.Classification::getSegment).orElse(null),
+                        Optional.ofNullable(classification).map(TicketMasterEventResponseDTO.Classification::getGenre).orElse(null),
+                        Optional.ofNullable(classification).map(TicketMasterEventResponseDTO.Classification::getSubGenre).orElse(null)
+                )
+                .filter(Objects::nonNull)
+                .map(c -> c.getName())
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
+        //TODO: support for dateTime
         LocalDate date = Optional.ofNullable(event.getDates())
                 .map(TicketMasterEventResponseDTO.Dates::getStart)
-                .map(TicketMasterEventResponseDTO.Start::getLocalDate)
+                .map(TicketMasterEventResponseDTO.Start::getDateTime)
+                .map(l -> l.toLocalDate())
                 .orElse(null);
 
         // Build DTO
         eventDTO.setPoiId(counterManager.nextPoiId());
         eventDTO.setName(event.getName());
-        eventDTO.setCategory(category);
+        eventDTO.setCategory(categories);
         eventDTO.setVenue(venue);
         eventDTO.setDate(date);
         eventDTO.setFamilyFriendly(isFamilyFriendly);

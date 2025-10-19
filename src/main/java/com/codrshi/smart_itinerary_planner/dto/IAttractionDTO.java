@@ -7,8 +7,4 @@ import java.util.List;
 
 @JsonDeserialize(as = AttractionDTO.class)
 public interface IAttractionDTO extends IPointOfInterestDTO {
-
-    List<String> getKinds();
-
-    void setKinds(List<String> kinds);
 }

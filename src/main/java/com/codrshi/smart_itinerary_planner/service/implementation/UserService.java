@@ -1,13 +1,16 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
 import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
+import com.codrshi.smart_itinerary_planner.dto.request.IUserRegistrationRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IUserLoginResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IUserRegistrationResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.request.IUserRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IUserLoginRequestDTO;
 import com.codrshi.smart_itinerary_planner.entity.User;
 import com.codrshi.smart_itinerary_planner.exception.ResourceAlreadyExistException;
 import com.codrshi.smart_itinerary_planner.repository.IUserRepository;
+import com.codrshi.smart_itinerary_planner.security.JwtService;
 import com.codrshi.smart_itinerary_planner.service.IUserService;
+import com.codrshi.smart_itinerary_planner.security.Principle;
 import com.codrshi.smart_itinerary_planner.util.mapper.IUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class UserService implements IUserService {
@@ -45,14 +49,16 @@ public class UserService implements IUserService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private ValidationService validationService;
+
     @Override
-    public IUserRegistrationResponseDTO createUser(IUserRequestDTO userRequestDTO) {
+    public IUserRegistrationResponseDTO createUser(IUserRegistrationRequestDTO userRequestDTO) {
         String username = userRequestDTO.getUsername();
+        String email = userRequestDTO.getEmail();
         String password = userRequestDTO.getPassword();
 
-        userRepository.findByUsername(username).ifPresent(user -> {
-            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "User " + username);
-        });
+        checkIfExistingUser(username, email);
 
         compromisedPasswordChecker.check(password);
         User user = buildUser(username, password);
@@ -66,12 +72,12 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public IUserLoginResponseDTO authenticate(IUserRequestDTO userRequestDTO) {
+    public IUserLoginResponseDTO authenticate(IUserLoginRequestDTO userRequestDTO) {
         String username = userRequestDTO.getUsername();
         String password = userRequestDTO.getPassword();
 
-        UsernamePasswordAuthenticationToken authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(username,
-                password);
+        UsernamePasswordAuthenticationToken authenticationRequest = UsernamePasswordAuthenticationToken.unauthenticated(
+                new Principle(username, ""), password);
 
         Authentication authentication = authenticationManager.authenticate(authenticationRequest);
 
@@ -94,5 +100,17 @@ public class UserService implements IUserService {
         user.setUpdatedBy(username);
 
         return user;
+    }
+
+    private void checkIfExistingUser(String username, String email) {
+        List<User> existingUsers = userRepository.findByUsernameOrEmail(username, email);
+
+        existingUsers.stream().filter(user -> user.getUsername().equals(username)).findAny().ifPresent(user -> {
+            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "User " + username);
+        });
+
+        existingUsers.stream().filter(user -> user.getEmail().equals(email)).findAny().ifPresent(user -> {
+            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "Email " + username);
+        });
     }
 }

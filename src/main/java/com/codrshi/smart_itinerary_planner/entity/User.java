@@ -17,6 +17,7 @@ public class User extends Audit{
     @Id
     private String docId;
     private String username;
+    private String email;
     private String password;
     private List<UserRole> roles;
 }

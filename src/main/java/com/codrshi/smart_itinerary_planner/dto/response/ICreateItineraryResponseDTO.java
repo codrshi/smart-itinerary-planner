@@ -10,8 +10,11 @@ public interface ICreateItineraryResponseDTO {
     String getItineraryId();
     void setItineraryId(String itineraryId);
 
-    ItineraryStatus getItineraryStatus();
-    void setItineraryStatus(ItineraryStatus itineraryStatus);
+    int getEventsFound();
+    void setEventsFound(int eventsFound);
+
+    int getAttractionsFound();
+    void setAttractionsFound(int attractionsFound);
 
     ITimePeriodDTO getTimePeriodDTO();
     void setTimePeriodDTO(ITimePeriodDTO timePeriodDTO);

@@ -1,0 +1,8 @@
+Below is the user's trip details in JSON format below. Each entry represents an activity planned on a specific date, including the weather, optional user notes, and a list of points of interest (POIs).
+
+Each POI has a name, an optional note from the user, and one or more categories such as monument, restaurant, concert, etc.
+
+Using this data, generate a concise and engaging summary of the trip that can be included directly in an email body (no greeting or signature).
+
+Trip data:
+{{activitiesJson}}

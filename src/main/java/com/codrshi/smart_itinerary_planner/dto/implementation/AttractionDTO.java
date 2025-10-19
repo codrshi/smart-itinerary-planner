@@ -16,19 +16,9 @@ import java.util.List;
 public class AttractionDTO implements IAttractionDTO {
     private String poiId;
     private String name;
+    //TODO: remove date field
     private LocalDate date;
     private ActivityType activityType;
-    private List<String> kinds;
+    private List<String> category;
     private String note;
-
-    public AttractionDTO(IAttractionDTO other) {
-        this.poiId = other.getPoiId();
-        this.name = other.getName();
-        this.date = other.getDate();
-        this.activityType = other.getActivityType();
-        this.kinds = other.getKinds() != null
-                ? new ArrayList<>(other.getKinds())
-                : null;
-        this.note = other.getNote();
-    }
 }

@@ -1,12 +1,11 @@
 package com.codrshi.smart_itinerary_planner.util;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.security.Principle;
 import org.slf4j.MDC;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Optional;
 
 public class RequestContext {
 
@@ -33,12 +32,25 @@ public class RequestContext {
     }
 
     public String getUsername() {
+        Principle principle = getPrinciple();
+
+        return principle == null || principle.username() == null? Constant.SYSTEM_USER: principle.username();
+    }
+
+    public String getEmail() {
+        Principle principle = getPrinciple();
+
+        return principle == null || principle.email() == null? null: principle.email();
+    }
+
+    private Principle getPrinciple() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication==null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            return Constant.SYSTEM_USER;
+            return null;
         }
 
-        return authentication.getName();
+        return (Principle) authentication.getPrincipal();
     }
+
 }

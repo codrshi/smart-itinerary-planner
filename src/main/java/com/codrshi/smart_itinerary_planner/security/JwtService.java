@@ -1,4 +1,4 @@
-package com.codrshi.smart_itinerary_planner.service.implementation;
+package com.codrshi.smart_itinerary_planner.security;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
@@ -33,8 +33,11 @@ public class JwtService {
 
     public String generateToken(Authentication authentication, Instant now) {
 
+        Principle principle = (Principle) authentication.getPrincipal();
+
         return Jwts.builder().subject(authentication.getName())
-                .claim(Constant.USERNAME, authentication.getName())
+                .claim(Constant.USERNAME, principle.username())
+                .claim(Constant.EMAIL, principle.email())
                 .claim(Constant.AUTHORITIES, authentication.getAuthorities().stream()
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(",")))

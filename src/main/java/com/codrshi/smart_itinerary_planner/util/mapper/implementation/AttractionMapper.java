@@ -37,13 +37,13 @@ public class AttractionMapper implements IAttractionMapper {
             return attractionDTO;
         }
 
-        List<String> kinds = Optional.ofNullable(feature.getProperties().getKinds())
+        List<String> categories = Optional.ofNullable(feature.getProperties().getKinds())
                 .map(k -> Arrays.stream(k.split(",")).toList())
                 .orElseGet(ArrayList::new);
 
         attractionDTO.setPoiId(counterManager.nextPoiId());
         attractionDTO.setName(feature.getProperties().getName());
-        attractionDTO.setKinds(kinds);
+        attractionDTO.setCategory(categories);
         attractionDTO.setActivityType(ActivityType.ATTRACTION);
         attractionDTO.setNote(Constant.EMPTY_NOTE);
 

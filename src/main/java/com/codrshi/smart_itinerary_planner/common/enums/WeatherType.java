@@ -69,9 +69,8 @@ public enum WeatherType {
         this.weatherCondition = weatherCondition;
     }
 
-    // TODO: handle unknown weather error
     public static WeatherType fromLabel(String label) {
-        return LOOKUP_MAP.get(label);
+        return LOOKUP_MAP.getOrDefault(label, WeatherType.TYPE_0);
     }
 
     @JsonValue

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -32,4 +33,7 @@ public interface IPointOfInterestDTO {
 
     String getNote();
     void setNote(String note);
+
+    List<String> getCategory();
+    void setCategory(List<String> category);
 }
