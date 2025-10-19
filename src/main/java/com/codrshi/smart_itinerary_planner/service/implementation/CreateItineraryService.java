@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 @Service
@@ -62,7 +63,6 @@ public class CreateItineraryService implements ICreateItineraryService {
         ITimePeriodDTO timePeriodDTO = createItineraryEventDTO.getTimePeriod();
         ILocationDTO locationDTO = locationUtil.buildLocation(createItineraryEventDTO.getCity(), createItineraryEventDTO.getCountry());
 
-        //TODO: handle error thrown by CompletableFuture
         CompletableFuture<List<IEventDTO>> eventsFuture =
                 CompletableFuture.supplyAsync(() -> externalApiService.getTicketmasterEvents(locationDTO,
                                                                                              timePeriodDTO), taskExecutor);
@@ -80,7 +80,14 @@ public class CreateItineraryService implements ICreateItineraryService {
                         () -> externalApiService.getVirtualCrossingWeather(timePeriodDTO, coordinateDTO),
                         taskExecutor));
 
-        CompletableFuture.allOf(eventsFuture, attractionsFuture, weatherFuture).join();
+        try {
+            CompletableFuture.allOf(eventsFuture, attractionsFuture, weatherFuture).join();
+        }
+        catch (CompletionException ex) {
+            Throwable cause = ex.getCause();
+            //log.error("At least one async task failed: {}", cause.toString(), cause);
+            throw new RuntimeException(cause);
+        }
 
         List<IEventDTO> events = eventsFuture.join();
         List<IAttractionDTO> attractions = attractionsFuture.join();
