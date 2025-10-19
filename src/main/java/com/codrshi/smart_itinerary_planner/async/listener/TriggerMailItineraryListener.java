@@ -6,6 +6,7 @@ import com.codrshi.smart_itinerary_planner.dto.ITriggerMailItineraryEventDTO;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Component
+@Slf4j
 public class TriggerMailItineraryListener {
 
     public static final String MAIL_SUBJECT_TEMPLATE = "Smart Itinerary Planner - Summarized Itinerary for ID %s";
@@ -37,6 +39,8 @@ public class TriggerMailItineraryListener {
     @Async
     public void handleTriggerMailItineraryEvent(TriggerMailItineraryEvent event) {
 
+        log.debug("Received TriggerMailItineraryEvent: {}", event);
+
         ITriggerMailItineraryEventDTO triggerMailItineraryEventDTO = event.getTriggerMailItineraryEventDTO();
         ITimePeriodDTO timePeriodDTO = triggerMailItineraryEventDTO.getTimePeriod();
 
@@ -47,6 +51,9 @@ public class TriggerMailItineraryListener {
                                          timePeriodDTO.getStartDate().toString(),
                                          timePeriodDTO.getEndDate().toString(),
                                          triggerMailItineraryEventDTO.getSummarizedActivities());
+
+            log.debug("Prepared mail subject: {}", subject);
+            log.debug("Prepared mail body: {}", body);
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -59,14 +66,19 @@ public class TriggerMailItineraryListener {
             javaMailSender.send(message);
         }
         catch (MessagingException ex) {
-            System.err.println("MessagingException while sending email: " + ex.getMessage());
+            log.error("MessagingException while sending email: {}", ex.getMessage());
+            throw new RuntimeException("Failed to send email", ex);
         }
         catch (IOException ex) {
-            System.err.println("IOException while sending email: " + ex.getMessage());
+            log.error("IOException while sending email: {}", ex.getMessage());
+            throw new RuntimeException("Failed to send email", ex);
         }
         catch (Exception ex) {
-            System.err.println("Exception while sending email: " + ex.getMessage());
+            log.error("Exception while sending email: {}", ex.getMessage());
+            throw new RuntimeException("Failed to send email", ex);
         }
+
+        log.info("Email sent successfully.");
     }
 
     private String getSubjectContent(String... args) {

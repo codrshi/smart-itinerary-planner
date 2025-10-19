@@ -22,6 +22,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class ExternalApiService implements IExternalApiService {
 
     private static final String KEY_TICKETMASTER = "ticketmaster";
@@ -72,18 +74,17 @@ public class ExternalApiService implements IExternalApiService {
     public ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO) {
         final String URL = buildUrl(locationDTO);
 
+        log.debug("Prepared getOpenStreetMapCoordinate URL: {}", URL);
         ResponseEntity<OpenTripMapCoordinateResponseDTO> response =
                 restTemplate.getForEntity(URL, OpenTripMapCoordinateResponseDTO.class);
 
+        log.debug("getOpenStreetMapCoordinate response: {}", response);
         if(response.getStatusCode().is5xxServerError()) {
-            // print String.format(ERR_MSG_5XX_SERVER_ERROR, KEY_OPENSTREETMAP)
+            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_OPENSTREETMAP);
             throw new HttpServerErrorException(null);
         }
 
-        System.out.println("getOpenStreetMapCoordinate:");
-        System.out.println(response.getBody());
         return coordinateMapper.mapToCoordinateDTO(response.getBody());
-
     }
 
     @Override
@@ -92,15 +93,16 @@ public class ExternalApiService implements IExternalApiService {
     public List<IEventDTO> getTicketmasterEvents(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO) {
         final String URL = buildUrl(locationDTO, timePeriodDTO);
 
+        log.debug("Prepared getTicketmasterEvents URL: {}", URL);
         ResponseEntity<TicketMasterEventResponseDTO> response = restTemplate.getForEntity(URL,
                                                                                           TicketMasterEventResponseDTO.class);
 
+        log.debug("getTicketmasterEvents response: {}", response);
         if(response.getStatusCode().is5xxServerError()) {
+            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_TICKETMASTER);
             throw new HttpServerErrorException(null);
         }
 
-        System.out.println("getTicketmasterEvents:");
-        System.out.println(response.getBody());
         return eventMapper.mapToEventDTO(response.getBody());
     }
 
@@ -110,15 +112,16 @@ public class ExternalApiService implements IExternalApiService {
     public List<IAttractionDTO> getOpenStreetMapAttractions(ILocationDTO locationDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(locationDTO, coordinateDTO);
 
+        log.debug("Prepared getOpenStreetMapAttractions URL: {}", URL);
         ResponseEntity<OpenTripMapAttractionResponseDTO> response =
                 restTemplate.getForEntity(URL, OpenTripMapAttractionResponseDTO.class);
 
         if(response.getStatusCode().is5xxServerError()) {
+            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_OPENSTREETMAP);
             throw new HttpServerErrorException(null);
         }
 
-        System.out.println("getOpenStreetMapAttractions:");
-        System.out.println(response.getBody());
+        log.debug("getOpenStreetMapAttractions response: {}", response);
         return attractionMapper.mapToAttractionDTO(response.getBody());
     }
 
@@ -129,23 +132,26 @@ public class ExternalApiService implements IExternalApiService {
     public Map<LocalDate, WeatherType> getVirtualCrossingWeather(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(timePeriodDTO, coordinateDTO);
 
+        log.debug("Prepared getVirtualCrossingWeather URL: {}", URL);
         ResponseEntity<VirtualCrossingWeatherResponseDTO> response =
                 restTemplate.getForEntity(URL, VirtualCrossingWeatherResponseDTO.class);
 
         if(response.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) {
+            log.warn("Quota exceeded for getVirtualCrossingWeather. Fallback logic will be triggered.");
             throw new QuotaExceededException(LocalDate.now().toString());
         } else if(response.getStatusCode().is5xxServerError()) {
+            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_VIRTUALCROSSING);
             throw new HttpServerErrorException(null);
         }
 
-        System.out.println("getVirtualCrossingWeather:");
-        System.out.println(response.getBody());
+        log.debug("getVirtualCrossingWeather response: {}", response);
         return weatherMapper.mapDateToWeather(response.getBody());
     }
 
     public Map<LocalDate, WeatherType> getVirtualCrossingWeatherFallback(ITimePeriodDTO timePeriodDTO,
                                                                          ICoordinateDTO coordinateDTO, Throwable ex) {
 
+        log.warn("getVirtualCrossingWeatherFallback triggered for timePeriodDTO: {} and coordinateDTO: {}", timePeriodDTO, coordinateDTO);
         return FactoryUtil.defaultDateToWeatherMap(timePeriodDTO);
     }
 
@@ -153,7 +159,7 @@ public class ExternalApiService implements IExternalApiService {
         ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_VIRTUALCROSSING);
 
-
+        log.trace("externalApiProperty for {} key: {}", KEY_VIRTUALCROSSING, externalApiProperty);
         String coordinatePathParams = String.format("/%s,%s",coordinateDTO.getLatitude(),coordinateDTO.getLongitude());
         String timePeriodPathParams = String.format("/%s/%s",timePeriodDTO.getStartDate(),timePeriodDTO.getEndDate());
 
@@ -170,6 +176,9 @@ public class ExternalApiService implements IExternalApiService {
     private String buildUrl(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO) {
         ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_TICKETMASTER);
+
+        log.trace("externalApiProperty for {} key: {}", KEY_TICKETMASTER, externalApiProperty);
+
         String startDateTime = timePeriodDTO.getStartDate().toString() + "T00:00:00Z";
         String endDateTime = timePeriodDTO.getEndDate().toString() + "T23:59:59Z";
 
@@ -186,6 +195,8 @@ public class ExternalApiService implements IExternalApiService {
         ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
 
+        log.trace("externalApiProperty for {} key: {}", KEY_OPENSTREETMAP, externalApiProperty);
+
         return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + OPENSTREETMAP_GET_COORDINATES)
                 .queryParam("apikey", externalApiProperty.getApiKey())
                 .queryParam("name", locationDTO.getCity())
@@ -197,6 +208,9 @@ public class ExternalApiService implements IExternalApiService {
         ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
         ItineraryProperties.AttractionProperties attractionProperties = itineraryProperties.getAttraction();
+
+        log.trace("externalApiProperty for {} key: {}", KEY_OPENSTREETMAP, externalApiProperty);
+        log.trace("attractionProperties: {}", attractionProperties);
 
         return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + OPENSTREETMAP_GET_ATTRACTIONS)
                 .queryParam("apikey", externalApiProperty.getApiKey())

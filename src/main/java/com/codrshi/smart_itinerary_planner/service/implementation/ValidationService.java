@@ -17,6 +17,7 @@ import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.ActivityUtil;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
 import com.codrshi.smart_itinerary_planner.util.annotation.implementation.LocationValidator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class ValidationService implements IValidationService {
 
     @Autowired
@@ -42,6 +44,8 @@ public class ValidationService implements IValidationService {
         if(weatherDays != totalDays) {
             throw new MissingWeatherDataException(HttpStatus.BAD_GATEWAY);
         }
+
+        log.debug("External API response validated successfully.");
     }
 
     @Override
@@ -53,6 +57,8 @@ public class ValidationService implements IValidationService {
         if(!itineraryId.matches(Constant.ITINERARY_ID_REGEX)) {
             throw new InvalidItineraryIdFormatException(httpStatus, Constant.ITINERARY_ID_REGEX, itineraryId);
         }
+
+        log.debug("itineraryId = {} validated successfully.", itineraryId);
     }
 
     @Override
@@ -64,6 +70,8 @@ public class ValidationService implements IValidationService {
 
         validateItineraryId(createItineraryEventDTO.getItineraryId(), HttpStatus.INTERNAL_SERVER_ERROR);
         validateExternalApiResponse(createItineraryEventDTO.getEvents().size(), createItineraryEventDTO.getAttractions().size(), createItineraryEventDTO.getDateToWeatherMap().size(), DateUtils.countDays(createItineraryEventDTO.getTimePeriod()));
+
+        log.debug("createItineraryEventDTO validated successfully.");
     }
 
     @Override
@@ -78,6 +86,8 @@ public class ValidationService implements IValidationService {
 
         validateDateRangeCriteria(dateRangeCriteria, startDate, endDate);
         validateDateRange(startDate, endDate);
+
+        log.debug("filterRequestDTO validated successfully.");
     }
 
     @Override
@@ -90,6 +100,8 @@ public class ValidationService implements IValidationService {
         if(patchDataList != null && patchDataList.size() > itineraryProperties.getPatchLimit()) {
             throw new BadRequestException(Constant.ERR_MSG_PATCH_LIMIT_EXCEED);
         }
+
+        log.debug("patchItineraryRequestDTO validated successfully.");
     }
 
     @Override
@@ -108,6 +120,8 @@ public class ValidationService implements IValidationService {
         if(!invalidFields.isEmpty()) {
             throw new BadRequestException(String.format(Constant.ERR_MSG_INVALID_PATCH_DATA, invalidFields));
         }
+
+        log.debug("patchData validated successfully.");
     }
 
     public void validateLocation(String location, String locationType) {

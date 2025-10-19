@@ -1,4 +1,4 @@
-package com.codrshi.smart_itinerary_planner.util.advisor;
+package com.codrshi.smart_itinerary_planner.aspect.advisor;
 
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import org.springframework.ai.chat.client.ChatClientRequest;

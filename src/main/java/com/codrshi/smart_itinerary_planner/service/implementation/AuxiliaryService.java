@@ -10,6 +10,7 @@ import com.codrshi.smart_itinerary_planner.service.IAuxiliaryService;
 import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.mapper.IFlattenedActivityMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 public class AuxiliaryService implements IAuxiliaryService {
 
     @Autowired
@@ -42,10 +44,15 @@ public class AuxiliaryService implements IAuxiliaryService {
 
         String username = RequestContext.getCurrentContext().getUsername();
         String email = RequestContext.getCurrentContext().getEmail();
+        log.debug("Username: {}, Email: {}", username, email);
+
         List<FlattenedActivityDTO> flattenedActivities =
                 flattenedItineraryMapper.mapToFlattenedActivityList(itineraryResponseDTO.getActivities());
+        log.debug("Prepared flattened activities to feed to AI model: {}", flattenedActivities);
+
         String summarizedActivities = aiModelService.generateItinerarySummary(flattenedActivities);
 
+        log.trace("Preparing TriggerMailItineraryEventDTO");
         ITriggerMailItineraryEventDTO triggerMailItineraryEventDTO = TriggerMailItineraryEventDTO.builder()
                 .itineraryId(itineraryId)
                 .username(username)
@@ -56,5 +63,6 @@ public class AuxiliaryService implements IAuxiliaryService {
                 .build();
 
         publisher.publishEvent(new TriggerMailItineraryEvent(this, triggerMailItineraryEventDTO));
+        log.debug("TriggerMailItineraryEvent published successfully with body = {}", triggerMailItineraryEventDTO);
     }
 }

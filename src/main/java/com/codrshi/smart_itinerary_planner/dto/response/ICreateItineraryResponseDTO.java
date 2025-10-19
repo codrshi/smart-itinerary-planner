@@ -1,6 +1,5 @@
 package com.codrshi.smart_itinerary_planner.dto.response;
 
-import com.codrshi.smart_itinerary_planner.common.enums.ItineraryStatus;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 
 public interface ICreateItineraryResponseDTO {

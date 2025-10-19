@@ -8,6 +8,7 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.UpdateNotePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class UpdateNotePatchHandler extends PatchHandler<UpdateNotePatchDataDTO> {
     @Override
     protected List<IActivityDTO> applyPatch(List<IActivityDTO> activities, List<UpdateNotePatchDataDTO> patchDataList) {
         final Map<String, String> ACTIVITY_DATE_TO_ID_LOOKUP = createActivityDateToIdMap(activities);
         Map<String, String> idToNoteMap = createIdToNoteMap(activities);
+
+        log.trace("Applying update note patch with activity-date-to-id lookup: {}", ACTIVITY_DATE_TO_ID_LOOKUP);
+        log.trace("Applying update note patch with id-to-note map: {}", idToNoteMap);
 
         patchDataList.forEach(patchData -> {
             String source = patchData.getSource();

@@ -5,18 +5,22 @@ import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteResourcePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@Slf4j
 public class DeleteResourcePatchHandler extends PatchHandler<DeleteResourcePatchDataDTO> {
 
     @Override
     protected List<IActivityDTO> applyPatch(List<IActivityDTO> activities, List<DeleteResourcePatchDataDTO> patchDataList) {
 
         final Set<String> ID_LOOKUP_SET = new HashSet<>(fetchSources(patchDataList));
+
+        log.debug("Applying delete resource patch with ID lookup set: {}", ID_LOOKUP_SET);
 
         return activities.stream()
                 .filter(activity ->

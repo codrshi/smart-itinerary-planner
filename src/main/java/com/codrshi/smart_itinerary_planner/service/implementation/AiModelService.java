@@ -2,6 +2,7 @@ package com.codrshi.smart_itinerary_planner.service.implementation;
 
 import com.codrshi.smart_itinerary_planner.dto.implementation.FlattenedActivityDTO;
 import com.codrshi.smart_itinerary_planner.service.IAiModelService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.messages.Message;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class AiModelService implements IAiModelService {
 
     @Value("classpath:ai-model/itinerary-summarize-assistant-prompt.txt")
@@ -38,7 +40,10 @@ public class AiModelService implements IAiModelService {
         PromptTemplate promptTemplate = new PromptTemplate(itinerarySummarizeAssistantPrompt);
         Prompt prompt = new Prompt(new UserMessage(promptTemplate.render(Map.of("activitiesJson", itineraries))));
 
+        log.trace("Prepared prompt: {}", prompt);
+
         ChatResponse chatResponse = mailItineraryAssistantChatClient.prompt(prompt).call().chatResponse();
+        log.debug("Response from mailItineraryAssistantChatClient: {}", chatResponse);
 
         return chatResponse.getResult().getOutput().getText();
     }
@@ -46,6 +51,7 @@ public class AiModelService implements IAiModelService {
     @Override
     public String handleItineraryQuery(String query) {
         ChatResponse chatResponse = itineraryQueriesAssistantChatClient.prompt(query).call().chatResponse();
+        log.debug("Response from itineraryQueriesAssistantChatClient: {}", chatResponse);
 
         return chatResponse.getResult().getOutput().getText();
     }

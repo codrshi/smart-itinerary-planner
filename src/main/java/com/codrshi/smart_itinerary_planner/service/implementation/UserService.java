@@ -12,6 +12,7 @@ import com.codrshi.smart_itinerary_planner.security.JwtService;
 import com.codrshi.smart_itinerary_planner.service.IUserService;
 import com.codrshi.smart_itinerary_planner.security.Principle;
 import com.codrshi.smart_itinerary_planner.util.mapper.IUserMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@Slf4j
 public class UserService implements IUserService {
 
     @Autowired
@@ -59,15 +61,21 @@ public class UserService implements IUserService {
         String password = userRequestDTO.getPassword();
 
         checkIfExistingUser(username, email);
+        log.debug("No existing user found. Creating new user...");
 
         compromisedPasswordChecker.check(password);
+        log.trace("Compromised password verification passed.");
+
         User user = buildUser(username, password);
+        log.trace("User built successfully. Saving user...");
 
         User savedUser = userRepository.save(user);
+
         if(savedUser == null || savedUser.getDocId() == null) {
             throw new RuntimeException("Failed to create user");
         }
 
+        log.trace("User created successfully.");
         return userMapper.mapToUserResponseDTO(savedUser);
     }
 
@@ -85,9 +93,13 @@ public class UserService implements IUserService {
             throw new BadCredentialsException("Incorrect username or password");
         }
 
+        log.debug("Authentication successful for user {}", username);
+        log.trace("Generating JWT token...");
+
         Instant now = Instant.now();
         String jwtToken = jwtService.generateToken(authentication, now);
 
+        log.trace("JWT token generated successfully.");
         return userMapper.mapToUserResponseDTO(authentication, jwtToken, Date.from(now.plus(8, ChronoUnit.HOURS)));
     }
 

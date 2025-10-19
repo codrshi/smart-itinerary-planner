@@ -3,9 +3,11 @@ package com.codrshi.smart_itinerary_planner.util.patch.command;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
 import com.codrshi.smart_itinerary_planner.util.ActivityLookup;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class PoiToActivityCommand implements IPatchCommand {
     private ActivityLookup activityLookup;
 
@@ -18,8 +20,11 @@ public class PoiToActivityCommand implements IPatchCommand {
         String sourceActivityId = activityLookup.getActivityId(sourceId);
         String targetActivityId = targetId;
 
+        log.debug("Executing PoiToActivityCommand for sourceId = {} and targetId = {}", sourceId, targetId);
+
         if(sourceActivityId == null ||
                 sourceActivityId.equals(targetActivityId) || !activityLookup.containsActivity(sourceActivityId) || !activityLookup.containsActivity(targetActivityId)){
+            log.trace("PoiToActivityCommand execution skipped for sourceId = {} and targetId = {}", sourceId, targetId);
             return;
         }
 
@@ -33,5 +38,7 @@ public class PoiToActivityCommand implements IPatchCommand {
             sourceActivity.getPointOfInterests().remove(poi);
             targetActivity.getPointOfInterests().add(poi);
         });
+
+        log.trace("updated sourceActivity's POIs = {} and targetActivity's POIs = {}", sourceActivity.getPointOfInterests(), targetActivity.getPointOfInterests());
     }
 }

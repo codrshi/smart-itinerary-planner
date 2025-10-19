@@ -10,6 +10,7 @@ import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class GetItineraryService implements IGetItineraryService {
 
     @Autowired
@@ -39,7 +41,6 @@ public class GetItineraryService implements IGetItineraryService {
 
         return itineraryOpt.map(itinerary -> itineraryMapper.mapToGetItineraryResponseDTO(itinerary))
                 .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY));
-
     }
 
     @Override
@@ -49,6 +50,7 @@ public class GetItineraryService implements IGetItineraryService {
         Query query = QueryBuilder.builder(getItineraryRequestDTO);
         Page<Itinerary> itineraries = itineraryRepository.searchItineraries(query, pageable);
 
+        log.debug("Found {} itineraries with content: {}", itineraries.getTotalElements(), itineraries);
         return itineraries.map(itinerary -> itineraryMapper.mapToGetItineraryResponseDTO(itinerary));
     }
 }

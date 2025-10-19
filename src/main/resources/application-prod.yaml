@@ -1,3 +1,8 @@
+management:
+  endpoint:
+    env:
+      keys-to-sanitize: password, apiKey, secretKey, email
+
 logging:
   level:
     org:
@@ -8,7 +13,6 @@ logging:
         data: INFO
   pattern:
     console: "%cyan(%d{yyyy-MM-dd HH:mm:ss}) %highlight([%thread]) %highlight(%-5level) %green(%logger{36}) %magenta([%X{X-Trace-Id}]) - %msg%n"
-
 
 security:
   require-ssl: true

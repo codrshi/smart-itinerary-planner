@@ -10,6 +10,7 @@ import com.codrshi.smart_itinerary_planner.util.ActivityUtil;
 import com.codrshi.smart_itinerary_planner.util.CounterManager;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class ConstructActivitiesService implements IConstructActivitiesService {
 
     @Autowired
@@ -40,11 +42,14 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
         List<IActivityDTO> activities = new ArrayList<>();
         Map<LocalDate, IActivityDTO> dateToActivityMap = factoryUtil.initializeDateToActivityMap(dateToWeatherMap);
 
+        log.debug("Initialized dateToActivityMap: {}", dateToActivityMap);
+
         populateEvents(events, dateToActivityMap, dateToWeatherMap);
         populateAttractions(attractions, activities, dateToActivityMap.values().stream().toList(), events.size());
 
         activities.sort(Comparator.comparing(activityDTO -> activityDTO.getActivityDate()));
 
+        log.debug("activities after sorting: {}", activities);
         return activities;
     }
 
@@ -53,10 +58,12 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
                                      List<IActivityDTO> rawActivities,
                                      int totalEvents) {
 
+        log.trace("Populating attractions: {}", attractions);
         int poiPerDay = activityUtil.calculatePoiPerDay(rawActivities, totalEvents, attractions.size());
         PriorityQueue<IActivityDTO> activityMinHeap = FactoryUtil.initializeDateToActivityMinHeap();
         activityMinHeap.addAll(rawActivities);
 
+        log.debug("initialized activityMinHeap: {}", activityMinHeap);
         // TODO: Check if cooldown queue needed to avoid clustering of attractions in best weathers
         attractions.forEach(attraction -> {
             IActivityDTO activityDTO = activityMinHeap.poll();
@@ -73,9 +80,13 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
 
         activities.addAll(activityMinHeap.stream().filter(activityDTO -> activityDTO.getPointOfInterests().size() > 0)
                                   .collect(Collectors.toList()));
+
+        log.debug("activities after populating attractions: {}", activities);
     }
 
     private void populateEvents(List<IEventDTO> events, Map<LocalDate, IActivityDTO> dateToActivityMap, Map<LocalDate, WeatherType> dateToWeatherMap) {
+        log.trace("Populating events: {}", events);
+
         events.forEach(event -> {
             LocalDate date = event.getDate();
             IActivityDTO activityDTO = dateToActivityMap.getOrDefault(date, ActivityDTO.builder()
@@ -91,5 +102,7 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
 
             dateToActivityMap.put(date, activityDTO);
         });
+
+        log.debug("dateToActivityMap after populating events: {}", dateToActivityMap);
     }
 }

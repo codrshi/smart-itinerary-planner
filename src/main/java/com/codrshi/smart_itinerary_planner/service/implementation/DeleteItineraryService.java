@@ -10,6 +10,7 @@ import com.codrshi.smart_itinerary_planner.service.IDeleteItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 public class DeleteItineraryService implements IDeleteItineraryService {
 
     @Autowired
@@ -35,11 +37,11 @@ public class DeleteItineraryService implements IDeleteItineraryService {
         validationService.validateItineraryId(itineraryId, HttpStatus.BAD_REQUEST);
 
         if(itineraryRepository.existsByItineraryId(itineraryId)) {
+            log.debug("Itinerary with itineraryId {} exists. Proceeding to delete.", itineraryId);
             itineraryRepository.deleteByItineraryId(itineraryId);
         } else {
             throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY);
         }
-
     }
 
     @Override
@@ -51,6 +53,7 @@ public class DeleteItineraryService implements IDeleteItineraryService {
         List<Itinerary> deletedItineraries = itineraryRepository.deleteItineraries(query);
         List<String> itineraryIds = deletedItineraries.stream().map(Itinerary::getItineraryId).toList();
 
+        log.debug("Deleted {} itineraries with itineraryIds: {}", itineraryIds.size(), itineraryIds);
         return itineraryMapper.mapToDeleteItineraryResponseDTO(itineraryIds, false);
     }
 }

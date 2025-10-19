@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
         imports = {UserRole.class, Collectors.class})
 public interface IUserMapper {
 
-    @Mapping(target = "username", source = "authentication.name")
+    @Mapping(target = "username", source = "authentication.getPrinciple().username()")
     @Mapping(target = "assignedRoles", expression = "java(authentication.getAuthorities().stream().map(Object::toString).collect" +
             "(Collectors.joining(\", \")))")
     @Mapping(target = "token", source = "jwtToken")

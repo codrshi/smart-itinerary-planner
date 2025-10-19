@@ -19,6 +19,7 @@ import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,7 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 
 @Service
+@Slf4j
 public class CreateItineraryService implements ICreateItineraryService {
 
     @Autowired
@@ -63,6 +65,8 @@ public class CreateItineraryService implements ICreateItineraryService {
         ITimePeriodDTO timePeriodDTO = createItineraryEventDTO.getTimePeriod();
         ILocationDTO locationDTO = locationUtil.buildLocation(createItineraryEventDTO.getCity(), createItineraryEventDTO.getCountry());
 
+        log.debug("Build locationDTO: {}", locationDTO);
+
         CompletableFuture<List<IEventDTO>> eventsFuture =
                 CompletableFuture.supplyAsync(() -> externalApiService.getTicketmasterEvents(locationDTO,
                                                                                              timePeriodDTO), taskExecutor);
@@ -85,13 +89,17 @@ public class CreateItineraryService implements ICreateItineraryService {
         }
         catch (CompletionException ex) {
             Throwable cause = ex.getCause();
-            //log.error("At least one async task failed: {}", cause.toString(), cause);
+            log.error("At least one async task failed: {}", cause.toString(), cause);
             throw new RuntimeException(cause);
         }
 
         List<IEventDTO> events = eventsFuture.join();
         List<IAttractionDTO> attractions = attractionsFuture.join();
         Map<LocalDate, WeatherType> dateToWeatherMap = weatherFuture.join();
+
+        log.debug("events: {}", events);
+        log.debug("attractions: {}", attractions);
+        log.debug("dateToWeatherMap: {}", dateToWeatherMap);
 //        ICoordinateDTO coordinateDTO = externalApiService.getOpenStreetMapCoordinate(locationDTO);
 //        List<IEventDTO> events = externalApiService.getTicketmasterEvents(locationDTO, timePeriodDTO);
 //        List<IAttractionDTO> attractions = externalApiService.getOpenStreetMapAttractions(locationDTO, coordinateDTO);

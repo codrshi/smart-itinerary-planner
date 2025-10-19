@@ -2,6 +2,7 @@ package com.codrshi.smart_itinerary_planner.service;
 
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPatchDataDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Comparator;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class PatchHandler<T extends IPatchDataDTO> {
 
     @Autowired
@@ -17,6 +19,7 @@ public abstract class PatchHandler<T extends IPatchDataDTO> {
     public final List<IActivityDTO> handle(List<IActivityDTO> activities, List<T> patchDataList) {
 
         if(patchDataList.isEmpty() || activities == null || activities.isEmpty()) {
+            log.trace("Patch data list is empty or activities list is null or empty");
             return activities;
         }
 
