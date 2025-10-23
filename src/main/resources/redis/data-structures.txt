@@ -1,0 +1,8 @@
+coordinate:{city}:{countryCode}                    -> cached coordinate (JSON)
+event:{city}:{countryCode}:{start}_{end}           -> cached event list (JSON)
+weather:{lat_lon}                                  -> hash with date keys and weather (JSON) values
+attraction:{lat_lon}                               -> cached attraction list (JSON)
+itix:{username}:itinerary:{itineraryId}            -> json of itinerary metadata (non-activities)
+itix:{username}:activities:{itineraryId}           -> JSON array for activities
+itix:{username}:mailed_itineraries:{itineraryId}   -> String mail body of itinerary
+itix:{username}:blacklisted_mails                  -> Set of invalid emails or issue while sending mail.

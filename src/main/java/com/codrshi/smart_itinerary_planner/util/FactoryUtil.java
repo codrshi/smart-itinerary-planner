@@ -54,16 +54,10 @@ public class FactoryUtil {
     }
 
     public static Map<LocalDate, WeatherType> defaultDateToWeatherMap(ITimePeriodDTO timePeriodDTO) {
-        Map<LocalDate, WeatherType> response = new HashMap<>();
-
         LocalDate startDate = timePeriodDTO.getStartDate();
         LocalDate endDate = timePeriodDTO.getEndDate();
 
-        for(LocalDate currentDate = startDate; currentDate.isBefore(endDate); currentDate=currentDate.plusDays(1)) {
-            response.put(currentDate, WeatherType.TYPE_0);
-        }
-
-        return response;
+        return startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toMap(date -> date, date -> WeatherType.TYPE_0));
     }
 
     public <T> T copy(T object, Class<T> clazz) throws JsonProcessingException {

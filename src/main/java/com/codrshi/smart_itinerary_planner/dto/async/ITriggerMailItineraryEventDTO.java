@@ -1,6 +1,6 @@
-package com.codrshi.smart_itinerary_planner.dto;
+package com.codrshi.smart_itinerary_planner.dto.async;
 
-import com.codrshi.smart_itinerary_planner.entity.Itinerary;
+import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 
 public interface ITriggerMailItineraryEventDTO {
     String getItineraryId();

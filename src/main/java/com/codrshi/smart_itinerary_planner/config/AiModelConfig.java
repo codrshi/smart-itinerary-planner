@@ -1,7 +1,7 @@
 package com.codrshi.smart_itinerary_planner.config;
 
-import com.codrshi.smart_itinerary_planner.aspect.advisor.LoggingAdvisor;
-import com.codrshi.smart_itinerary_planner.aspect.advisor.SanitizeAdvisor;
+import com.codrshi.smart_itinerary_planner.common.advisor.LoggingAdvisor;
+import com.codrshi.smart_itinerary_planner.common.advisor.SanitizeAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.openai.OpenAiChatModel;

@@ -4,6 +4,7 @@ import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.UserLoginResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.UserRegistrationResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.User;
+import com.codrshi.smart_itinerary_planner.security.Principle;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.security.core.Authentication;
@@ -12,10 +13,10 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring",
-        imports = {UserRole.class, Collectors.class})
+        imports = {UserRole.class, Collectors.class, Principle.class})
 public interface IUserMapper {
 
-    @Mapping(target = "username", source = "authentication.getPrinciple().username()")
+    @Mapping(target = "username", expression = "java(((Principle) authentication.getPrincipal()).username())")
     @Mapping(target = "assignedRoles", expression = "java(authentication.getAuthorities().stream().map(Object::toString).collect" +
             "(Collectors.joining(\", \")))")
     @Mapping(target = "token", source = "jwtToken")

@@ -15,6 +15,7 @@ import java.util.Map;
 @ToString
 public class ItineraryProperties {
 
+    private RedisProperties redis;
     private int weatherRankThreshold;
     private int patchLimit;
     private PurgeProperties purge;
@@ -26,9 +27,10 @@ public class ItineraryProperties {
     private AsyncProperties async;
 
     @ConstructorBinding
-    public ItineraryProperties(int weatherRankThreshold, int patchLimit, PurgeProperties purge,
+    public ItineraryProperties(RedisProperties redis, int weatherRankThreshold, int patchLimit, PurgeProperties purge,
                                ApiProperty internalApi, Map<String, ApiProperty> externalApi,
                                 String baseUrl, CityRadiusProperties cityRadius, AttractionProperties attraction, AsyncProperties async) {
+        this.redis = redis;
         this.weatherRankThreshold = weatherRankThreshold;
         this.purge = purge;
         this.internalApi = internalApi;
@@ -38,6 +40,18 @@ public class ItineraryProperties {
         this.attraction = attraction;
         this.async = async;
         this.patchLimit = patchLimit;
+    }
+
+    @Getter
+    @AllArgsConstructor
+    @ToString
+    public static class RedisProperties {
+        private int coordinateTtl;
+        private int eventTtl;
+        private int attractionTtl;
+        private int weatherTtl;
+        private int itineraryTtl;
+        private int blacklistedMailsTtl;
     }
 
     @Getter
@@ -77,7 +91,9 @@ public class ItineraryProperties {
     @ToString
     public static class AttractionProperties {
         private int rate;
-        private int limit;
+        private double base;
+        private double scale;
+        private int maxLimit;
         private List<String> kinds;
     }
 

@@ -17,7 +17,6 @@ import java.io.IOException;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
-@Component
 @Slf4j
 public class ExceptionTranslatorFilter extends OncePerRequestFilter {
 

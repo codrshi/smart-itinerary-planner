@@ -19,6 +19,10 @@ spring:
           auth: true
           starttls:
             enable: true
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1h
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
@@ -52,6 +56,13 @@ resilience4j:
           - com.codrshi.smart_itinerary_planner.exception.QuotaExceededException
 
 itinerary:
+  redis:
+    coordinate-ttl: 7         # in days
+    event-ttl: 1              # in days
+    attraction-ttl: 1         # in days
+    weather-ttl: 7            # in days
+    itinerary-ttl: 7          # in days
+    blacklisted-mails-ttl: 1  # in mins
   weatherRankThreshold: 18
   patchLimit: 10
   purge:
@@ -72,8 +83,10 @@ itinerary:
       apiKey: ${OPEN_STREET_MAP_API_KEY}
       baseUrl: https://api.opentripmap.com/0.1/
   attraction:
-    rate: 3
-    limit: 10
+    rate: 3    # popularity rating
+    base: 2    # base value of limit
+    scale: 5   # scale value of limit
+    maxLimit: 30   # maximum value of limit
     kinds: monuments, tourist_object, historic_architecture, beaches, sculptures, view_points, historic_object
   cityRadius:
     defaultRadius: 15  # in km

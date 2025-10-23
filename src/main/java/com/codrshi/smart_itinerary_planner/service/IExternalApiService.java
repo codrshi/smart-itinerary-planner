@@ -14,7 +14,7 @@ import java.util.Map;
 public interface IExternalApiService {
     List<IEventDTO> getTicketmasterEvents(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO);
 
-    List<IAttractionDTO> getOpenStreetMapAttractions(ILocationDTO locationDTO, ICoordinateDTO coordinateDTO);
+    List<IAttractionDTO> getOpenStreetMapAttractions(int radius, ICoordinateDTO coordinateDTO, int totalDays);
 
     ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO);
 

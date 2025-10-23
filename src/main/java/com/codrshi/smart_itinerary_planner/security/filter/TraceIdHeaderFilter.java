@@ -12,10 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
 public class TraceIdHeaderFilter extends OncePerRequestFilter {
-
-
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

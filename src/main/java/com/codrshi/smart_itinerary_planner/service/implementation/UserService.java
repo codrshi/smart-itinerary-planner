@@ -100,6 +100,7 @@ public class UserService implements IUserService {
         String jwtToken = jwtService.generateToken(authentication, now);
 
         log.trace("JWT token generated successfully.");
+
         return userMapper.mapToUserResponseDTO(authentication, jwtToken, Date.from(now.plus(8, ChronoUnit.HOURS)));
     }
 

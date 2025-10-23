@@ -59,7 +59,9 @@ public class ItineraryController {
     // TODO: i18n support
     // TODO: Scheduler task to purge itineraries after a certain period from creation.
     // TODO: Rate limiting using redis
-    // TODO: Add @Retryable
+    // TODO: store invalid mail to redis with long TTL
+    // TODO: date range limit of 1 month
+    // TODO: admin controller endpoint to invalidate cache
     @PostMapping
     public ResponseEntity<EntityModel<ICreateItineraryResponseDTO>> createItinerary(@Valid @RequestBody ICreateItineraryRequestDTO createItineraryEventDTO) {
         ICreateItineraryResponseDTO createItineraryResponseDTO = createItineraryService.createItinerary(createItineraryEventDTO);
@@ -88,7 +90,8 @@ public class ItineraryController {
     public ResponseEntity<PagedModel<EntityModel<IItineraryResponseDTO>>> getItineraries(@Valid GetItineraryRequestDTO getItineraryRequestDTO,
                                                                                          Pageable pageable) {
         System.out.println(getItineraryRequestDTO);
-        Page<IItineraryResponseDTO> itineraries = getItineraryService.getItineraries(getItineraryRequestDTO, pageable);
+        Page<IItineraryResponseDTO> itineraries = getItineraryService.getItineraries(getItineraryRequestDTO,
+                                                                                     pageable);
 
         PagedModel<EntityModel<IItineraryResponseDTO>> responseModel = pagedResourcesAssembler.toModel(itineraries, itinerary ->
                 EntityModel.of(itinerary,
@@ -108,7 +111,8 @@ public class ItineraryController {
 
     @DeleteMapping
     public ResponseEntity<EntityModel<IDeleteItineraryResponseDTO>> deleteItineraries(@Valid DeleteItineraryRequestDTO deleteItineraryRequestDTO ) {
-        IDeleteItineraryResponseDTO deleteItineraryResponseDTO = deleteItineraryService.deleteItineraries(deleteItineraryRequestDTO);
+        IDeleteItineraryResponseDTO deleteItineraryResponseDTO =
+                deleteItineraryService.deleteItineraries(deleteItineraryRequestDTO);
 
         EntityModel<IDeleteItineraryResponseDTO> responseModel = EntityModel.of(deleteItineraryResponseDTO,
                                                                           linkTo(methodOn(ItineraryController.class).createItinerary(null)).withRel("create itinerary"));

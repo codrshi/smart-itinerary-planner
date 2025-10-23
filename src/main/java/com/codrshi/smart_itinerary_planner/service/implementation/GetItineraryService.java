@@ -44,7 +44,8 @@ public class GetItineraryService implements IGetItineraryService {
     }
 
     @Override
-    public Page<IItineraryResponseDTO> getItineraries(IGetItineraryRequestDTO getItineraryRequestDTO, Pageable pageable) {
+    public Page<IItineraryResponseDTO> getItineraries(IGetItineraryRequestDTO getItineraryRequestDTO,
+                                                      Pageable pageable) {
         validationService.validateFilterItineraryRequest(getItineraryRequestDTO);
 
         Query query = QueryBuilder.builder(getItineraryRequestDTO);

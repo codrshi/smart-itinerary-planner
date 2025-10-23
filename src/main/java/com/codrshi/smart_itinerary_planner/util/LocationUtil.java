@@ -21,7 +21,7 @@ public class LocationUtil {
     public ILocationDTO buildLocation(String city, String country) {
 
         String normalizedCity = normalizeLocation(city);
-        CountryDetails countryDetails = toCountryCode(country);
+        CountryDetails countryDetails = getCountryDetails(country);
         int radius = findRadius(countryDetails.getCountryCode());
 
         ILocationDTO locationDTO = new LocationDTO();
@@ -33,7 +33,11 @@ public class LocationUtil {
         return locationDTO;
     }
 
-    private CountryDetails toCountryCode(String input) {
+    public String toCountryCode(String input) {
+        return getCountryDetails(input).getCountryCode();
+    }
+
+    private CountryDetails getCountryDetails(String input) {
 
         for (String iso : Locale.getISOCountries()) {
             Locale locale = new Locale("", iso);

@@ -1,8 +1,7 @@
-package com.codrshi.smart_itinerary_planner.dto.implementation;
+package com.codrshi.smart_itinerary_planner.dto.implementation.async;
 
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.dto.ITriggerMailItineraryEventDTO;
-import com.codrshi.smart_itinerary_planner.entity.Itinerary;
+import com.codrshi.smart_itinerary_planner.dto.async.ITriggerMailItineraryEventDTO;
 import lombok.Builder;
 import lombok.Data;
 

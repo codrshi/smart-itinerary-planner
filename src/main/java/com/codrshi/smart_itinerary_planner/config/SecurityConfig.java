@@ -77,4 +77,19 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
+    @Bean
+    public JwtTokenValidatorFilter jwtTokenValidatorFilter() {
+        return new JwtTokenValidatorFilter();
+    }
+
+    @Bean
+    public ExceptionTranslatorFilter exceptionTranslatorFilter() {
+        return new ExceptionTranslatorFilter();
+    }
+
+    @Bean
+    public TraceIdHeaderFilter traceIdHeaderFilter() {
+        return new TraceIdHeaderFilter();
+    }
 }

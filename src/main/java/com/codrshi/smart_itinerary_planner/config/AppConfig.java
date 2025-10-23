@@ -17,24 +17,39 @@ import com.codrshi.smart_itinerary_planner.util.mapper.implementation.Coordinate
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.EventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.ItineraryHistoryMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.WeatherMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 
 @Configuration
 @EnableMongoAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties(ItineraryProperties.class)
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AppConfig {
 
     @Bean
@@ -95,5 +110,40 @@ public class AppConfig {
     @Bean
     public AuditorAware<String> auditorAware() {
         return () -> Optional.of(RequestContext.getCurrentContext().getUsername());
+    }
+
+    @Bean
+    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
+        RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
+
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+
+        redisTemplate.setHashKeySerializer((new StringRedisSerializer()));
+        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+
+        redisTemplate.afterPropertiesSet();
+
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper,
+                                          ItineraryProperties itineraryProperties) {
+        ItineraryProperties.RedisProperties redisProperties = itineraryProperties.getRedis();
+        Map<String, RedisCacheConfiguration>  cacheConfigurationMap = new HashMap<>();
+
+        cacheConfigurationMap.put(Constant.COORDINATE_CACHE, defaultCacheConfig(objectMapper).entryTtl(Duration.ofDays(redisProperties.getCoordinateTtl())));
+        cacheConfigurationMap.put(Constant.EVENT_CACHE, defaultCacheConfig(objectMapper).entryTtl(Duration.ofDays(redisProperties.getEventTtl())));
+
+        return RedisCacheManager.builder(redisConnectionFactory).withInitialCacheConfigurations(cacheConfigurationMap).build();
+    }
+
+    private RedisCacheConfiguration defaultCacheConfig(ObjectMapper objectMapper) {
+        return RedisCacheConfiguration.defaultCacheConfig()
+                .disableCachingNullValues()
+                .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
     }
 }

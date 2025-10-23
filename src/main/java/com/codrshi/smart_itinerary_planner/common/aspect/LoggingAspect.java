@@ -1,4 +1,4 @@
-package com.codrshi.smart_itinerary_planner.aspect;
+package com.codrshi.smart_itinerary_planner.common.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -9,74 +9,73 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Aspect
+@Order(3)
 @Component
 @Slf4j
 public class LoggingAspect {
 
-    @Pointcut("@within(org.springframework.web.bind.annotation.RestController)")
-    public void controllerMethods() {}
+    private static final String CONTROLLER_POINTCUT = "@within(org.springframework.web.bind.annotation.RestController)";
+    private static final String REPOSITORY_POINTCUT = "execution(* com.codrshi.smart_itinerary_planner.repository..*(..))";
+    private static final String TOOL_POINTCUT = "execution(public com.codrshi.smart_itinerary_planner.util.tool..*(..))";
 
-    @Pointcut("@execution(public com.codrshi.smart_itinerary_planner.repository..*(..))")
-    public void repositoryMethods() {}
-
-    @Pointcut("@execution(public com.codrshi.smart_itinerary_planner.util.tool..*(..))")
-    public void toolMethods() {}
-
-    @Before("controllerMethods()")
+    @Before(CONTROLLER_POINTCUT)
     public void logBeforeControllerMethods(JoinPoint joinPoint) {
         log.debug("<<< REQUEST INTERCEPTED BY CONTROLLER {}>>>", getMethodName(joinPoint));
         log.debug("Arguments to {} = {}", getMethodName(joinPoint), joinPoint.getArgs());
     }
 
-    @AfterReturning(value = "controllerMethods()", returning = "response")
+    @AfterReturning(value = CONTROLLER_POINTCUT, returning = "response")
     public void logAfterReturningControllerMethods(JoinPoint joinPoint, Object response) {
-        log.debug("Response from {} with response = {}", getMethodName(joinPoint), response);
+        log.debug("Response from {} with content = {}", getMethodName(joinPoint), response);
     }
 
-    @AfterThrowing(value = "controllerMethods()", throwing = "ex")
+    @AfterThrowing(value = CONTROLLER_POINTCUT, throwing = "ex")
     public void logAfterThrowingControllerMethods(JoinPoint joinPoint, Exception ex) {
-        log.error("Exception in {} with exception = {}", getMethodName(joinPoint), ex.getMessage());
+        log.error("Exception in {} with message = {}", getMethodName(joinPoint), ex.getMessage());
     }
 
-    @After("controllerMethods()")
+    @After(CONTROLLER_POINTCUT)
     public void logAfterControllerMethods(JoinPoint joinPoint) {
         log.debug("<<< REQUEST EXECUTED BY CONTROLLER {}>>>", getMethodName(joinPoint));
     }
 
-    @Before("repositoryMethods()")
+    @Before(REPOSITORY_POINTCUT)
     public void logBeforeRepositoryMethods(JoinPoint joinPoint) {
         log.debug("Call to repository method {} with arguments = {}", getMethodName(joinPoint), joinPoint.getArgs());
     }
 
-    @AfterReturning(value = "repositoryMethods()", returning = "response")
+    @AfterReturning(value = REPOSITORY_POINTCUT, returning = "response")
     public void logAfterReturningRepositoryMethods(JoinPoint joinPoint, Object response) {
-        log.debug("Response from repository method {} with response = {}", getMethodName(joinPoint), response);
+        log.debug("Response from repository method {} with content = {}", getMethodName(joinPoint), response);
     }
 
-    @AfterThrowing(value = "repositoryMethods()", throwing = "ex")
+    @AfterThrowing(value = REPOSITORY_POINTCUT, throwing = "ex")
     public void logAfterThrowingRepositoryMethods(JoinPoint joinPoint, Exception ex) {
-        log.error("Exception in repository method {} with exception = {}", getMethodName(joinPoint), ex.getMessage());
+        log.error("Exception in repository method {} with message = {}", getMethodName(joinPoint), ex.getMessage());
     }
 
-    @Before("toolMethods()")
+    @Before(TOOL_POINTCUT)
     public void logBeforeToolMethods(JoinPoint joinPoint) {
         log.debug("Tool {} invoked with arguments = {}", getMethodName(joinPoint), joinPoint.getArgs());
     }
 
-    @AfterReturning(value = "toolMethods()", returning = "response")
+    @AfterReturning(value = TOOL_POINTCUT, returning = "response")
     public void logAfterReturningToolMethods(JoinPoint joinPoint, Object response) {
         log.debug("Response from tool {} = {}", getMethodName(joinPoint), response);
     }
 
-    @AfterThrowing(value = "toolMethods()", throwing = "ex")
+    @AfterThrowing(value = TOOL_POINTCUT, throwing = "ex")
     public void logAfterThrowingToolMethods(JoinPoint joinPoint, Exception ex) {
-        log.error("Exception in tool {} with exception = {}", getMethodName(joinPoint), ex.getMessage());
+        log.error("Exception in tool {} with message = {}", getMethodName(joinPoint), ex.getMessage());
     }
 
-    @After("toolMethods()")
+    @After(TOOL_POINTCUT)
     public void logAfterToolMethods(JoinPoint joinPoint) {
         log.debug("Tool {} executed", getMethodName(joinPoint));
     }

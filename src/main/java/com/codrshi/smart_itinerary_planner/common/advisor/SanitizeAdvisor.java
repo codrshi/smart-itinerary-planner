@@ -1,4 +1,4 @@
-package com.codrshi.smart_itinerary_planner.aspect.advisor;
+package com.codrshi.smart_itinerary_planner.common.advisor;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;

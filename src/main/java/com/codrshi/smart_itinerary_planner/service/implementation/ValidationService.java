@@ -4,7 +4,6 @@ import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
-import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.request.IFilterRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPatchDataDTO;
 import com.codrshi.smart_itinerary_planner.dto.request.IPatchItineraryRequestDTO;
@@ -59,19 +58,6 @@ public class ValidationService implements IValidationService {
         }
 
         log.debug("itineraryId = {} validated successfully.", itineraryId);
-    }
-
-    @Override
-    public void validateCreateItineraryEvent(ICreateItineraryEventDTO createItineraryEventDTO) {
-
-        if(createItineraryEventDTO == null) {
-            throw new IllegalArgumentException(Constant.ERR_MSG_MISSING_CREATE_ITINERARY_EVENT);
-        }
-
-        validateItineraryId(createItineraryEventDTO.getItineraryId(), HttpStatus.INTERNAL_SERVER_ERROR);
-        validateExternalApiResponse(createItineraryEventDTO.getEvents().size(), createItineraryEventDTO.getAttractions().size(), createItineraryEventDTO.getDateToWeatherMap().size(), DateUtils.countDays(createItineraryEventDTO.getTimePeriod()));
-
-        log.debug("createItineraryEventDTO validated successfully.");
     }
 
     @Override

@@ -12,6 +12,8 @@ import java.time.LocalDate;
 
 @Data
 @ValidDateRange
+@AllArgsConstructor
+@NoArgsConstructor
 public class TimePeriodDTO implements ITimePeriodDTO, Cloneable{
     @NotNull(message = "timePeriod.startDate is null")
     @JsonFormat(pattern = "yyyy-MM-dd")

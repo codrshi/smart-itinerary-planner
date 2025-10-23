@@ -134,6 +134,10 @@ public class GlobalExceptionHandler {
         String acceptHeader = Optional.ofNullable(request.getHeader(HttpHeaders.ACCEPT))
                 .orElse(MediaType.APPLICATION_JSON_VALUE);
 
+        if (acceptHeader.contains("*/*") || acceptHeader.contains("*")) {
+            return MediaType.APPLICATION_JSON;
+        }
+
         return MediaType.parseMediaType(acceptHeader);
     }
 }

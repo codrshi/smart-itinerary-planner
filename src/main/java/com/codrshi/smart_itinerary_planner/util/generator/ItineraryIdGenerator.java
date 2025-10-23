@@ -1,8 +1,6 @@
-package com.codrshi.smart_itinerary_planner.util;
+package com.codrshi.smart_itinerary_planner.util.generator;
 
 import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
-
-import java.util.UUID;
 
 import static com.codrshi.smart_itinerary_planner.common.Constant.ITINERARY_ID_PREFIX;
 

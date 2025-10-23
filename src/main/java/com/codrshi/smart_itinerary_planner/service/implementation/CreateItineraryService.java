@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.ApiResponseWrapper;
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
@@ -14,7 +15,7 @@ import com.codrshi.smart_itinerary_planner.service.IExternalApiService;
 import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
-import com.codrshi.smart_itinerary_planner.util.ItineraryIdGenerator;
+import com.codrshi.smart_itinerary_planner.util.generator.ItineraryIdGenerator;
 import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
@@ -60,10 +61,10 @@ public class CreateItineraryService implements ICreateItineraryService {
     private IItineraryMapper itineraryMapper;
 
     @Override
-    public ICreateItineraryResponseDTO createItinerary(ICreateItineraryRequestDTO createItineraryEventDTO) {
+    public ICreateItineraryResponseDTO createItinerary(ICreateItineraryRequestDTO createItineraryRequestDTO) {
 
-        ITimePeriodDTO timePeriodDTO = createItineraryEventDTO.getTimePeriod();
-        ILocationDTO locationDTO = locationUtil.buildLocation(createItineraryEventDTO.getCity(), createItineraryEventDTO.getCountry());
+        ITimePeriodDTO timePeriodDTO = createItineraryRequestDTO.getTimePeriod();
+        ILocationDTO locationDTO = locationUtil.buildLocation(createItineraryRequestDTO.getCity(), createItineraryRequestDTO.getCountry());
 
         log.debug("Build locationDTO: {}", locationDTO);
 
@@ -76,7 +77,7 @@ public class CreateItineraryService implements ICreateItineraryService {
 
         CompletableFuture<List<IAttractionDTO>> attractionsFuture =
                 coordinateFuture.thenComposeAsync(coordinateDTO -> CompletableFuture.supplyAsync(
-                        () -> externalApiService.getOpenStreetMapAttractions(locationDTO, coordinateDTO),
+                        () -> externalApiService.getOpenStreetMapAttractions(locationDTO.getRadius(), coordinateDTO, DateUtils.countDays(timePeriodDTO)),
                         taskExecutor));
 
         CompletableFuture<Map<LocalDate, WeatherType>> weatherFuture =

@@ -1,6 +1,9 @@
 package com.codrshi.smart_itinerary_planner.dto.response;
 
+import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
+
+import java.util.List;
 
 public interface ICreateItineraryResponseDTO {
     String getDestination();

@@ -2,10 +2,7 @@ package com.codrshi.smart_itinerary_planner.util.mapper;
 
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
-import com.codrshi.smart_itinerary_planner.dto.ICreateItineraryEventDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.CreateItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.DeleteItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;

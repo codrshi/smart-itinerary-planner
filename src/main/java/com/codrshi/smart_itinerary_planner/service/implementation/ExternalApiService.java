@@ -1,5 +1,6 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
+import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
@@ -13,6 +14,7 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.response.VirtualCr
 import com.codrshi.smart_itinerary_planner.exception.QuotaExceededException;
 import com.codrshi.smart_itinerary_planner.service.IExternalApiService;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
+import com.codrshi.smart_itinerary_planner.util.AttractionLimitCalculator;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.ICoordinateMapper;
@@ -24,6 +26,7 @@ import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -71,6 +74,7 @@ public class ExternalApiService implements IExternalApiService {
     @Override
     @Retry(name = "externalApiRetry")
     @TimeLimiter(name = "externalApiTimeout")
+    @Cacheable(value = Constant.COORDINATE_CACHE, keyGenerator = Constant.COORDINATE_KEY_GENERATOR)
     public ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO) {
         final String URL = buildUrl(locationDTO);
 
@@ -90,6 +94,7 @@ public class ExternalApiService implements IExternalApiService {
     @Override
     @Retry(name = "externalApiRetry")
     @TimeLimiter(name = "externalApiTimeout")
+    @Cacheable(value = Constant.EVENT_CACHE, keyGenerator = Constant.EVENT_KEY_GENERATOR)
     public List<IEventDTO> getTicketmasterEvents(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO) {
         final String URL = buildUrl(locationDTO, timePeriodDTO);
 
@@ -109,8 +114,8 @@ public class ExternalApiService implements IExternalApiService {
     @Override
     @Retry(name = "externalApiRetry")
     @TimeLimiter(name = "externalApiTimeout")
-    public List<IAttractionDTO> getOpenStreetMapAttractions(ILocationDTO locationDTO, ICoordinateDTO coordinateDTO) {
-        final String URL = buildUrl(locationDTO, coordinateDTO);
+    public List<IAttractionDTO> getOpenStreetMapAttractions(int radius, ICoordinateDTO coordinateDTO, int totalDays) {
+        final String URL = buildUrl(radius, coordinateDTO, totalDays);
 
         log.debug("Prepared getOpenStreetMapAttractions URL: {}", URL);
         ResponseEntity<OpenTripMapAttractionResponseDTO> response =
@@ -204,10 +209,12 @@ public class ExternalApiService implements IExternalApiService {
                 .toUriString();
     }
 
-    private String buildUrl(ILocationDTO locationDTO, ICoordinateDTO coordinateDTO) {
+    private String buildUrl(int radius, ICoordinateDTO coordinateDTO, int totalDays) {
         ItineraryProperties.ApiProperty externalApiProperty =
                 itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
         ItineraryProperties.AttractionProperties attractionProperties = itineraryProperties.getAttraction();
+        int limit = AttractionLimitCalculator.calculate(totalDays, attractionProperties.getBase(),
+                                                        attractionProperties.getScale(), attractionProperties.getMaxLimit());
 
         log.trace("externalApiProperty for {} key: {}", KEY_OPENSTREETMAP, externalApiProperty);
         log.trace("attractionProperties: {}", attractionProperties);
@@ -216,10 +223,10 @@ public class ExternalApiService implements IExternalApiService {
                 .queryParam("apikey", externalApiProperty.getApiKey())
                 .queryParam("lat", coordinateDTO.getLatitude())
                 .queryParam("lon", coordinateDTO.getLongitude())
-                .queryParam("radius", locationDTO.getRadius() * 1000)
+                .queryParam("radius", radius * 1000)
                 .queryParam("rate", attractionProperties.getRate())
                 .queryParam("kinds", String.join(",",attractionProperties.getKinds()))
-                .queryParam("limit", attractionProperties.getLimit())
+                .queryParam("limit", limit)
                 .toUriString();
     }
 }
