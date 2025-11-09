@@ -1,0 +1,93 @@
+package com.codrshi.smart_itinerary_planner.service;
+
+import com.codrshi.smart_itinerary_planner.BaseTest;
+import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
+import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
+import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
+import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
+import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
+import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.CoordinateDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.TimePeriodDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.request.CreateItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.entity.Itinerary;
+import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
+import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.text.DateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+
+public class CreateItineraryServiceTest extends BaseTest {
+
+    @MockitoBean
+    private IExternalApiService externalApiService;
+
+    @Autowired
+    private ICreateItineraryService createItineraryService;
+
+    @Test
+    void givenCreateItineraryService_whenCorrectRequest_ThenOkResponse() {
+        ICreateItineraryRequestDTO createItineraryRequestDTO = getRequestBody();
+        List<IEventDTO> mockedEvents = getJsonObject("CreateItineraryServiceTest/validEvents.json",
+                                                     new TypeReference<>() {});
+        List<IAttractionDTO> mockedAttractions = getJsonObject("CreateItineraryServiceTest/validAttractions.json",
+                                                               new TypeReference<>() {});
+        ICoordinateDTO mockedCoordinates = new CoordinateDTO();
+        mockedCoordinates.setLatitude(0.0);
+        mockedCoordinates.setLongitude(0.0);
+
+        Map<LocalDate, WeatherType> mockedDateToWeatherMap = FactoryUtil.defaultDateToWeatherMap(createItineraryRequestDTO.getTimePeriod());
+
+        when(externalApiService.getTicketmasterEvents(any(), any())).thenReturn(mockedEvents);
+        when(externalApiService.getOpenStreetMapAttractions(anyInt(), any(), anyInt())).thenReturn(mockedAttractions);
+        when(externalApiService.getOpenStreetMapCoordinate(any())).thenReturn(mockedCoordinates);
+        when(externalApiService.getVirtualCrossingWeather(any(), any())).thenReturn(mockedDateToWeatherMap);
+
+        when(itineraryRepository.save(any(Itinerary.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        ICreateItineraryResponseDTO responseDTO = createItineraryService.createItinerary(createItineraryRequestDTO);
+
+        assertEquals(responseDTO.getDestination(), "New York, US");
+        assertTrue(responseDTO.getItineraryId().startsWith(Constant.ITINERARY_ID_PREFIX));
+        assertEquals(responseDTO.getTimePeriod(), createItineraryRequestDTO.getTimePeriod());
+        assertEquals(responseDTO.getAttractionsFound(), 2);
+        assertEquals(responseDTO.getEventsFound(), 3);
+    }
+
+    private ICreateItineraryRequestDTO getRequestBody() {
+        ITimePeriodDTO timePeriodDTO = new TimePeriodDTO();
+        timePeriodDTO.setStartDate(LocalDate.parse("2022-01-01"));
+        timePeriodDTO.setEndDate(LocalDate.parse("2022-01-05"));
+
+        ICreateItineraryRequestDTO createItineraryRequestDTO = new CreateItineraryRequestDTO();
+        createItineraryRequestDTO.setCity("New York");
+        createItineraryRequestDTO.setCountry("US");
+        createItineraryRequestDTO.setTimePeriod(timePeriodDTO);
+
+        return createItineraryRequestDTO;
+    }
+}

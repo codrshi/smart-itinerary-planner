@@ -4,8 +4,13 @@ import com.codrshi.smart_itinerary_planner.BaseTest;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
+import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
+import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteResourcePatchDataDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.MoveResourcePatchDataDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.request.PatchItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.request.IGetItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.request.GetItineraryRequestDTO;
+import com.codrshi.smart_itinerary_planner.dto.request.IPatchItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.exception.BadRequestException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidDateRangeException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidItineraryIdFormatException;
@@ -19,13 +24,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 public class ValidationServiceTest extends BaseTest {
 
@@ -120,6 +130,24 @@ public class ValidationServiceTest extends BaseTest {
         assertEquals(ErrorCode.MISSING_DATE_WHEN_CRITERIA_PROVIDED.getCode(), ex.getErrorCode());
     }
 
+    @Test
+    void givenPatchItineraryRequest_whenNull_thenThrowError() {
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                                              () -> validationService.validatePatchItineraryRequest(null));
+        assertEquals(Constant.ERR_MSG_MISSING_ITINERARY_REQUEST, ex.getMessage());
+    }
+
+    @Test
+    void givenPatchItineraryRequest_whenPatchLimitExceeds_thenThrowError() {
+        IPatchItineraryRequestDTO dto = new PatchItineraryRequestDTO();
+        dto.setPatchData(List.of(new DeleteResourcePatchDataDTO(), new MoveResourcePatchDataDTO()));
+
+        when(itineraryProperties.getPatchLimit()).thenReturn(1);
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                                              () -> validationService.validatePatchItineraryRequest(dto));
+        assertEquals(Constant.ERR_MSG_PATCH_LIMIT_EXCEED, ex.getMessage());
+    }
+
     static Stream<Arguments> criteriaAndMissingDateProvider() {
         return Stream.of(
                 org.junit.jupiter.params.provider.Arguments.of(null, LocalDate.of(2025, 1, 10)),
@@ -128,4 +156,12 @@ public class ValidationServiceTest extends BaseTest {
         );
     }
 
+    @Test
+    void givenPatchDataList_whenInvalidFields_thenThrowError() {
+        List<String> patchDataList = new ArrayList<>(Arrays.asList(null, "", "ACT-01", "POX-03", "POI-02", "2024-01-01"));
+        BadRequestException ex = assertThrows(BadRequestException.class,
+                                              () -> validationService.validatePatchData(patchDataList));
+        assertEquals(String.format(Constant.ERR_MSG_INVALID_PATCH_DATA,
+                                   List.of("", "POX-03", "null")), ex.getMessage());
+    }
 }

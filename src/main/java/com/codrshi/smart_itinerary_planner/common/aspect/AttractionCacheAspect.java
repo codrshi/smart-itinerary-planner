@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class AttractionCacheAspect {
     @Autowired
-    private RedisTemplate<String, List<IAttractionDTO>> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private ItineraryProperties itineraryProperties;
@@ -69,6 +69,6 @@ public class AttractionCacheAspect {
     }
 
     private List<IAttractionDTO> getFromCache(String redisKey) {
-        return redisTemplate.opsForValue().get(redisKey);
+        return (List<IAttractionDTO>) redisTemplate.opsForValue().get(redisKey);
     }
 }

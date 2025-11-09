@@ -7,6 +7,7 @@ import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IPatchItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IUserService;
 import com.codrshi.smart_itinerary_planner.security.JwtService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,7 +52,7 @@ public class ControllerBaseTest {
     private JwtService jwtService;
 
     @SneakyThrows
-    protected <T> T getJsonObject(String filePath, Class<T> clazz){
+    protected <T> T getJsonObject(String filePath, TypeReference<T> clazz){
         try(InputStream is = getClass().getClassLoader().getResourceAsStream(filePath)) {
             return objectMapper.readValue(is, clazz);
         }

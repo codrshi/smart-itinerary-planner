@@ -1,0 +1,535 @@
+{
+  "content": [
+    {
+      "itineraryId": "ITIX-FR-NE1QVFROWHKBCFLXWCXTY",
+      "destination": "Paris, France",
+      "timePeriod": {
+        "startDate": "2025-06-01",
+        "endDate": "2025-06-05"
+      },
+      "totalDays": 30,
+      "activities": [
+        {
+          "activityId": "ACT-030",
+          "activityDate": "2025-10-01",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-003",
+              "name": "Charlemagne et ses leudes",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "historic",
+                "monuments_and_memorials",
+                "urban_environment",
+                "cultural",
+                "interesting_places",
+                "sculptures",
+                "monuments"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-022",
+          "activityDate": "2025-10-09",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-001",
+              "name": "Counting Crows",
+              "date": "2025-10-09",
+              "activityType": "event",
+              "venue": "Olympia Hall, 28 Boulevard des Capucines",
+              "category": ["Music", "Alternative", "Alternative Rock"],
+              "note": "-",
+              "familyFriendly": false
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-019",
+          "activityDate": "2025-10-12",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-011",
+              "name": "Le Colbert",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "architecture",
+                "historic_architecture",
+                "accomodations",
+                "interesting_places",
+                "other_hotels",
+                "other_buildings_and_structures"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-018",
+          "activityDate": "2025-10-13",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-010",
+              "name": "La fontaine de la Vierge",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "fountains",
+                "historic",
+                "monuments_and_memorials",
+                "urban_environment",
+                "cultural",
+                "interesting_places",
+                "sculptures",
+                "monuments"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-017",
+          "activityDate": "2025-10-14",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-008",
+              "name": "Le Grenier de Notre-Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "architecture",
+                "historic_architecture",
+                "cathedrals",
+                "churches",
+                "interesting_places",
+                "restaurants",
+                "foods",
+                "catholic_churches",
+                "tourist_facilities",
+                "other_buildings_and_structures"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-016",
+          "activityDate": "2025-10-15",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-007",
+              "name": "Palais de l'Archevêché de Paris",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "palaces",
+                "architecture",
+                "historic_architecture",
+                "other_temples",
+                "interesting_places"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-009",
+          "activityDate": "2025-10-22",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-009",
+              "name": "Hôtel de la Motte-Montgaubert",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "historic_architecture",
+                "architecture",
+                "interesting_places",
+                "other_buildings_and_structures"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-008",
+          "activityDate": "2025-10-23",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-006",
+              "name": "Notre Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "view_points",
+                "other",
+                "interesting_places"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-004",
+          "activityDate": "2025-10-27",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-005",
+              "name": "Cathedral of Notre Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "architecture",
+                "historic_architecture",
+                "cathedrals",
+                "churches",
+                "interesting_places",
+                "destroyed_objects",
+                "catholic_churches"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-002",
+          "activityDate": "2025-10-29",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-004",
+              "name": "Palais épiscopal de Paris",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "palaces",
+                "architecture",
+                "historic_architecture",
+                "other_temples",
+                "interesting_places"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-001",
+          "activityDate": "2025-10-30",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-002",
+              "name": "Notre Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "other",
+                "unclassified_objects",
+                "interesting_places",
+                "historic_object"
+              ],
+              "note": "-"
+            }
+          ]
+        }
+      ],
+      "userRef": null
+    },
+    {
+      "itineraryId": "ITIX-FR-NE1QVFROWHKBCFLXWCXNY",
+      "destination": "Paris, France",
+      "timePeriod": {
+        "startDate": "2025-06-05",
+        "endDate": "2025-06-10"
+      },
+      "totalDays": 30,
+      "activities": [
+        {
+          "activityId": "ACT-030",
+          "activityDate": "2025-10-01",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-003",
+              "name": "Charlemagne et ses leudes",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "historic",
+                "monuments_and_memorials",
+                "urban_environment",
+                "cultural",
+                "interesting_places",
+                "sculptures",
+                "monuments"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-022",
+          "activityDate": "2025-10-09",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-001",
+              "name": "Counting Crows",
+              "date": "2025-10-09",
+              "activityType": "event",
+              "venue": "Olympia Hall, 28 Boulevard des Capucines",
+              "category": ["Music", "Alternative", "Alternative Rock"],
+              "note": "-",
+              "familyFriendly": false
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-019",
+          "activityDate": "2025-10-12",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-011",
+              "name": "Le Colbert",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "architecture",
+                "historic_architecture",
+                "accomodations",
+                "interesting_places",
+                "other_hotels",
+                "other_buildings_and_structures"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-018",
+          "activityDate": "2025-10-13",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-010",
+              "name": "La fontaine de la Vierge",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "fountains",
+                "historic",
+                "monuments_and_memorials",
+                "urban_environment",
+                "cultural",
+                "interesting_places",
+                "sculptures",
+                "monuments"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-017",
+          "activityDate": "2025-10-14",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-008",
+              "name": "Le Grenier de Notre-Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "architecture",
+                "historic_architecture",
+                "cathedrals",
+                "churches",
+                "interesting_places",
+                "restaurants",
+                "foods",
+                "catholic_churches",
+                "tourist_facilities",
+                "other_buildings_and_structures"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-016",
+          "activityDate": "2025-10-15",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-007",
+              "name": "Palais de l'Archevêché de Paris",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "palaces",
+                "architecture",
+                "historic_architecture",
+                "other_temples",
+                "interesting_places"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-009",
+          "activityDate": "2025-10-22",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-009",
+              "name": "Hôtel de la Motte-Montgaubert",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "historic_architecture",
+                "architecture",
+                "interesting_places",
+                "other_buildings_and_structures"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-008",
+          "activityDate": "2025-10-23",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-006",
+              "name": "Notre Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "view_points",
+                "other",
+                "interesting_places"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-004",
+          "activityDate": "2025-10-27",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-005",
+              "name": "Cathedral of Notre Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "architecture",
+                "historic_architecture",
+                "cathedrals",
+                "churches",
+                "interesting_places",
+                "destroyed_objects",
+                "catholic_churches"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-002",
+          "activityDate": "2025-10-29",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-004",
+              "name": "Palais épiscopal de Paris",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "religion",
+                "palaces",
+                "architecture",
+                "historic_architecture",
+                "other_temples",
+                "interesting_places"
+              ],
+              "note": "-"
+            }
+          ]
+        },
+        {
+          "activityId": "ACT-001",
+          "activityDate": "2025-10-30",
+          "weatherType": "Favourable weather with Partially cloudy.",
+          "activityNote": "-",
+          "pointOfInterests": [
+            {
+              "poiId": "POI-002",
+              "name": "Notre Dame",
+              "date": null,
+              "activityType": "attraction",
+              "category": [
+                "other",
+                "unclassified_objects",
+                "interesting_places",
+                "historic_object"
+              ],
+              "note": "-"
+            }
+          ]
+        }
+      ],
+      "userRef": null
+    }
+  ],
+  "pageable": {
+    "pageNumber": 0,
+    "pageSize": 10
+  },
+  "totalElements": 2
+}

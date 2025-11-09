@@ -9,7 +9,7 @@ import lombok.Data;
 @JacksonXmlRootElement(localName = "itinerary")
 public class CreateItineraryResponseDTO implements ICreateItineraryResponseDTO {
     private String destination;
-    private ITimePeriodDTO timePeriodDTO;
+    private ITimePeriodDTO timePeriod;
     private String itineraryId;
     private int eventsFound;
     private int attractionsFound;

@@ -27,7 +27,7 @@ import java.time.Duration;
 public class AuxiliaryCacheAspect {
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     private IMailService mailService;
@@ -82,6 +82,6 @@ public class AuxiliaryCacheAspect {
     }
 
     private String fromCache(String key) {
-        return redisTemplate.opsForValue().get(key);
+        return (String) redisTemplate.opsForValue().get(key);
     }
 }

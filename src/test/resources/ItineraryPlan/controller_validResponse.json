@@ -1,5 +1,10 @@
 {
   "destination": "Paris, France",
-  "totalDays": 10,
-  "plans": null
+  "itineraryId": "ITIX-FR-NE1QVFROWHKBCFLXWCXNY",
+  "eventsFound": 10,
+  "attractionsFound": 10,
+  "timePeriod": {
+    "startDate": "2025-06-01",
+    "endDate": "2025-06-10"
+  }
 }

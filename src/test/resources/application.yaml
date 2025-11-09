@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   data:
     web:
       pageable:
@@ -15,11 +17,20 @@ spring:
           auth: true
           starttls:
             enable: true
+  cache:
+    type: none
   ai:
     openai:
       api-key: dummyKey
 
 itinerary:
+  redis:
+    coordinate-ttl: 7         # in days
+    event-ttl: 1              # in days
+    attraction-ttl: 1         # in days
+    weather-ttl: 7            # in days
+    itinerary-ttl: 7          # in days
+    blacklisted-mails-ttl: 1  # in mins
   async:
     corePoolSize: 5
     maxPoolSize: 10

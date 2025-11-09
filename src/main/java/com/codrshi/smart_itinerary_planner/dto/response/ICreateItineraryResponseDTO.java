@@ -18,6 +18,6 @@ public interface ICreateItineraryResponseDTO {
     int getAttractionsFound();
     void setAttractionsFound(int attractionsFound);
 
-    ITimePeriodDTO getTimePeriodDTO();
-    void setTimePeriodDTO(ITimePeriodDTO timePeriodDTO);
+    ITimePeriodDTO getTimePeriod();
+    void setTimePeriod(ITimePeriodDTO timePeriod);
 }

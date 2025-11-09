@@ -10,7 +10,7 @@
     {
       "activityId": "ACT-030",
       "activityDate": "2025-10-01",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -18,7 +18,7 @@
           "name": "Charlemagne et ses leudes",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "historic",
             "monuments_and_memorials",
             "urban_environment",
@@ -34,7 +34,7 @@
     {
       "activityId": "ACT-022",
       "activityDate": "2025-10-09",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -43,7 +43,7 @@
           "date": "2025-10-09",
           "activityType": "event",
           "venue": "Olympia Hall, 28 Boulevard des Capucines",
-          "category": "Music / Alternative / Alternative Rock",
+          "category": ["Music", "Alternative", "Alternative Rock"],
           "note": "-",
           "familyFriendly": false
         }
@@ -52,7 +52,7 @@
     {
       "activityId": "ACT-019",
       "activityDate": "2025-10-12",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -60,7 +60,7 @@
           "name": "Le Colbert",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "architecture",
             "historic_architecture",
             "accomodations",
@@ -75,7 +75,7 @@
     {
       "activityId": "ACT-018",
       "activityDate": "2025-10-13",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -83,7 +83,7 @@
           "name": "La fontaine de la Vierge",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "fountains",
             "historic",
             "monuments_and_memorials",
@@ -100,7 +100,7 @@
     {
       "activityId": "ACT-017",
       "activityDate": "2025-10-14",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -108,7 +108,7 @@
           "name": "Le Grenier de Notre-Dame",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "religion",
             "architecture",
             "historic_architecture",
@@ -128,7 +128,7 @@
     {
       "activityId": "ACT-016",
       "activityDate": "2025-10-15",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -136,7 +136,7 @@
           "name": "Palais de l'Archevêché de Paris",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "religion",
             "palaces",
             "architecture",
@@ -151,7 +151,7 @@
     {
       "activityId": "ACT-009",
       "activityDate": "2025-10-22",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -159,7 +159,7 @@
           "name": "Hôtel de la Motte-Montgaubert",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "historic_architecture",
             "architecture",
             "interesting_places",
@@ -172,7 +172,7 @@
     {
       "activityId": "ACT-008",
       "activityDate": "2025-10-23",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -180,7 +180,7 @@
           "name": "Notre Dame",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "view_points",
             "other",
             "interesting_places"
@@ -192,7 +192,7 @@
     {
       "activityId": "ACT-004",
       "activityDate": "2025-10-27",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -200,7 +200,7 @@
           "name": "Cathedral of Notre Dame",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "religion",
             "architecture",
             "historic_architecture",
@@ -217,7 +217,7 @@
     {
       "activityId": "ACT-002",
       "activityDate": "2025-10-29",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -225,7 +225,7 @@
           "name": "Palais épiscopal de Paris",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "religion",
             "palaces",
             "architecture",
@@ -240,7 +240,7 @@
     {
       "activityId": "ACT-001",
       "activityDate": "2025-10-30",
-      "weatherType": "TYPE_42",
+      "weatherType": "Favourable weather with Partially cloudy.",
       "activityNote": "-",
       "pointOfInterests": [
         {
@@ -248,7 +248,7 @@
           "name": "Notre Dame",
           "date": null,
           "activityType": "attraction",
-          "kinds": [
+          "category": [
             "other",
             "unclassified_objects",
             "interesting_places",

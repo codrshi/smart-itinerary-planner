@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponse
 import com.codrshi.smart_itinerary_planner.dto.implementation.request.CreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.CreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.SneakyThrows;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -25,17 +26,19 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
     @SneakyThrows
     @Test
     void givenCreateItineraryController_whenCorrectRequest_ThenAcceptedResponse() {
-        ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_validRequest.json",
-                                                                  CreateItineraryRequestDTO.class);
-        ICreateItineraryResponseDTO createItineraryResponseDTO = getJsonObject("ItineraryPlan/controller_validResponse.json",
-                                                                    CreateItineraryResponseDTO.class);
+        ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_validRequest" +
+                                                                                     ".json",
+                                                                  new TypeReference<CreateItineraryRequestDTO>() {});
+        ICreateItineraryResponseDTO createItineraryResponseDTO = getJsonObject("ItineraryPlan" +
+                                                                                       "/controller_validResponse.json",
+                                                                    new TypeReference<CreateItineraryResponseDTO>() {});
 
         when(createItineraryService.createItinerary(any())).thenReturn(createItineraryResponseDTO);
 
         mockMvc.perform(post(URI)
                                 .contentType(MediaType.APPLICATION_JSON).with(csrf())
                                 .content(objectMapper.writeValueAsString(createItineraryRequestDTO)))
-                .andExpect(status().isAccepted())
+                .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(createItineraryResponseDTO)));
     }
 
@@ -43,7 +46,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
     @Test
     void givenCreateItineraryController_whenUnknownError_ThenInternalServerErrorResponse() {
         ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_validRequest.json",
-                                                                  CreateItineraryRequestDTO.class);
+                                                                  new TypeReference<CreateItineraryRequestDTO>() {});
         int expectedErrorCode = ErrorCode.INTERNAL_SERVER_ERROR.getCode();
         String expectedErrorMessage = ErrorCode.INTERNAL_SERVER_ERROR.getMessageTemplate();
 
@@ -61,7 +64,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
     @Test
     void givenCreateItineraryController_whenInvalidFields_ThenBadRequestResponse() {
         ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_invalidFieldsRequest.json",
-                                                                  CreateItineraryRequestDTO.class);
+                                                                  new TypeReference<CreateItineraryRequestDTO>() {});
 
         mockMvc.perform(post(URI)
                                 .contentType(MediaType.APPLICATION_JSON).with(csrf())
@@ -80,7 +83,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
     @Test
     void givenCreateItineraryController_whenInvalidDateRange_ThenBadRequestResponse() {
         ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_invalidDateRangeRequest.json",
-                                                                  CreateItineraryRequestDTO.class);
+                                                                  new TypeReference<CreateItineraryRequestDTO>() {});
 
         mockMvc.perform(post(URI)
                                 .contentType(MediaType.APPLICATION_JSON).with(csrf())
@@ -94,7 +97,7 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
     @Test
     void givenCreateItineraryController_whenInvalidDate_ThenBadRequestResponse() {
         ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_validRequest.json",
-                                                                  CreateItineraryRequestDTO.class);
+                                                                  new TypeReference<CreateItineraryRequestDTO>() {});
         final String invalidDate = "2025-%06AND01";
 
         mockMvc.perform(post(URI)
