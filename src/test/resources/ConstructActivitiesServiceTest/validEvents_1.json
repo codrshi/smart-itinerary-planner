@@ -1,0 +1,42 @@
+[
+  {
+    "poiId": "POI-1",
+    "name": "Event 1",
+    "date": "2025-11-01",
+    "activityType": "event",
+    "venue": "Venue 1",
+    "isFamilyFriendly": true,
+    "category": ["category1", "category2"],
+    "note": "Note 1"
+  },
+  {
+    "poiId": "POI-2",
+    "name": "Event 2",
+    "date": "2025-11-02",
+    "activityType": "event",
+    "venue": "Venue 2",
+    "isFamilyFriendly": false,
+    "category": ["category3", "category4"],
+    "note": "Note 2"
+  },
+  {
+    "poiId": "POI-3",
+    "name": "Event 3",
+    "date": "2025-11-05",
+    "activityType": "event",
+    "venue": "Venue 3",
+    "isFamilyFriendly": true,
+    "category": ["category5", "category6"],
+    "note": "Note 3"
+  },
+  {
+    "poiId": "POI-4",
+    "name": "Event 4",
+    "date": "2025-11-05",
+    "activityType": "event",
+    "venue": "Venue 4",
+    "isFamilyFriendly": true,
+    "category": ["category7", "category8"],
+    "note": "Note 4"
+  }
+]

@@ -104,5 +104,13 @@ public class ItineraryProperties {
         private int corePoolSize;
         private int maxPoolSize;
         private int queueCapacity;
+        private TimeLimitSchedulerProperties timeLimitScheduler;
+
+        @Getter
+        @AllArgsConstructor
+        @ToString
+        public static class TimeLimitSchedulerProperties {
+            private int corePoolSize;
+        }
     }
 }

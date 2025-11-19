@@ -31,12 +31,12 @@ public class WeatherCacheAspect {
     @Autowired
     private ItineraryProperties itineraryProperties;
 
-    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.ExternalApiService.getVirtualCrossingWeather(..))", argNames = "timePeriodDTO, coordinateDTO")
+    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.ExternalApiService.getVirtualCrossingWeather(..)) && args(timePeriodDTO, coordinateDTO)")
     public Object cacheWeather(ProceedingJoinPoint joinPoint, ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
 
         String redisKey = WeatherRedisKeyGenerator.generate(coordinateDTO);
 
-        Map<LocalDate, WeatherType> cachedDateToWeatherMap = getFromCache(redisKey);
+        Map<LocalDate, WeatherType> cachedDateToWeatherMap = fromCache(redisKey);
         ITimePeriodDTO missingPeriodDTO = getMissingPeriod(timePeriodDTO, cachedDateToWeatherMap);
 
         Map<LocalDate, WeatherType> partialDateToWeatherMap = extractDateToWeatherMapFromCache(cachedDateToWeatherMap, timePeriodDTO);
@@ -64,7 +64,7 @@ public class WeatherCacheAspect {
                              remainingDateToWeatherMap.entrySet().stream());
     }
 
-    private Map<LocalDate, WeatherType> getFromCache(String redisKey) {
+    private Map<LocalDate, WeatherType> fromCache(String redisKey) {
         return redisTemplate.opsForHash().entries(redisKey).entrySet().stream()
                 .collect(Collectors.toMap(e -> LocalDate.parse(e.getKey().toString()), e -> (WeatherType) e.getValue()));
     }

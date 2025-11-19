@@ -78,7 +78,7 @@ public class EventMapper implements IEventMapper {
         eventDTO.setVenue(venue);
         eventDTO.setDate(date);
         eventDTO.setFamilyFriendly(isFamilyFriendly);
-        eventDTO.setActivityType(ActivityType.EVENT);
+        //eventDTO.setActivityType(ActivityType.EVENT);
         eventDTO.setNote(Constant.EMPTY_NOTE);
 
         return eventDTO;

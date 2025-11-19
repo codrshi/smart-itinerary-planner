@@ -14,6 +14,8 @@ itinerary:
     corePoolSize: 5
     maxPoolSize: 10
     queueCapacity: 50
+    timeLimitScheduler:
+      corePoolSize: 4
 
 logging:
   level:

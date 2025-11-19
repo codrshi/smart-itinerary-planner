@@ -1,0 +1,15 @@
+{
+  "patchOperation": "updateNote",
+  "patchData": [
+    {
+      "source": "ACT-001",
+      "value": "Updated Note",
+      "patchNoteType": "replace"
+    },
+    {
+      "source": "POI-001",
+      "value": "Updated Note",
+      "patchNoteType": "append"
+    }
+  ]
+}

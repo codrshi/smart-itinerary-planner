@@ -111,7 +111,7 @@ public class ItineraryController {
     }
 
     @DeleteMapping
-    public ResponseEntity<EntityModel<IDeleteItineraryResponseDTO>> deleteItineraries(@Valid DeleteItineraryRequestDTO deleteItineraryRequestDTO ) {
+    public ResponseEntity<EntityModel<IDeleteItineraryResponseDTO>> deleteItineraries(@Valid DeleteItineraryRequestDTO deleteItineraryRequestDTO) {
         IDeleteItineraryResponseDTO deleteItineraryResponseDTO =
                 deleteItineraryService.deleteItineraries(deleteItineraryRequestDTO);
 
@@ -138,7 +138,7 @@ public class ItineraryController {
                                                                               linkTo(methodOn(ItineraryController.class).deleteItinerary(itineraryId)).withRel("delete itinerary"));
 
             responseEntity = ResponseEntity.status(HttpStatus.OK).headers(httpHeaders).body(responseModel);
-        } else {
+        } else {  // return-minimal
             responseEntity = ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
 

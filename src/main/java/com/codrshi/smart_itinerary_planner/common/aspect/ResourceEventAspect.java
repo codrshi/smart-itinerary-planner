@@ -44,8 +44,8 @@ public class ResourceEventAspect {
                   itineraryResponseDTO.getItineraryId());
     }
 
-    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.controller.ItineraryController.deleteItinerary(..))",
-                    returning = "response", argNames = "itineraryId")
+    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.controller.ItineraryController.deleteItinerary(..)) && args(itineraryId)",
+                    returning = "response")
     public void publishItineraryDeleteResourceEvent(JoinPoint joinPoint, String itineraryId, Object response) {
 
         DeleteResourceEventDTO deleteResourceEventDTO =
@@ -69,8 +69,8 @@ public class ResourceEventAspect {
         });
     }
 
-    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.controller.ItineraryController.patchItinerary(..))",
-                    returning = "response", argNames = "itineraryId")
+    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.controller.ItineraryController.patchItinerary(..)) && args(itineraryId)",
+                    returning = "response")
     public void publishItineraryUpdateResourceEvent(JoinPoint joinPoint, String itineraryId, Object response) {
 
         UpdateResourceEventDTO updateResourceEventDTO =

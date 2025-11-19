@@ -1,0 +1,10 @@
+{
+  "patchOperation": "moveResource",
+  "patchData": [
+    {
+      "source": "ACT-001",
+      "value": "Updated Note",
+      "patchNoteType": "replace"
+    }
+  ]
+}

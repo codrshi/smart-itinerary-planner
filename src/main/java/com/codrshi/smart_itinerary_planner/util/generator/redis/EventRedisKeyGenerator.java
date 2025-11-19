@@ -15,7 +15,7 @@ public class EventRedisKeyGenerator extends RedisKeyGenerator implements KeyGene
     public Object generate(Object target, Method method, Object... params) {
         if(params.length == 2 && params[0] instanceof ILocationDTO locationDTO && params[1] instanceof ITimePeriodDTO timePeriodDTO) {
             return generateKeyWithoutContext(Constant.EVENT_KEY, locationDTO.getCity(), locationDTO.getCountryCode(),
-                                             String.format("{}_{}", timePeriodDTO.getStartDate(), timePeriodDTO.getEndDate()));
+                                             String.format("%s_%s", timePeriodDTO.getStartDate(), timePeriodDTO.getEndDate()));
         }
 
         return generateRandomKey();

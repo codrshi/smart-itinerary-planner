@@ -23,4 +23,9 @@ public class CounterManager {
     public String nextPoiId() {
         return poiCounter.next();
     }
+
+    public void reset() {
+        activityCounter.reset();
+        poiCounter.reset();
+    }
 }

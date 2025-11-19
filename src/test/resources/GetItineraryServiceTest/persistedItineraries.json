@@ -1,0 +1,210 @@
+[
+  {
+  "docId": "testDocId_1",
+  "itineraryId": "ITIX-US-BFIN59J8-MWLILSPA3T6B",
+  "location": {
+    "city": "New York",
+    "country": "United States",
+    "countryCode": "US",
+    "radius": 25
+  },
+  "timePeriod": {
+    "startDate": "2025-11-01",
+    "endDate": "2025-11-05"
+  },
+  "totalDays": 5,
+  "activities": [
+    {
+      "activityId": "ACT-005",
+      "activityDate": "2025-11-01",
+      "weatherType": "Unknown weather",
+      "activityNote": "-",
+      "pointOfInterests": [
+        {
+          "poiId": "POI-1",
+          "name": "Event 1",
+          "date": "2025-11-01",
+          "venue": "Venue 1",
+          "activityType": "event",
+          "isFamilyFriendly": false,
+          "category": ["category1", "category2"],
+          "note": "Note 1"
+        }
+      ]
+    },
+    {
+      "activityId": "ACT-004",
+      "activityDate": "2025-11-02",
+      "weatherType": "Unknown weather",
+      "activityNote": "-",
+      "pointOfInterests": [
+        {
+          "poiId": "POI-2",
+          "name": "Event 2",
+          "date": "2025-11-02",
+          "venue": "Venue 2",
+          "activityType": "event",
+          "isFamilyFriendly": false,
+          "category": ["category3", "category4"],
+          "note": "Note 2"
+        }
+      ]
+    },
+    {
+      "activityId": "ACT-003",
+      "activityDate": "2025-11-03",
+      "weatherType": "Unknown weather",
+      "activityNote": "-",
+      "pointOfInterests": [
+        {
+          "poiId": "POI-2",
+          "name": "Attraction 2",
+          "date": "2025-11-03",
+          "activityType": "attraction",
+          "category": ["category3", "category4"],
+          "note": "Note 2"
+        }
+      ]
+    },
+    {
+      "activityId": "ACT-002",
+      "activityDate": "2025-11-04",
+      "weatherType": "Unknown weather",
+      "activityNote": "-",
+      "pointOfInterests": [
+        {
+          "poiId": "POI-1",
+          "name": "Attraction 1",
+          "date": "2025-11-01",
+          "activityType": "attraction",
+          "category": ["category1", "category2"],
+          "note": "Note 1"
+        }
+      ]
+    },
+    {
+      "activityId": "ACT-001",
+      "activityDate": "2025-11-05",
+      "weatherType": "Unknown weather",
+      "activityNote": "-",
+      "pointOfInterests": [
+        {
+          "poiId": "POI-3",
+          "name": "Event 3",
+          "date": "2025-11-05",
+          "venue": "Venue 3",
+          "activityType": "event",
+          "isFamilyFriendly": false,
+          "category": ["category5", "category6"],
+          "note": "Note 3"
+        }
+      ]
+    }
+  ],
+  "userRef": "system_user"
+},
+  {
+    "docId": "testDocId_2",
+    "itineraryId": "ITIX-US-UCHU9DBX-MWLILSPA74HN",
+    "location": {
+      "city": "New York",
+      "country": "United States",
+      "countryCode": "US",
+      "radius": 25
+    },
+    "timePeriod": {
+      "startDate": "2025-11-01",
+      "endDate": "2025-11-05"
+    },
+    "totalDays": 5,
+    "activities": [
+      {
+        "activityId": "ACT-005",
+        "activityDate": "2025-11-01",
+        "weatherType": "Unknown weather",
+        "activityNote": "-",
+        "pointOfInterests": [
+          {
+            "poiId": "POI-1",
+            "name": "Event 1",
+            "date": "2025-11-01",
+            "venue": "Venue 1",
+            "activityType": "event",
+            "isFamilyFriendly": false,
+            "category": ["category1", "category2"],
+            "note": "Note 1"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT-004",
+        "activityDate": "2025-11-02",
+        "weatherType": "Unknown weather",
+        "activityNote": "-",
+        "pointOfInterests": [
+          {
+            "poiId": "POI-2",
+            "name": "Event 2",
+            "date": "2025-11-02",
+            "venue": "Venue 2",
+            "activityType": "event",
+            "isFamilyFriendly": false,
+            "category": ["category3", "category4"],
+            "note": "Note 2"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT-003",
+        "activityDate": "2025-11-03",
+        "weatherType": "Unknown weather",
+        "activityNote": "-",
+        "pointOfInterests": [
+          {
+            "poiId": "POI-2",
+            "name": "Attraction 2",
+            "date": "2025-11-03",
+            "activityType": "attraction",
+            "category": ["category3", "category4"],
+            "note": "Note 2"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT-002",
+        "activityDate": "2025-11-04",
+        "weatherType": "Unknown weather",
+        "activityNote": "-",
+        "pointOfInterests": [
+          {
+            "poiId": "POI-1",
+            "name": "Attraction 1",
+            "date": "2025-11-01",
+            "activityType": "attraction",
+            "category": ["category1", "category2"],
+            "note": "Note 1"
+          }
+        ]
+      },
+      {
+        "activityId": "ACT-001",
+        "activityDate": "2025-11-05",
+        "weatherType": "Unknown weather",
+        "activityNote": "-",
+        "pointOfInterests": [
+          {
+            "poiId": "POI-3",
+            "name": "Event 3",
+            "date": "2025-11-05",
+            "venue": "Venue 3",
+            "activityType": "event",
+            "isFamilyFriendly": false,
+            "category": ["category5", "category6"],
+            "note": "Note 3"
+          }
+        ]
+      }
+    ],
+    "userRef": "system_user"
+  }
+]

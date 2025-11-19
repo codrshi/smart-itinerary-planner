@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -38,6 +39,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 public class ValidationServiceTest extends BaseTest {
+
+    @MockitoBean
+    private ItineraryProperties itineraryProperties;
 
     @DisplayName("Should throw IllegalArgumentException when itineraryId is null or blank")
     @ParameterizedTest

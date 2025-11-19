@@ -29,7 +29,6 @@ public interface IPointOfInterestDTO {
     void setDate(LocalDate date);
 
     ActivityType getActivityType();
-    void setActivityType(ActivityType activityType);
 
     String getNote();
     void setNote(String note);

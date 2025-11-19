@@ -1,6 +1,6 @@
 [
   {
-    "poiId": "POI-1",
+    "poiId": "POI-4",
     "name": "Attraction 1",
     "date": "2025-11-01",
     "activityType": "attraction",
@@ -8,7 +8,7 @@
     "note": "Note 1"
   },
   {
-    "poiId": "POI-2",
+    "poiId": "POI-5",
     "name": "Attraction 2",
     "date": "2025-11-03",
     "activityType": "attraction",

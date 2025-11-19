@@ -15,7 +15,8 @@ public enum ErrorCode {
     RESOURCE_ALREADY_EXIST(10011, "%s already exists for the given request."),
     QUOTA_EXCEEDED(10012, "Weather API quota exceeded on %s"),
     MISSING_PRINCIPLE(10013, "Either username or email is required for user login."),
-    TEMPORARY_BLACKLISTED(10014, "Facing issue while sending itinerary to your email. Please try again later.");
+    TEMPORARY_BLACKLISTED(10014, "Facing issue while sending itinerary to your email. Please try again later."),
+    CANNOT_CONSTRUCT_ACTIVITIES(10015, "Itinerary cannot be created due to bad weather conditions and/or absence of point of interest(s).");
 
     private final int code;
     private final String messageTemplate;

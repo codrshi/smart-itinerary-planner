@@ -60,7 +60,7 @@ public class FactoryUtil {
         return startDate.datesUntil(endDate.plusDays(1)).collect(Collectors.toMap(date -> date, date -> WeatherType.TYPE_0));
     }
 
-    public <T> T copy(T object, Class<T> clazz) throws JsonProcessingException {
+    public <T, R extends T> T copy(T object, Class<R> clazz) throws JsonProcessingException {
         return objectMapper.readValue(objectMapper.writeValueAsString(object), clazz);
     }
 }

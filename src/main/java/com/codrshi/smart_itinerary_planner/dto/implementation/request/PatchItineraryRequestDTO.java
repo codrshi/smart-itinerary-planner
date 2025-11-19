@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.IPatchDataDTO;
 import com.codrshi.smart_itinerary_planner.dto.request.IPatchItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.util.patch.PatchRequestDeserializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -13,8 +14,9 @@ import java.util.List;
 @Data
 @JsonDeserialize(using = PatchRequestDeserializer.class)
 public class PatchItineraryRequestDTO implements IPatchItineraryRequestDTO {
-    @NotNull
+    @NotNull(message = "patchOperation is null")
     private PatchOperation patchOperation;
-    @NotNull
+    @NotNull(message = "patchData is null")
+    @Valid
     private List<IPatchDataDTO> patchData;
 }

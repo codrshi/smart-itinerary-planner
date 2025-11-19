@@ -14,14 +14,22 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.request.CreateItin
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
+import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
+import com.codrshi.smart_itinerary_planner.service.implementation.CreateItineraryService;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
+import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
@@ -30,23 +38,39 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.text.DateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 public class CreateItineraryServiceTest extends BaseTest {
+
+    @MockitoSpyBean
+    private ItineraryProperties itineraryProperties;
 
     @MockitoBean
     private IExternalApiService externalApiService;
 
     @Autowired
     private ICreateItineraryService createItineraryService;
+
+    @BeforeEach
+    public void beforeEach() {
+        doAnswer(invocation -> {
+            Runnable r = invocation.getArgument(0);
+            r.run(); // run synchronously
+            return null;
+        }).when(taskExecutor).execute(any(Runnable.class));
+    }
 
     @Test
     void givenCreateItineraryService_whenCorrectRequest_ThenOkResponse() {
@@ -67,21 +91,49 @@ public class CreateItineraryServiceTest extends BaseTest {
         when(externalApiService.getVirtualCrossingWeather(any(), any())).thenReturn(mockedDateToWeatherMap);
 
         when(itineraryRepository.save(any(Itinerary.class)))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+                .thenAnswer(invocation -> {
+                    Itinerary itinerary = invocation.getArgument(0);
+                    itinerary.setDocId("testDocId");
+                    return itinerary;
+                });
 
         ICreateItineraryResponseDTO responseDTO = createItineraryService.createItinerary(createItineraryRequestDTO);
 
-        assertEquals(responseDTO.getDestination(), "New York, US");
+        assertEquals("New York, United States", responseDTO.getDestination() );
         assertTrue(responseDTO.getItineraryId().startsWith(Constant.ITINERARY_ID_PREFIX));
-        assertEquals(responseDTO.getTimePeriod(), createItineraryRequestDTO.getTimePeriod());
-        assertEquals(responseDTO.getAttractionsFound(), 2);
-        assertEquals(responseDTO.getEventsFound(), 3);
+        assertEquals(createItineraryRequestDTO.getTimePeriod(), responseDTO.getTimePeriod());
+        assertEquals(2, responseDTO.getAttractionsFound());
+        assertEquals(3, responseDTO.getEventsFound());
+    }
+
+    @Test
+    void givenCreateItineraryService_whenAsyncFails_ThenRuntimeError() {
+        ICreateItineraryRequestDTO createItineraryRequestDTO = getRequestBody();
+        ICoordinateDTO mockedCoordinates = new CoordinateDTO();
+        mockedCoordinates.setLatitude(0.0);
+        mockedCoordinates.setLongitude(0.0);
+
+        Map<LocalDate, WeatherType> mockedDateToWeatherMap = FactoryUtil.defaultDateToWeatherMap(createItineraryRequestDTO.getTimePeriod());
+
+        when(externalApiService.getTicketmasterEvents(any(), any())).thenThrow(new RuntimeException("Ticketmaster API down"));
+        when(externalApiService.getOpenStreetMapAttractions(anyInt(), any(), anyInt())).thenThrow(new RuntimeException(
+                "OSM API down"));
+        when(externalApiService.getOpenStreetMapCoordinate(any())).thenReturn(mockedCoordinates);
+        when(externalApiService.getVirtualCrossingWeather(any(), any())).thenReturn(mockedDateToWeatherMap);
+
+        RuntimeException ex = assertThrows(
+                RuntimeException.class,
+                () -> createItineraryService.createItinerary(createItineraryRequestDTO)
+        );
+
+        assertEquals("Ticketmaster API down", ex.getCause().getMessage());
+        assertEquals("Ticketmaster API down", ex.getCause().getMessage());
     }
 
     private ICreateItineraryRequestDTO getRequestBody() {
         ITimePeriodDTO timePeriodDTO = new TimePeriodDTO();
-        timePeriodDTO.setStartDate(LocalDate.parse("2022-01-01"));
-        timePeriodDTO.setEndDate(LocalDate.parse("2022-01-05"));
+        timePeriodDTO.setStartDate(LocalDate.parse("2025-11-01"));
+        timePeriodDTO.setEndDate(LocalDate.parse("2025-11-05"));
 
         ICreateItineraryRequestDTO createItineraryRequestDTO = new CreateItineraryRequestDTO();
         createItineraryRequestDTO.setCity("New York");

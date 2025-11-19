@@ -17,7 +17,11 @@ import com.codrshi.smart_itinerary_planner.util.mapper.implementation.Coordinate
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.EventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.ItineraryHistoryMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.WeatherMapper;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,15 +117,30 @@ public class AppConfig {
     }
 
     @Bean
-    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper) {
+    public GenericJackson2JsonRedisSerializer redisSerializer() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        objectMapper.activateDefaultTyping(
+                LaissezFaireSubTypeValidator.instance,
+                ObjectMapper.DefaultTyping.NON_FINAL,
+                JsonTypeInfo.As.PROPERTY
+        );
+
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
+    }
+
+    @Bean
+    public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory redisConnectionFactory, GenericJackson2JsonRedisSerializer serializer) {
         RedisTemplate<String,Object> redisTemplate = new RedisTemplate<>();
 
         redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        redisTemplate.setValueSerializer(serializer);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
 
         redisTemplate.setHashKeySerializer((new StringRedisSerializer()));
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        redisTemplate.setHashValueSerializer(serializer);
 
         redisTemplate.afterPropertiesSet();
 
@@ -129,21 +148,23 @@ public class AppConfig {
     }
 
     @Bean
-    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, ObjectMapper objectMapper,
+    public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory, GenericJackson2JsonRedisSerializer serializer,
                                           ItineraryProperties itineraryProperties) {
         ItineraryProperties.RedisProperties redisProperties = itineraryProperties.getRedis();
         Map<String, RedisCacheConfiguration>  cacheConfigurationMap = new HashMap<>();
 
-        cacheConfigurationMap.put(Constant.COORDINATE_CACHE, defaultCacheConfig(objectMapper).entryTtl(Duration.ofDays(redisProperties.getCoordinateTtl())));
-        cacheConfigurationMap.put(Constant.EVENT_CACHE, defaultCacheConfig(objectMapper).entryTtl(Duration.ofDays(redisProperties.getEventTtl())));
+        cacheConfigurationMap.put(Constant.COORDINATE_CACHE,
+                                  defaultCacheConfig(serializer).entryTtl(Duration.ofDays(redisProperties.getCoordinateTtl())));
+        cacheConfigurationMap.put(Constant.EVENT_CACHE,
+                                  defaultCacheConfig(serializer).entryTtl(Duration.ofDays(redisProperties.getEventTtl())));
 
         return RedisCacheManager.builder(redisConnectionFactory).withInitialCacheConfigurations(cacheConfigurationMap).build();
     }
 
-    private RedisCacheConfiguration defaultCacheConfig(ObjectMapper objectMapper) {
+    private RedisCacheConfiguration defaultCacheConfig(GenericJackson2JsonRedisSerializer serializer) {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .disableCachingNullValues()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer(objectMapper)));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
     }
 }

@@ -5,7 +5,9 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.ApiResponseWrapper;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
@@ -30,7 +32,9 @@ import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Aspect
 @Component
@@ -46,8 +50,7 @@ public class GetItineraryCacheAspect {
     @Autowired
     private FactoryUtil factoryUtil;
 
-    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.GetItineraryService" +
-            ".getItinerary(..))", argNames = "itineraryId")
+    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.GetItineraryService.getItinerary(..)) && args(itineraryId)")
     public Object cacheGetItinerary(ProceedingJoinPoint joinPoint, String itineraryId) throws JsonProcessingException {
 
         String idRedisKey = ItineraryRedisKeyGenerator.generateWithItineraryId(itineraryId);
@@ -62,19 +65,21 @@ public class GetItineraryCacheAspect {
 
         log.debug("CACHE MISS: cached itinerary not found for itineraryId = {}", itineraryId);
         try {
-            responseDTO = (IItineraryResponseDTO) joinPoint.proceed();
+            responseDTO = (GetItineraryResponseDTO) joinPoint.proceed();
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
 
-        cacheResponse(idRedisKey, activitiesRedisKey, factoryUtil.copy(responseDTO, IItineraryResponseDTO.class));
+        cacheResponse(idRedisKey, activitiesRedisKey, factoryUtil.copy(responseDTO, GetItineraryResponseDTO.class));
 
         return responseDTO;
     }
 
     private IItineraryResponseDTO fromCache(String idRedisKey, String activitiesRedisKey) {
-        IItineraryResponseDTO responseDTO = (IItineraryResponseDTO) redisTemplate.opsForValue().get(idRedisKey);
-        List<IActivityDTO> activities = (List<IActivityDTO>) redisTemplate.opsForValue().get(activitiesRedisKey);
+        IItineraryResponseDTO responseDTO = (GetItineraryResponseDTO) redisTemplate.opsForValue().get(idRedisKey);
+        List<IActivityDTO> activities = new ArrayList<>(
+                        Optional.ofNullable((List<ActivityDTO>) redisTemplate.opsForValue().get(activitiesRedisKey))
+                .orElse(Collections.emptyList()));
 
         if(responseDTO == null || activities == null) {
             return null;

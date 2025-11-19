@@ -41,8 +41,7 @@ public class DeleteItineraryCacheAspect {
     @Autowired
     private ItineraryProperties itineraryProperties;
 
-    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.DeleteItineraryService.deleteItinerary(..))",
-                    argNames = "itineraryId")
+    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.DeleteItineraryService.deleteItinerary(..)) && args(itineraryId)")
     public void cacheDeleteItineraryResponse(JoinPoint joinPoint, String itineraryId) {
         deleteFromCache(itineraryId);
     }

@@ -2,6 +2,7 @@ package com.codrshi.smart_itinerary_planner.controller;
 
 import com.codrshi.smart_itinerary_planner.TestConfig;
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.common.enums.ActivityType;
 import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import com.codrshi.smart_itinerary_planner.dto.implementation.request.GetItineraryRequestDTO;
@@ -9,6 +10,7 @@ import com.codrshi.smart_itinerary_planner.dto.request.IGetItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
+import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.SneakyThrows;
 import org.hamcrest.Matchers;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.List;
 
@@ -35,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ItineraryController.class)
 public class GetItineraryControllerTest extends ControllerBaseTest{
 
-    public static final String ITINERARY_ID = "ITIX-FR-NE1QVFROWHKBCFLXWCXNY";
+    private static final String ITINERARY_ID = "ITIX-FR-NE1QVFROWHKBCFLXWCXNY";
     private static final String URL = URI + "/" + ITINERARY_ID;
 
     @SneakyThrows

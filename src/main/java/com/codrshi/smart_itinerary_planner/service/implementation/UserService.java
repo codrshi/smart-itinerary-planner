@@ -66,7 +66,7 @@ public class UserService implements IUserService {
         compromisedPasswordChecker.check(password);
         log.trace("Compromised password verification passed.");
 
-        User user = buildUser(username, password);
+        User user = buildUser(username, email, password);
         log.trace("User built successfully. Saving user...");
 
         User savedUser = userRepository.save(user);
@@ -104,15 +104,15 @@ public class UserService implements IUserService {
         return userMapper.mapToUserResponseDTO(authentication, jwtToken, Date.from(now.plus(8, ChronoUnit.HOURS)));
     }
 
-    private User buildUser(String username, String password) {
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setRoles(Collections.singletonList(UserRole.USER));
-        user.setCreatedBy(username);
-        user.setUpdatedBy(username);
-
-        return user;
+    private User buildUser(String username, String email, String password) {
+        return User.builder()
+                .username(username)
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .roles(Collections.singletonList(UserRole.USER))
+                .build();
+//        user.setCreatedBy(username);
+//        user.setUpdatedBy(username);
     }
 
     private void checkIfExistingUser(String username, String email) {

@@ -19,7 +19,6 @@ import java.util.List;
 
 public class PatchRequestDeserializer extends JsonDeserializer<IPatchItineraryRequestDTO> {
 
-
     @Autowired
     private ObjectMapper objectMapper;
 

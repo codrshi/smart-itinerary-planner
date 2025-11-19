@@ -5,12 +5,15 @@ import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponse
 import com.codrshi.smart_itinerary_planner.dto.implementation.request.CreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.CreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
+import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
+import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.SneakyThrows;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -26,11 +29,9 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
     @SneakyThrows
     @Test
     void givenCreateItineraryController_whenCorrectRequest_ThenAcceptedResponse() {
-        ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_validRequest" +
-                                                                                     ".json",
+        ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_validRequest.json",
                                                                   new TypeReference<CreateItineraryRequestDTO>() {});
-        ICreateItineraryResponseDTO createItineraryResponseDTO = getJsonObject("ItineraryPlan" +
-                                                                                       "/controller_validResponse.json",
+        ICreateItineraryResponseDTO createItineraryResponseDTO = getJsonObject("ItineraryPlan/controller_validResponse.json",
                                                                     new TypeReference<CreateItineraryResponseDTO>() {});
 
         when(createItineraryService.createItinerary(any())).thenReturn(createItineraryResponseDTO);
@@ -106,5 +107,23 @@ public class CreateItineraryControllerTest extends ControllerBaseTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value(
                         Matchers.containsString(String.format("Text '%s' could not be parsed", invalidDate))));
+    }
+
+    @SneakyThrows
+    @Test
+    void givenCreateItineraryController_whenNoPoi_ThenBadRequestResponse() {
+        ICreateItineraryRequestDTO createItineraryRequestDTO = getJsonObject("ItineraryPlan/controller_validRequest.json",
+                                                                             new TypeReference<CreateItineraryRequestDTO>() {});
+        int expectedErrorCode = ErrorCode.CANNOT_CONSTRUCT_ACTIVITIES.getCode();
+        String expectedErrorMessage = ErrorCode.CANNOT_CONSTRUCT_ACTIVITIES.getMessageTemplate();
+
+        when(createItineraryService.createItinerary(any())).thenThrow(new CannotConstructActivityException());
+
+        mockMvc.perform(post(URI)
+                                .contentType(MediaType.APPLICATION_JSON).with(csrf())
+                                .content(objectMapper.writeValueAsString(createItineraryRequestDTO)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.errorCode").value(expectedErrorCode))
+                .andExpect(jsonPath("$.message").value(expectedErrorMessage));
     }
 }

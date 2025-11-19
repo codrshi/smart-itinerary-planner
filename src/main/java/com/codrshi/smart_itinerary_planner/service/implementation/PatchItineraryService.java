@@ -77,7 +77,7 @@ public class PatchItineraryService implements IPatchItineraryService {
         String patchOperation = patchItineraryRequestDTO.getPatchOperation().getValue();
         PatchHandler patchHandler = PatchDataRegistry.getHandlerObject(patchOperation);
 
-        log.debug("Dispatching patch operation = {} to handler", patchOperation, patchHandler.getClass().getSimpleName());
+        log.debug("Dispatching patch operation = {} to handler {}", patchOperation, patchHandler.getClass().getSimpleName());
 
         return patchHandler.handle(patchedItinerary.getActivities(), patchItineraryRequestDTO.getPatchData());
 

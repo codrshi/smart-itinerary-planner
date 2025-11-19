@@ -1,0 +1,66 @@
+[
+  {
+    "activityId": "ACT-001",
+    "activityDate": "2025-11-01",
+    "weatherType": "Favourable weather with Clear.",
+    "activityNote": "-",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-1",
+        "name": "Event 1",
+        "date": "2025-11-01",
+        "venue": "Venue 1",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category1", "category2"],
+        "note": "Note 1"
+      }
+    ]
+  },
+  {
+    "activityId": "ACT-002",
+    "activityDate": "2025-11-02",
+    "weatherType": "Favourable weather with Clear.",
+    "activityNote": "-",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-2",
+        "name": "Event 2",
+        "date": "2025-11-02",
+        "venue": "Venue 2",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category3", "category4"],
+        "note": "Note 2"
+      }
+    ]
+  },
+  {
+    "activityId": "ACT-005",
+    "activityDate": "2025-11-05",
+    "weatherType": "Favourable weather with Sky Coverage Increasing.",
+    "activityNote": "-",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-3",
+        "name": "Event 3",
+        "date": "2025-11-05",
+        "venue": "Venue 3",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category5", "category6"],
+        "note": "Note 3"
+      },
+      {
+        "poiId": "POI-4",
+        "name": "Event 4",
+        "date": "2025-11-05",
+        "venue": "Venue 4",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category7", "category8"],
+        "note": "Note 4"
+      }
+    ]
+  }
+]

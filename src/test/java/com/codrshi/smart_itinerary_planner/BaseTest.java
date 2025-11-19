@@ -13,6 +13,7 @@ import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;
 import com.codrshi.smart_itinerary_planner.security.Principle;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.security.JwtService;
+import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
@@ -52,6 +53,9 @@ public class BaseTest {
 
     public static final String DUMMY_EMAIL = "dummy@gmail.com";
 
+    @Autowired
+    private LocationUtil locationUtil;
+
     @MockitoBean
     protected RestTemplate restTemplate;
 
@@ -75,9 +79,6 @@ public class BaseTest {
 
     @MockitoBean
     protected ItineraryRepository itineraryRepository;
-
-    @MockitoBean
-    protected ItineraryProperties itineraryProperties;
 
     @BeforeAll
     public static void setup() {

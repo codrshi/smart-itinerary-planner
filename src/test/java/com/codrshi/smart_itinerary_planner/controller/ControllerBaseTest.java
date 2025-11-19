@@ -34,22 +34,22 @@ public class ControllerBaseTest {
     protected ObjectMapper objectMapper;
 
     @MockitoBean
+    private IUserService userService;
+
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
     protected ICreateItineraryService createItineraryService;
 
     @MockitoBean
     protected IGetItineraryService getItineraryService;
 
     @MockitoBean
-    private IDeleteItineraryService deleteItineraryService;
+    protected IDeleteItineraryService deleteItineraryService;
 
     @MockitoBean
-    private IPatchItineraryService patchItineraryService;
-
-    @MockitoBean
-    private IUserService userService;
-
-    @MockitoBean
-    private JwtService jwtService;
+    protected IPatchItineraryService patchItineraryService;
 
     @SneakyThrows
     protected <T> T getJsonObject(String filePath, TypeReference<T> clazz){

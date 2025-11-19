@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
@@ -40,6 +41,11 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
                                                    Map<LocalDate, WeatherType> dateToWeatherMap) {
 
         List<IActivityDTO> activities = new ArrayList<>();
+
+        if(events.isEmpty() && attractions.isEmpty()) {
+            return activities;
+        }
+
         Map<LocalDate, IActivityDTO> dateToActivityMap = factoryUtil.initializeDateToActivityMap(dateToWeatherMap);
 
         log.debug("Initialized dateToActivityMap: {}", dateToActivityMap);
@@ -64,19 +70,21 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
         activityMinHeap.addAll(rawActivities);
 
         log.debug("initialized activityMinHeap: {}", activityMinHeap);
-        // TODO: Check if cooldown queue needed to avoid clustering of attractions in best weathers
-        attractions.forEach(attraction -> {
-            IActivityDTO activityDTO = activityMinHeap.poll();
-            List<IPointOfInterestDTO> poiList = activityDTO.getPointOfInterests();
 
-            if(poiList.size() < poiPerDay) {
-                poiList.add(attraction);
-                activityMinHeap.add(activityDTO);
-            }
-            else {
-                activities.add(activityDTO);
-            }
-        });
+        // TODO: Check if cooldown queue needed to avoid clustering of attractions in best weathers
+        attractions.forEach(attraction -> Optional.ofNullable(activityMinHeap.poll()).ifPresent(
+                activityDTO -> {
+                    List<IPointOfInterestDTO> poiList = activityDTO.getPointOfInterests();
+
+                    if(poiList.size() < poiPerDay) {
+                        poiList.add(attraction);
+                        activityMinHeap.add(activityDTO);
+                    }
+                    else {
+                        activities.add(activityDTO);
+                    }
+                }
+        ));
 
         activities.addAll(activityMinHeap.stream().filter(activityDTO -> activityDTO.getPointOfInterests().size() > 0)
                                   .collect(Collectors.toList()));

@@ -1,0 +1,23 @@
+[
+  {
+    "poiId": "POI-5",
+    "name": "Attraction 1",
+    "activityType": "attraction",
+    "category": ["category1", "category2"],
+    "note": "Note 1"
+  },
+  {
+    "poiId": "POI-6",
+    "name": "Attraction 2",
+    "activityType": "attraction",
+    "category": ["category3", "category4"],
+    "note": "Note 2"
+  },
+  {
+    "poiId": "POI-7",
+    "name": "Attraction 3",
+    "activityType": "attraction",
+    "category": ["category4", "category6"],
+    "note": "Note 3"
+  }
+]

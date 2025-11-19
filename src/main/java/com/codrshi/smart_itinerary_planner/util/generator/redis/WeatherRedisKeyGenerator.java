@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WeatherRedisKeyGenerator extends RedisKeyGenerator{
 
     public static String generate(ICoordinateDTO coordinateDTO) {
-        return generateKeyWithoutContext(Constant.WEATHER_KEY, String.format("{}_{}", coordinateDTO.getLatitude(), coordinateDTO.getLongitude()));
+        return generateKeyWithoutContext(Constant.WEATHER_KEY, String.format("%s_%s", coordinateDTO.getLatitude(), coordinateDTO.getLongitude()));
 
     }
 }

@@ -19,13 +19,15 @@ public class Constant {
     public static final String PREFER_HEADER = "Prefer";
     public static final String AUTH_HEADER = "Authorization";
     public static final String TRACE_ID_HEADER = "X-Trace-Id";
-    public static final String PREFER_HEADER_REPRESENTATION = "return=representation";
+    public static final String PREFER_HEADER_REPRESENTATION = "return-representation";
+    public static final String PREFER_HEADER_MINIMAL = "return-minimal";
     public static final String SYSTEM_USER = "system_user";
 
     // Resource
     public static final String RESOURCE_POI = "POI(s)";
     public static final String RESOURCE_ITINERARY = "itinerary";
     public static final String DATE_RANGE_CRITERIA = "dateRangeCriteria";
+    public static final String ACTIVITY_TYPE = "activityType";
     public static final String PATCH_OPERATION = "patchOperation";
     public static final String PATCH_DATA = "patchData";
     public static final String PATCH_NOTE_TYPE = "patchNoteType";
@@ -38,6 +40,7 @@ public class Constant {
     public static final String RESOURCE_USER = "user";
 
     public static final String THREAD_PREFIX = "SIP-TaskExecutor-";
+    public static final String TIME_LIMIT_SCHEDULER_PREFIX = "SIP-TimeLimitScheduler-";
     public static final String ITINERARY_ID_PREFIX = "ITIX-";
     public static final String ACTIVITY_ID_PREFIX = "ACT-";
     public static final String POI_ID_PREFIX = "POI-";
@@ -47,6 +50,7 @@ public class Constant {
     public static final String JWT_SECRET_KEY = "JWT_SECRET_KEY";
     public static final String EMAIL_REDACTED = "[EMAIL_REDACTED]";
     public static final String PHONE_REDACTED = "[PHONE_REDACTED]";
+    public static final String EXTERNAL_API_TIMEOUT_CONFIG = "externalApiTimeout";
 
     // Redis
     public static final String ITIX_KEY_PREFIX = "itix";

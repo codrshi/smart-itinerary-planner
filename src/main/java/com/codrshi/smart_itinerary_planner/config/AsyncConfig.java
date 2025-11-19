@@ -1,6 +1,8 @@
 package com.codrshi.smart_itinerary_planner.config;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import io.github.resilience4j.timelimiter.TimeLimiter;
+import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Configuration
 @EnableAsync
@@ -31,6 +35,22 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setThreadNamePrefix(Constant.THREAD_PREFIX);
         executor.initialize();
         return executor;
+    }
+
+    @Bean(destroyMethod = "shutdown")
+    public ScheduledExecutorService timeLimiterScheduler() {
+        return Executors.newScheduledThreadPool(itineraryProperties.getAsync().getTimeLimitScheduler().getCorePoolSize(),
+                                                r -> {
+            Thread t = new Thread(r);
+            t.setDaemon(true);
+            t.setName(Constant.TIME_LIMIT_SCHEDULER_PREFIX + t.getId());
+            return t;
+        });
+    }
+
+    @Bean
+    public TimeLimiter timeLimiter(TimeLimiterRegistry timeLimiterRegistry) {
+        return timeLimiterRegistry.timeLimiter(Constant.EXTERNAL_API_TIMEOUT_CONFIG);
     }
 
     @Override

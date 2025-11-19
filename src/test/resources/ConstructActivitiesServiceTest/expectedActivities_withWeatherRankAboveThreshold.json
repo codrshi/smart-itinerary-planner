@@ -1,0 +1,90 @@
+[
+  {
+    "activityId": "ACT-001",
+    "activityDate": "2025-11-01",
+    "weatherType": "Disruptive weather with Snow And Rain Showers.",
+    "activityNote": "-",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-1",
+        "name": "Event 1",
+        "date": "2025-11-01",
+        "venue": "Venue 1",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category1", "category2"],
+        "note": "Note 1"
+      },
+      {
+        "poiId": "POI-6",
+        "name": "Attraction 2",
+        "activityType": "attraction",
+        "date": null,
+        "category": ["category3", "category4"],
+        "note": "Note 2"
+      }
+    ]
+  },
+  {
+    "activityId": "ACT-002",
+    "activityDate": "2025-11-02",
+    "weatherType": "Disruptive weather with Snow And Rain Showers.",
+    "activityNote": "-",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-2",
+        "name": "Event 2",
+        "date": "2025-11-02",
+        "venue": "Venue 2",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category3", "category4"],
+        "note": "Note 2"
+      },
+      {
+        "poiId": "POI-5",
+        "name": "Attraction 1",
+        "date": null,
+        "activityType": "attraction",
+        "category": ["category1", "category2"],
+        "note": "Note 1"
+      },
+      {
+        "poiId": "POI-7",
+        "name": "Attraction 3",
+        "date": null,
+        "activityType": "attraction",
+        "category": ["category4", "category6"],
+        "note": "Note 3"
+      }
+    ]
+  },
+  {
+    "activityId": "ACT-003",
+    "activityDate": "2025-11-05",
+    "weatherType": "Unfavourable weather with Heavy Rain And Snow.",
+    "activityNote": "-",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-3",
+        "name": "Event 3",
+        "date": "2025-11-05",
+        "venue": "Venue 3",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category5", "category6"],
+        "note": "Note 3"
+      },
+      {
+        "poiId": "POI-4",
+        "name": "Event 4",
+        "date": "2025-11-05",
+        "venue": "Venue 4",
+        "activityType": "event",
+        "isFamilyFriendly": false,
+        "category": ["category7", "category8"],
+        "note": "Note 4"
+      }
+    ]
+  }
+]

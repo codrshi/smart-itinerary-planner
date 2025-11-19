@@ -35,8 +35,7 @@ public class AuxiliaryCacheAspect {
     @Autowired
     private ItineraryProperties itineraryProperties;
 
-    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.AuxiliaryService.mailItinerary(..))",
-            argNames = "itineraryId")
+    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.AuxiliaryService.mailItinerary(..)) && args(itineraryId)")
     public String checkCacheBeforeGeneratingMail(ProceedingJoinPoint joinPoint, String itineraryId)
             throws MessagingException {
 

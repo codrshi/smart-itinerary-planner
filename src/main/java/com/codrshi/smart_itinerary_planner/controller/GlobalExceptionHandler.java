@@ -4,6 +4,7 @@ import com.codrshi.smart_itinerary_planner.dto.response.IErrorResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.ErrorResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.BadRequestException;
 import com.codrshi.smart_itinerary_planner.exception.BaseException;
+import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidCountryException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidDateRangeException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidEnumInstanceException;
@@ -70,7 +71,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
             MissingWeatherDataException.class, InvalidItineraryIdFormatException.class,
-            InvalidEnumInstanceException.class, BadRequestException.class, ResourceAlreadyExistException.class})
+            InvalidEnumInstanceException.class, BadRequestException.class, ResourceAlreadyExistException.class, CannotConstructActivityException.class})
     ResponseEntity<?> handleBusinessException(BaseException ex, HttpServletRequest request) {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .errorCode(ex.getErrorCode())

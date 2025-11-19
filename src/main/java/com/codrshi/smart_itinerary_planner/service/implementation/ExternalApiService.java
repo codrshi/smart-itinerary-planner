@@ -73,7 +73,7 @@ public class ExternalApiService implements IExternalApiService {
 
     @Override
     @Retry(name = "externalApiRetry")
-    @TimeLimiter(name = "externalApiTimeout")
+    //@TimeLimiter(name = "externalApiTimeout")
     @Cacheable(value = Constant.COORDINATE_CACHE, keyGenerator = Constant.COORDINATE_KEY_GENERATOR)
     public ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO) {
         final String URL = buildUrl(locationDTO);
@@ -93,7 +93,7 @@ public class ExternalApiService implements IExternalApiService {
 
     @Override
     @Retry(name = "externalApiRetry")
-    @TimeLimiter(name = "externalApiTimeout")
+    //@TimeLimiter(name = "externalApiTimeout")
     @Cacheable(value = Constant.EVENT_CACHE, keyGenerator = Constant.EVENT_KEY_GENERATOR)
     public List<IEventDTO> getTicketmasterEvents(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO) {
         final String URL = buildUrl(locationDTO, timePeriodDTO);
@@ -113,7 +113,7 @@ public class ExternalApiService implements IExternalApiService {
 
     @Override
     @Retry(name = "externalApiRetry")
-    @TimeLimiter(name = "externalApiTimeout")
+    //@TimeLimiter(name = "externalApiTimeout")
     public List<IAttractionDTO> getOpenStreetMapAttractions(int radius, ICoordinateDTO coordinateDTO, int totalDays) {
         final String URL = buildUrl(radius, coordinateDTO, totalDays);
 
@@ -133,7 +133,7 @@ public class ExternalApiService implements IExternalApiService {
     @Override
     @Retry(name = "externalApiRetry")
     @CircuitBreaker(name = "weatherApiCB", fallbackMethod = "getVirtualCrossingWeatherFallback")
-    @TimeLimiter(name = "externalApiTimeout")
+    //@TimeLimiter(name = "externalApiTimeout")
     public Map<LocalDate, WeatherType> getVirtualCrossingWeather(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(timePeriodDTO, coordinateDTO);
 

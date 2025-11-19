@@ -14,4 +14,8 @@ public class Counter {
     public String next() {
         return  String.format("%s%03d",prefix, counter.incrementAndGet());
     }
+
+    public void reset() {
+        counter.set(0);
+    }
 }

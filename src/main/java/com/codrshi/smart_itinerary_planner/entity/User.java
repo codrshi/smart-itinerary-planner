@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.entity;
 
 import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import java.util.List;
 @Document(collection = "user")
 @Getter
 @Setter
+@Builder
 @ToString
 public class User extends Audit{
     @Id

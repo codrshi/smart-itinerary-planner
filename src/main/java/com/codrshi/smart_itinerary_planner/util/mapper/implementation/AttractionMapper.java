@@ -44,7 +44,7 @@ public class AttractionMapper implements IAttractionMapper {
         attractionDTO.setPoiId(counterManager.nextPoiId());
         attractionDTO.setName(feature.getProperties().getName());
         attractionDTO.setCategory(categories);
-        attractionDTO.setActivityType(ActivityType.ATTRACTION);
+        //attractionDTO.setActivityType(ActivityType.ATTRACTION);
         attractionDTO.setNote(Constant.EMPTY_NOTE);
 
         return attractionDTO;

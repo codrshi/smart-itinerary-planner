@@ -35,6 +35,8 @@ itinerary:
     corePoolSize: 5
     maxPoolSize: 10
     queueCapacity: 50
+    timeLimitScheduler:
+      corePoolSize: 4
   weatherRankThreshold: 18
   patchLimit: 10
   purge:

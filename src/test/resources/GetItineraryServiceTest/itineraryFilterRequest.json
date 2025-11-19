@@ -1,9 +1,7 @@
 {
   "city": "Paris",
   "country": "France",
-  "timePeriod": {
-    "startDate": "2025-06-01",
-    "endDate": "2025-06-10"
-  },
+  "startDate": "2025-06-01",
+  "endDate": "2025-06-10",
   "dateRangeCriteria": "withinDateRange"
 }
