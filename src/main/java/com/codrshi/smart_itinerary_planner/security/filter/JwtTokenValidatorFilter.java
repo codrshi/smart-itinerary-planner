@@ -22,7 +22,7 @@ import java.io.IOException;
 public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
     @Autowired
-    public JwtService jwtService;
+    private JwtService jwtService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

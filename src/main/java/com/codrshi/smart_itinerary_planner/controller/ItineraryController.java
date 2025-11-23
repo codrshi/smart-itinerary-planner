@@ -59,8 +59,6 @@ public class ItineraryController {
 
     // TODO: i18n support
     // TODO: Scheduler task to purge itineraries after a certain period from creation.
-    // TODO: Rate limiting using redis
-    // TODO: store invalid mail to redis with long TTL
     // TODO: date range limit of 1 month
     // TODO: admin controller endpoint to invalidate cache
     @PostMapping

@@ -32,6 +32,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.InputStream;
@@ -79,6 +80,9 @@ public class BaseTest {
 
     @MockitoBean
     protected ItineraryRepository itineraryRepository;
+
+    @MockitoSpyBean
+    protected ItineraryProperties itineraryProperties;
 
     @BeforeAll
     public static void setup() {

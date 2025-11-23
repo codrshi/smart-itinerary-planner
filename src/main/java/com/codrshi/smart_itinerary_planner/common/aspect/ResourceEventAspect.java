@@ -69,7 +69,7 @@ public class ResourceEventAspect {
         });
     }
 
-    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.controller.ItineraryController.patchItinerary(..)) && args(itineraryId)",
+    @AfterReturning(value = "execution(* com.codrshi.smart_itinerary_planner.controller.ItineraryController.patchItinerary(..)) && args(itineraryId, ..)",
                     returning = "response")
     public void publishItineraryUpdateResourceEvent(JoinPoint joinPoint, String itineraryId, Object response) {
 

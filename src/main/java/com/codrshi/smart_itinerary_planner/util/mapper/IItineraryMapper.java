@@ -27,6 +27,7 @@ public interface IItineraryMapper {
     GetItineraryResponseDTO mapToGetItineraryResponseDTO(Itinerary itinerary);
 
     @Mapping(target = "activities", source = "activities")
+    @Mapping(target = "destination", expression = "java(itinerary.getLocation().getDestination())")
     PatchItineraryResponseDTO mapToPatchItineraryResponseDTO(Itinerary itinerary, List<IActivityDTO> activities);
 
     default IDeleteItineraryResponseDTO mapToDeleteItineraryResponseDTO(List<String> itineraryIds, boolean auditImpacted) {

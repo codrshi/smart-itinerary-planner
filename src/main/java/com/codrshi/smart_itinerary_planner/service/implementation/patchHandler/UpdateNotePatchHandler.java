@@ -9,6 +9,7 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.UpdateNotePatchDat
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
+@Component
 public class UpdateNotePatchHandler extends PatchHandler<UpdateNotePatchDataDTO> {
     @Override
     protected List<IActivityDTO> applyPatch(List<IActivityDTO> activities, List<UpdateNotePatchDataDTO> patchDataList) {

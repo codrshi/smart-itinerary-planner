@@ -16,7 +16,8 @@ public enum ErrorCode {
     QUOTA_EXCEEDED(10012, "Weather API quota exceeded on %s"),
     MISSING_PRINCIPLE(10013, "Either username or email is required for user login."),
     TEMPORARY_BLACKLISTED(10014, "Facing issue while sending itinerary to your email. Please try again later."),
-    CANNOT_CONSTRUCT_ACTIVITIES(10015, "Itinerary cannot be created due to bad weather conditions and/or absence of point of interest(s).");
+    CANNOT_CONSTRUCT_ACTIVITIES(10015, "Itinerary cannot be created due to bad weather conditions and/or absence of point of interest(s)."),
+    TOO_MANY_REQUEST(10016, "Too many requests.");
 
     private final int code;
     private final String messageTemplate;

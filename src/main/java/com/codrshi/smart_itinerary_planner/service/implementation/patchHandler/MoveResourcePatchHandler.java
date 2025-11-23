@@ -6,12 +6,14 @@ import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import com.codrshi.smart_itinerary_planner.util.ActivityLookup;
 import com.codrshi.smart_itinerary_planner.util.patch.PatchCommandDispatcher;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 @Slf4j
+@Component
 public class MoveResourcePatchHandler extends PatchHandler<MoveResourcePatchDataDTO> {
 
     @Override

@@ -1,5 +1,6 @@
 package com.codrshi.smart_itinerary_planner.security.filter;
 
+import com.codrshi.smart_itinerary_planner.exception.TooManyRequestException;
 import com.codrshi.smart_itinerary_planner.util.ErrorResponseBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -8,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -44,6 +46,9 @@ public class ExceptionTranslatorFilter extends OncePerRequestFilter {
 
         if (ex instanceof BadCredentialsException || ex instanceof UsernameNotFoundException) {
             status = HttpServletResponse.SC_UNAUTHORIZED;
+        }
+        else if(ex instanceof TooManyRequestException) {
+            status = HttpStatus.TOO_MANY_REQUESTS.value();
         }
 
         ErrorResponseBuilder.build(request, response, status, ex.getMessage());

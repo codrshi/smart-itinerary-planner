@@ -31,6 +31,9 @@ itinerary:
     weather-ttl: 7            # in days
     itinerary-ttl: 7          # in days
     blacklisted-mails-ttl: 1  # in mins
+    rate-limiting:
+      tokens-per-period: 10
+      period: 1000
   async:
     corePoolSize: 5
     maxPoolSize: 10

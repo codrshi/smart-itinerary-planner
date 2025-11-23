@@ -14,6 +14,7 @@ import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.patch.PatchDataRegistry;
 import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
+import com.codrshi.smart_itinerary_planner.util.patch.PatchHandlerRegistry;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class PatchItineraryService implements IPatchItineraryService {
 
     @Autowired
     private IItineraryMapper itineraryMapper;
+
+    @Autowired
+    private PatchHandlerRegistry patchHandlerRegistry;
 
     @Override
     public IItineraryResponseDTO patchItinerary(String itineraryId, IPatchItineraryRequestDTO patchItineraryRequestDTO) {
@@ -75,7 +79,7 @@ public class PatchItineraryService implements IPatchItineraryService {
         }
 
         String patchOperation = patchItineraryRequestDTO.getPatchOperation().getValue();
-        PatchHandler patchHandler = PatchDataRegistry.getHandlerObject(patchOperation);
+        PatchHandler patchHandler = patchHandlerRegistry.getHandler(patchOperation);
 
         log.debug("Dispatching patch operation = {} to handler {}", patchOperation, patchHandler.getClass().getSimpleName());
 

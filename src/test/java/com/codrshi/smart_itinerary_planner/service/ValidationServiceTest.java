@@ -25,6 +25,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,9 +40,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 public class ValidationServiceTest extends BaseTest {
-
-    @MockitoBean
-    private ItineraryProperties itineraryProperties;
 
     @DisplayName("Should throw IllegalArgumentException when itineraryId is null or blank")
     @ParameterizedTest

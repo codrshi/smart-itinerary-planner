@@ -52,6 +52,15 @@ public class ItineraryProperties {
         private int weatherTtl;
         private int itineraryTtl;
         private int blacklistedMailsTtl;
+        private RateLimitingProperties rateLimiting;
+
+        @Getter
+        @AllArgsConstructor
+        @ToString
+        public static class RateLimitingProperties {
+            private int tokensPerPeriod;
+            private int period;
+        }
     }
 
     @Getter

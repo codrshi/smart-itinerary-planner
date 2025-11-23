@@ -4,6 +4,7 @@ import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.service.DeletePatchHandlerTest;
 import com.codrshi.smart_itinerary_planner.service.implementation.patchHandler.DeleteResourcePatchHandler;
 import com.codrshi.smart_itinerary_planner.service.implementation.patchHandler.MoveResourcePatchHandler;
+import com.codrshi.smart_itinerary_planner.service.implementation.patchHandler.UpdateNotePatchHandler;
 import com.codrshi.smart_itinerary_planner.util.CounterManager;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,11 @@ public class TestConfig {
     @Bean
     public DeleteResourcePatchHandler deletePatchHandler() {
         return new DeleteResourcePatchHandler();
+    }
+
+    @Bean
+    public UpdateNotePatchHandler updatePatchHandler() {
+        return new UpdateNotePatchHandler();
     }
 
     @Bean

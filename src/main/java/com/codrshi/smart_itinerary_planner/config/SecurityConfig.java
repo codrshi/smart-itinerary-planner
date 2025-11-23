@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.config;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.security.filter.RateLimiterFilter;
 import com.codrshi.smart_itinerary_planner.util.ErrorResponseBuilder;
 import com.codrshi.smart_itinerary_planner.security.filter.ExceptionTranslatorFilter;
 import com.codrshi.smart_itinerary_planner.security.ItineraryAuthenticationProvider;
@@ -34,7 +35,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    ExceptionTranslatorFilter exceptionTranslatorFilter,
                                                    JwtTokenValidatorFilter jwtTokenValidatorFilter,
-                                                   TraceIdHeaderFilter traceIdHeaderFilter) throws Exception {
+                                                   TraceIdHeaderFilter traceIdHeaderFilter,
+                                                   RateLimiterFilter rateLimiterFilter) throws Exception {
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.csrf(configurer -> configurer.disable());
@@ -46,6 +48,7 @@ public class SecurityConfig {
         http.addFilterBefore(traceIdHeaderFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(exceptionTranslatorFilter, UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(jwtTokenValidatorFilter, BasicAuthenticationFilter.class);
+        http.addFilterAfter(rateLimiterFilter, JwtTokenValidatorFilter.class);
 
         http.exceptionHandling(ex -> ex
                 .authenticationEntryPoint((req, res, e) ->
@@ -91,5 +94,10 @@ public class SecurityConfig {
     @Bean
     public TraceIdHeaderFilter traceIdHeaderFilter() {
         return new TraceIdHeaderFilter();
+    }
+
+    @Bean
+    public RateLimiterFilter rateLimiterFilter() {
+        return new RateLimiterFilter();
     }
 }

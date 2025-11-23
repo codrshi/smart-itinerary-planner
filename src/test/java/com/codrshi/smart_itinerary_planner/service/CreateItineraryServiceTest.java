@@ -54,9 +54,6 @@ import static org.mockito.Mockito.when;
 
 public class CreateItineraryServiceTest extends BaseTest {
 
-    @MockitoSpyBean
-    private ItineraryProperties itineraryProperties;
-
     @MockitoBean
     private IExternalApiService externalApiService;
 

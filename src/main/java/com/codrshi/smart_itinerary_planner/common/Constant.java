@@ -53,6 +53,7 @@ public class Constant {
     public static final String EXTERNAL_API_TIMEOUT_CONFIG = "externalApiTimeout";
 
     // Redis
+    public static final String RATE_LIMITING_CLIENT_KEY_PREFIX = "rate_limiting_client_key:";
     public static final String ITIX_KEY_PREFIX = "itix";
     public static final String ITINERARY_KEY = "itinerary";
     public static final String ACTIVITY_KEY = "activities";
