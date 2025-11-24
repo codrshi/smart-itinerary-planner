@@ -1,0 +1,38 @@
+[
+  {
+    "activityId": "ACT-1",
+    "activityDate": "2020-01-01",
+    "weatherType": null,
+    "activityNote": "activity patched.",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-1",
+        "activityType" : "event",
+        "name": null,
+        "date": null,
+        "venue": null,
+        "isFamilyFriendly": false,
+        "category": null,
+        "note": "-"
+      }
+    ]
+  },
+  {
+    "activityId": "ACT-2",
+    "activityDate": "2020-01-02",
+    "weatherType": null,
+    "activityNote": "-",
+    "pointOfInterests": [
+      {
+        "poiId": "POI-2",
+        "activityType" : "event",
+        "name": null,
+        "date": null,
+        "venue": null,
+        "isFamilyFriendly": false,
+        "category": null,
+        "note": "poi patched.poi patched again."
+      }
+    ]
+  }
+]

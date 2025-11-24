@@ -31,7 +31,7 @@ public class DeletePatchHandlerTest extends BaseTest {
         patchDataList.add(new DeleteResourcePatchDataDTO(Constant.ACTIVITY_ID_PREFIX + 1));
 
         List<IActivityDTO> patchedActivities = deletePatchHandler.handle(activities, patchDataList);
-        List<IActivityDTO> expectedActivities = getJsonObject("patchHandler/movePatchHandler_scenario1.json",
+        List<IActivityDTO> expectedActivities = getJsonObject("patchHandler/deletePatchHandler_scenario1.json",
                                                               new TypeReference<>() {});
 
         assertThat(patchedActivities).usingRecursiveComparison().isEqualTo(expectedActivities);

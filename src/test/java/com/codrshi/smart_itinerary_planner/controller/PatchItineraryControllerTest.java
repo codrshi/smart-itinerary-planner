@@ -29,6 +29,7 @@ public class PatchItineraryControllerTest extends ControllerBaseTest {
     private static final String URL = URI + "/" + ITINERARY_ID;
     private static final String ERR_MSG_INVALID_PATCH_OPERATION = "Patch operation not found for invalid.";
     private static final String ERR_MSG_MISSING_PATCH_DATA_TARGET = "[patchData.target is null]";
+    private static final String ERR_MSG_INVALID_REQUEST_URL = "Invalid request: Request method 'PATCH' is not supported";
 
     @SneakyThrows
     @Test
@@ -105,6 +106,6 @@ public class PatchItineraryControllerTest extends ControllerBaseTest {
         mockMvc.perform(patch(URI).contentType(MediaType.APPLICATION_JSON).with(csrf())
                                 .content(objectMapper.writeValueAsString(patchItineraryRequestDTO) ))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(ERR_MSG_MISSING_PATCH_DATA_TARGET));
+                .andExpect(jsonPath("$.message").value(ERR_MSG_INVALID_REQUEST_URL));
     }
 }

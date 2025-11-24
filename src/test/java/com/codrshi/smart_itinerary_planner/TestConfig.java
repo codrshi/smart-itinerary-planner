@@ -1,5 +1,12 @@
 package com.codrshi.smart_itinerary_planner;
 
+import com.codrshi.smart_itinerary_planner.common.aspect.AttractionCacheAspect;
+import com.codrshi.smart_itinerary_planner.common.aspect.AuxiliaryCacheAspect;
+import com.codrshi.smart_itinerary_planner.common.aspect.DeleteItineraryCacheAspect;
+import com.codrshi.smart_itinerary_planner.common.aspect.GetItineraryCacheAspect;
+import com.codrshi.smart_itinerary_planner.common.aspect.PatchItineraryCacheAspect;
+import com.codrshi.smart_itinerary_planner.common.aspect.ResourceEventAspect;
+import com.codrshi.smart_itinerary_planner.common.aspect.WeatherCacheAspect;
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.service.DeletePatchHandlerTest;
 import com.codrshi.smart_itinerary_planner.service.implementation.patchHandler.DeleteResourcePatchHandler;
@@ -12,6 +19,8 @@ import lombok.Setter;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
@@ -64,11 +73,35 @@ public class TestConfig {
         return Runnable::run; // synchronous executor for tests
     }
 
+    @Bean
+    public GetItineraryCacheAspect getItineraryCacheAspect() {
+        return null;
+    }
+
+    @Bean
+    public AttractionCacheAspect attractionCacheAspect() {
+        return null;
+    }
+
+    @Bean
+    public WeatherCacheAspect weatherCacheAspect() {
+        return null;
+    }
+
+    @Bean
+    public AuxiliaryCacheAspect auxiliaryCacheAspect() {
+        return null;
+    }
+
 //    @Bean
-//    @RequestScope
-//    public CounterManager counterManager() {
-//        return new CounterManager();
+//    public DeleteItineraryCacheAspect deleteItineraryCacheAspect() {
+//        return null;
 //    }
+
+    @Bean
+    public PatchItineraryCacheAspect patchItineraryCacheAspect() {
+        return null;
+    }
 
     @Getter
     @Setter

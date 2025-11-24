@@ -38,7 +38,7 @@ public class UpdateNotePatchHandlerTest extends BaseTest {
                                                      "poi patched again.", PatchNoteType.APPEND));
 
         List<IActivityDTO> patchedActivities = updatePatchHandler.handle(activities, patchDataList);
-        List<IActivityDTO> expectedActivities = getJsonObject("patchHandler/movePatchHandler_scenario1.json",
+        List<IActivityDTO> expectedActivities = getJsonObject("patchHandler/updatePatchHandler_scenario1.json",
                                                               new TypeReference<>() {});
 
         assertThat(patchedActivities).usingRecursiveComparison().isEqualTo(expectedActivities);

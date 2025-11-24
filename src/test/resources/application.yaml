@@ -1,4 +1,7 @@
 spring:
+  aop:
+    auto: false
+    proxy-target-class: false
   main:
     allow-bean-definition-overriding: true
   data:
@@ -50,6 +53,8 @@ itinerary:
   baseUrl: http://localhost:8080/itinerary
   endpoint:
     plan: /plan
+  internalApi:
+    apiKey: qw4fe3cjodn5oirnf3c3wef498v598ht3h402ji4rt2049gj568    # random key
   externalApi:
     ticketmaster:
       apiKey: dummyKey
