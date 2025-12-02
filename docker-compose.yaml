@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mongodb:
-    image: 'mongo:6.0'
+    image: 'mongo:8.2.2'
     container_name: itix-mongo
     restart: unless-stopped
     hostname: 'localhost'
@@ -13,7 +13,7 @@ services:
     environment:
       - "MONGO_INITDB_DATABASE=smart-itinerary-planner"
   redis:
-    image: 'redis:8.2.2'
+    image: 'redis:8.4.0'
     container_name: itix-redis
     restart: unless-stopped
     hostname: 'localhost'

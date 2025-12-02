@@ -12,7 +12,7 @@
 	<artifactId>smart-itinerary-planner</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>smart-itinerary-planner</name>
-	<description>recomends day-to-day itineraries based on user preferences</description>
+	<description>recommends day-to-day itineraries based on user preferences</description>
     <packaging>jar</packaging>
 	<url/>
 	<licenses>

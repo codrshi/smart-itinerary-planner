@@ -38,7 +38,7 @@ resilience4j:
       externalApiRetry:
         maxAttempts: 3
         waitDuration: 2s
-        retryException:
+        retry-exceptions:
           - java.io.IOException
           - org.springframework.web.client.ResourceAccessException
           - org.springframework.web.client.HttpServerErrorException
