@@ -32,8 +32,8 @@ public class AttractionCacheAspect {
     @Autowired
     private ItineraryProperties itineraryProperties;
 
-    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.ExternalApiService.getOpenStreetMapAttractions(..)) && args(coordinateDTO, totalDays)")
-    public Object cacheAttraction(ProceedingJoinPoint joinPoint, ICoordinateDTO coordinateDTO, int totalDays) {
+    @Around(value = "execution(* com.codrshi.smart_itinerary_planner.service.implementation.ExternalApiService.getGeoapifyAttractions(..)) && args(radius, coordinateDTO, totalDays)")
+    public Object cacheAttraction(ProceedingJoinPoint joinPoint, int radius, ICoordinateDTO coordinateDTO, int totalDays) {
 
         int limit = getLimit(totalDays);
         String redisKey = AttractionRedisKeyGenerator.generate(coordinateDTO);
