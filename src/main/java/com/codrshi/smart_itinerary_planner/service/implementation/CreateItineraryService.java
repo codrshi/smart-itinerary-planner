@@ -5,7 +5,6 @@ import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.ApiResponseWrapper;
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
@@ -24,10 +23,8 @@ import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
 import io.github.resilience4j.timelimiter.TimeLimiter;
-import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Supplier;
@@ -88,7 +84,7 @@ public class CreateItineraryService implements ICreateItineraryService {
                 () -> externalApiService.getTicketmasterEvents(locationDTO, timePeriodDTO));
 
         CompletableFuture<List<IAttractionDTO>> attractionsFuture = executeWithTimeLimit(
-                () -> externalApiService.getOpenStreetMapAttractions(
+                () -> externalApiService.getGeoapifyAttractions(
                         locationDTO.getRadius(),
                         coordinateDTO,
                         DateUtils.countDays(timePeriodDTO)

@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class OpenTripMapAttractionResponseDTO {
+public class GeoapifyAttractionResponseDTO {
 
     private List<Feature> features;
 
@@ -21,6 +21,7 @@ public class OpenTripMapAttractionResponseDTO {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Properties {
         private String name;
-        private String kinds;
+        private String formatted;   // address
+        private List<String> categories;
     }
 }

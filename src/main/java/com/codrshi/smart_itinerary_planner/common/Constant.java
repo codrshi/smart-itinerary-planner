@@ -22,6 +22,7 @@ public class Constant {
     public static final String PREFER_HEADER_REPRESENTATION = "return-representation";
     public static final String PREFER_HEADER_MINIMAL = "return-minimal";
     public static final String SYSTEM_USER = "system_user";
+    public static final String OVER_QUERY_LIMIT = "OVER_QUERY_LIMIT";
 
     // Resource
     public static final String RESOURCE_POI = "POI(s)";

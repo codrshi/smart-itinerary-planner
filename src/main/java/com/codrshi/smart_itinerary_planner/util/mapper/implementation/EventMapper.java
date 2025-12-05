@@ -71,7 +71,6 @@ public class EventMapper implements IEventMapper {
                 .map(l -> l.toLocalDate())
                 .orElse(null);
 
-        // Build DTO
         eventDTO.setPoiId(counterManager.nextPoiId());
         eventDTO.setName(event.getName());
         eventDTO.setCategory(categories);
