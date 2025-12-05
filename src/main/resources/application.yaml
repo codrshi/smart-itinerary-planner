@@ -44,7 +44,7 @@ resilience4j:
           - org.springframework.web.client.HttpServerErrorException
   circuitbreaker:
     instances:
-      weatherApiCB:
+      externalApiCB:
         register-health-indicator: true
         sliding-window-type: count_based
         sliding-window-size: 1        # consider only last 1 request
@@ -82,15 +82,15 @@ itinerary:
     virtualCrossing:
       apiKey: ${WEATHER_API_KEY}
       baseUrl: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/
-    openStreetMap:
-      apiKey: ${OPEN_STREET_MAP_API_KEY}
-      baseUrl: https://api.opentripmap.com/0.1/
+    geoapify:
+      apiKey: ${GEOAPIFY_API_KEY}
+      baseUrl: https://api.geoapify.com/v2/
   attraction:
     rate: 3    # popularity rating
     base: 2    # base value of limit
     scale: 5   # scale value of limit
     maxLimit: 30   # maximum value of limit
-    kinds: monuments, tourist_object, historic_architecture, beaches, sculptures, view_points, historic_object
+    categories: heritage.unesco, tourism.attraction, tourism.sights
   cityRadius:
     defaultRadius: 15  # in km
     radiusMapping:

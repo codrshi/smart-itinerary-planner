@@ -20,6 +20,7 @@ public class AttractionDTO implements IAttractionDTO {
     //TODO: remove date field
     private LocalDate date;
     private List<String> category;
+    private String address;
     private String note;
 
     @JsonIgnore

@@ -7,8 +7,7 @@ import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.OpenTripMapAttractionResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.OpenTripMapCoordinateResponseDTO;
+import com.codrshi.smart_itinerary_planner.dto.implementation.response.GeoapifyAttractionResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.TicketMasterEventResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.VirtualCrossingWeatherResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.QuotaExceededException;
@@ -17,13 +16,12 @@ import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.AttractionLimitCalculator;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
-import com.codrshi.smart_itinerary_planner.util.mapper.ICoordinateMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IWeatherMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,7 +33,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -44,11 +42,10 @@ import java.util.Map;
 public class ExternalApiService implements IExternalApiService {
 
     private static final String KEY_TICKETMASTER = "ticketmaster";
-    private static final String KEY_OPENSTREETMAP= "openStreetMap";
+    private static final String KEY_GEOAPIFY= "geoapify";
     public static final String KEY_VIRTUALCROSSING = "virtualCrossing";
     private static final String TICKETMASTER_GET_EVENTS = "events.json";
-    private static final String OPENSTREETMAP_GET_COORDINATES = "en/places/geoname";
-    private static final String OPENSTREETMAP_GET_ATTRACTIONS = "en/places/radius";
+    private static final String GEOAPIFY_GET_ATTRACTIONS = "places";
 
     public static final String ERR_MSG_5XX_SERVER_ERROR = "External API server error occurred for %s. Retry will be " +
             "triggered.";
@@ -63,33 +60,13 @@ public class ExternalApiService implements IExternalApiService {
     private IEventMapper eventMapper;
 
     @Autowired
-    private ICoordinateMapper coordinateMapper;
-
-    @Autowired
     private IAttractionMapper attractionMapper;
 
     @Autowired
     private IWeatherMapper weatherMapper;
 
-    @Override
-    @Retry(name = "externalApiRetry")
-    //@TimeLimiter(name = "externalApiTimeout")
-    @Cacheable(value = Constant.COORDINATE_CACHE, keyGenerator = Constant.COORDINATE_KEY_GENERATOR)
-    public ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO) {
-        final String URL = buildUrl(locationDTO);
-
-        log.debug("Prepared getOpenStreetMapCoordinate URL: {}", URL);
-        ResponseEntity<OpenTripMapCoordinateResponseDTO> response =
-                restTemplate.getForEntity(URL, OpenTripMapCoordinateResponseDTO.class);
-
-        log.debug("getOpenStreetMapCoordinate response: {}", response);
-        if(response.getStatusCode().is5xxServerError()) {
-            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_OPENSTREETMAP);
-            throw new HttpServerErrorException(null);
-        }
-
-        return coordinateMapper.mapToCoordinateDTO(response.getBody());
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     @Retry(name = "externalApiRetry")
@@ -113,26 +90,35 @@ public class ExternalApiService implements IExternalApiService {
 
     @Override
     @Retry(name = "externalApiRetry")
+    @CircuitBreaker(name = "externalApiCB", fallbackMethod = "getGeoapifyAttractionsFallback")
     //@TimeLimiter(name = "externalApiTimeout")
-    public List<IAttractionDTO> getOpenStreetMapAttractions(int radius, ICoordinateDTO coordinateDTO, int totalDays) {
+    public List<IAttractionDTO> getGeoapifyAttractions(int radius, ICoordinateDTO coordinateDTO, int totalDays) {
         final String URL = buildUrl(radius, coordinateDTO, totalDays);
 
-        log.debug("Prepared getOpenStreetMapAttractions URL: {}", URL);
-        ResponseEntity<OpenTripMapAttractionResponseDTO> response =
-                restTemplate.getForEntity(URL, OpenTripMapAttractionResponseDTO.class);
+        log.debug("Prepared getGeoapifyAttractions URL: {}", URL);
+        ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
 
-        if(response.getStatusCode().is5xxServerError()) {
-            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_OPENSTREETMAP);
+        if(response.getBody().contains(Constant.OVER_QUERY_LIMIT) ) {
+            log.warn("Quota exceeded for getGeoapifyAttractions. Fallback logic will be triggered.");
+            throw new QuotaExceededException(LocalDate.now().toString());
+        } else if(response.getStatusCode().is5xxServerError()) {
+            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_GEOAPIFY);
             throw new HttpServerErrorException(null);
         }
 
-        log.debug("getOpenStreetMapAttractions response: {}", response);
-        return attractionMapper.mapToAttractionDTO(response.getBody());
+        GeoapifyAttractionResponseDTO attractionResponse = null;
+        try {
+            attractionResponse = objectMapper.readValue(response.getBody(), GeoapifyAttractionResponseDTO.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        log.debug("getGeoapifyAttractions response: {}", attractionResponse);
+        return attractionMapper.mapToAttractionDTO(attractionResponse);
     }
 
     @Override
     @Retry(name = "externalApiRetry")
-    @CircuitBreaker(name = "weatherApiCB", fallbackMethod = "getVirtualCrossingWeatherFallback")
+    @CircuitBreaker(name = "externalApiCB", fallbackMethod = "getVirtualCrossingWeatherFallback")
     //@TimeLimiter(name = "externalApiTimeout")
     public Map<LocalDate, WeatherType> getVirtualCrossingWeather(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
         final String URL = buildUrl(timePeriodDTO, coordinateDTO);
@@ -158,6 +144,11 @@ public class ExternalApiService implements IExternalApiService {
 
         log.warn("getVirtualCrossingWeatherFallback triggered for timePeriodDTO: {} and coordinateDTO: {}", timePeriodDTO, coordinateDTO);
         return FactoryUtil.defaultDateToWeatherMap(timePeriodDTO);
+    }
+
+    public List<IAttractionDTO> getGeoapifyAttractionsFallback(int radius, ICoordinateDTO coordinateDTO, int totalDays, Throwable ex) {
+        log.warn("getGeoapifyAttractionsFallback triggered for radius: {} and coordinateDTO: {} and totalDays: {}", radius, coordinateDTO, totalDays);
+        return Collections.emptyList();
     }
 
     private String buildUrl(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO) {
@@ -196,37 +187,26 @@ public class ExternalApiService implements IExternalApiService {
                 .toUriString();
     }
 
-    private String buildUrl(ILocationDTO locationDTO) {
-        ItineraryProperties.ApiProperty externalApiProperty =
-                itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
-
-        log.trace("externalApiProperty for {} key: {}", KEY_OPENSTREETMAP, externalApiProperty);
-
-        return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + OPENSTREETMAP_GET_COORDINATES)
-                .queryParam("apikey", externalApiProperty.getApiKey())
-                .queryParam("name", locationDTO.getCity())
-                .queryParam("country", locationDTO.getCountryCode())
-                .toUriString();
-    }
-
     private String buildUrl(int radius, ICoordinateDTO coordinateDTO, int totalDays) {
         ItineraryProperties.ApiProperty externalApiProperty =
-                itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
+                itineraryProperties.getExternalApi().get(KEY_GEOAPIFY);
         ItineraryProperties.AttractionProperties attractionProperties = itineraryProperties.getAttraction();
         int limit = AttractionLimitCalculator.calculate(totalDays, attractionProperties.getBase(),
                                                         attractionProperties.getScale(), attractionProperties.getMaxLimit());
 
-        log.trace("externalApiProperty for {} key: {}", KEY_OPENSTREETMAP, externalApiProperty);
+        log.trace("externalApiProperty for {} key: {}", KEY_GEOAPIFY, externalApiProperty);
         log.trace("attractionProperties: {}", attractionProperties);
 
-        return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + OPENSTREETMAP_GET_ATTRACTIONS)
-                .queryParam("apikey", externalApiProperty.getApiKey())
-                .queryParam("lat", coordinateDTO.getLatitude())
-                .queryParam("lon", coordinateDTO.getLongitude())
-                .queryParam("radius", radius * 1000)
-                .queryParam("rate", attractionProperties.getRate())
-                .queryParam("kinds", String.join(",",attractionProperties.getKinds()))
+        String filter = String.format("circle:%s,%s,%s",coordinateDTO.getLongitude(), coordinateDTO.getLatitude(), radius * 1000);
+        String bias = String.format("proximity:%s,%s", coordinateDTO.getLongitude(), coordinateDTO.getLatitude());
+
+        return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + GEOAPIFY_GET_ATTRACTIONS)
+                .queryParam("apiKey", externalApiProperty.getApiKey())
+                .queryParam("filter", filter)
+                .queryParam("bias", bias)
+                .queryParam("categories", String.join(",",attractionProperties.getCategories()))
                 .queryParam("limit", limit)
+                .queryParam("lang", "en")
                 .toUriString();
     }
 }

@@ -57,16 +57,16 @@ public class WeatherCacheAspect {
         }
 
         redisTemplate.opsForHash().putAll(redisKey, remainingDateToWeatherMap.entrySet().stream()
-                .collect(Collectors.toMap(e -> e.getKey().toString(), Map.Entry::getValue)));
+                .collect(Collectors.toMap(e -> e.getKey().toString(), e -> e.getValue().getLabel())));
         redisTemplate.expire(redisKey, Duration.ofDays(itineraryProperties.getRedis().getWeatherTtl()));
 
-        return Stream.concat(partialDateToWeatherMap.entrySet().stream(),
-                             remainingDateToWeatherMap.entrySet().stream());
+        partialDateToWeatherMap.putAll(remainingDateToWeatherMap);
+        return partialDateToWeatherMap;
     }
 
     private Map<LocalDate, WeatherType> fromCache(String redisKey) {
         return redisTemplate.opsForHash().entries(redisKey).entrySet().stream()
-                .collect(Collectors.toMap(e -> LocalDate.parse(e.getKey().toString()), e -> (WeatherType) e.getValue()));
+                .collect(Collectors.toMap(e -> LocalDate.parse(e.getKey().toString()), e -> WeatherType.fromLabel((String) e.getValue())));
     }
 
     private ITimePeriodDTO getMissingPeriod(ITimePeriodDTO timePeriodDTO, Map<LocalDate, WeatherType> cachedDateToWeatherMap) {

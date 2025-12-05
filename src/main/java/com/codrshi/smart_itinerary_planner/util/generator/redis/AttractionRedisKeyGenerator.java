@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 public class AttractionRedisKeyGenerator extends RedisKeyGenerator {
 
     public static String generate(ICoordinateDTO coordinateDTO) {
-        return generateKeyWithoutContext(Constant.ATTRACTION_KEY, String.format("{}_{}", coordinateDTO.getLatitude(), coordinateDTO.getLongitude()));
+        return generateKeyWithoutContext(Constant.ATTRACTION_KEY, String.format("%s_%s", coordinateDTO.getLatitude(), coordinateDTO.getLongitude()));
     }
 }

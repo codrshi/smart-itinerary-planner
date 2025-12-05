@@ -103,7 +103,7 @@ public class ItineraryProperties {
         private double base;
         private double scale;
         private int maxLimit;
-        private List<String> kinds;
+        private List<String> categories;
     }
 
     @Getter

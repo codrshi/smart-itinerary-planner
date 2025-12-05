@@ -1,4 +1,3 @@
-coordinate:{city}:{countryCode}                    -> cached coordinate (JSON)
 event:{city}:{countryCode}:{start}_{end}           -> cached event list (JSON)
 weather:{lat_lon}                                  -> hash with date keys and weather (JSON) values
 attraction:{lat_lon}                               -> cached attraction list (JSON)

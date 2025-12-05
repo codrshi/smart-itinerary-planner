@@ -7,4 +7,6 @@ import java.util.List;
 
 @JsonDeserialize(as = AttractionDTO.class)
 public interface IAttractionDTO extends IPointOfInterestDTO {
+    String getAddress();
+    void setAddress(String address);
 }

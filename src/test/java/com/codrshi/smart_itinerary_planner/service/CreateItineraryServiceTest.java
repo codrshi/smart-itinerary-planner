@@ -3,7 +3,6 @@ package com.codrshi.smart_itinerary_planner.service;
 import com.codrshi.smart_itinerary_planner.BaseTest;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
-import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
@@ -14,35 +13,16 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.request.CreateItin
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
-import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
-import com.codrshi.smart_itinerary_planner.service.implementation.CreateItineraryService;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
-import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.text.DateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -76,15 +56,11 @@ public class CreateItineraryServiceTest extends BaseTest {
                                                      new TypeReference<>() {});
         List<IAttractionDTO> mockedAttractions = getJsonObject("CreateItineraryServiceTest/validAttractions.json",
                                                                new TypeReference<>() {});
-        ICoordinateDTO mockedCoordinates = new CoordinateDTO();
-        mockedCoordinates.setLatitude(0.0);
-        mockedCoordinates.setLongitude(0.0);
 
         Map<LocalDate, WeatherType> mockedDateToWeatherMap = FactoryUtil.defaultDateToWeatherMap(createItineraryRequestDTO.getTimePeriod());
 
         when(externalApiService.getTicketmasterEvents(any(), any())).thenReturn(mockedEvents);
-        when(externalApiService.getOpenStreetMapAttractions(anyInt(), any(), anyInt())).thenReturn(mockedAttractions);
-        when(externalApiService.getOpenStreetMapCoordinate(any())).thenReturn(mockedCoordinates);
+        when(externalApiService.getGeoapifyAttractions(anyInt(), any(), anyInt())).thenReturn(mockedAttractions);
         when(externalApiService.getVirtualCrossingWeather(any(), any())).thenReturn(mockedDateToWeatherMap);
 
         when(itineraryRepository.save(any(Itinerary.class)))
@@ -106,16 +82,12 @@ public class CreateItineraryServiceTest extends BaseTest {
     @Test
     void givenCreateItineraryService_whenAsyncFails_ThenRuntimeError() {
         ICreateItineraryRequestDTO createItineraryRequestDTO = getRequestBody();
-        ICoordinateDTO mockedCoordinates = new CoordinateDTO();
-        mockedCoordinates.setLatitude(0.0);
-        mockedCoordinates.setLongitude(0.0);
 
         Map<LocalDate, WeatherType> mockedDateToWeatherMap = FactoryUtil.defaultDateToWeatherMap(createItineraryRequestDTO.getTimePeriod());
 
         when(externalApiService.getTicketmasterEvents(any(), any())).thenThrow(new RuntimeException("Ticketmaster API down"));
-        when(externalApiService.getOpenStreetMapAttractions(anyInt(), any(), anyInt())).thenThrow(new RuntimeException(
+        when(externalApiService.getGeoapifyAttractions(anyInt(), any(), anyInt())).thenThrow(new RuntimeException(
                 "OSM API down"));
-        when(externalApiService.getOpenStreetMapCoordinate(any())).thenReturn(mockedCoordinates);
         when(externalApiService.getVirtualCrossingWeather(any(), any())).thenReturn(mockedDateToWeatherMap);
 
         RuntimeException ex = assertThrows(
