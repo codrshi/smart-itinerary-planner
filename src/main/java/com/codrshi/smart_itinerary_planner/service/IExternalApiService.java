@@ -16,7 +16,5 @@ public interface IExternalApiService {
 
     List<IAttractionDTO> getOpenStreetMapAttractions(int radius, ICoordinateDTO coordinateDTO, int totalDays);
 
-    ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO);
-
     Map<LocalDate, WeatherType> getVirtualCrossingWeather(ITimePeriodDTO timePeriodDTO, ICoordinateDTO coordinateDTO);
 }

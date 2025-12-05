@@ -11,10 +11,12 @@ import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponse
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
+import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;
 import com.codrshi.smart_itinerary_planner.service.IExternalApiService;
 import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
+import com.codrshi.smart_itinerary_planner.util.CoordinateDiscoverer;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
 import com.codrshi.smart_itinerary_planner.util.generator.ItineraryIdGenerator;
 import com.codrshi.smart_itinerary_planner.util.LocationUtil;
@@ -26,6 +28,7 @@ import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -41,9 +44,6 @@ import java.util.function.Supplier;
 @Service
 @Slf4j
 public class CreateItineraryService implements ICreateItineraryService {
-
-    @Autowired
-    private ApplicationEventPublisher publisher;
 
     @Autowired
     private IExternalApiService externalApiService;
@@ -72,40 +72,35 @@ public class CreateItineraryService implements ICreateItineraryService {
     @Autowired
     private ScheduledExecutorService timeLimiterScheduler;
 
+    @Autowired
+    private CoordinateDiscoverer coordinateDiscoverer;
+
     @Override
     public ICreateItineraryResponseDTO createItinerary(ICreateItineraryRequestDTO createItineraryRequestDTO) {
 
         ITimePeriodDTO timePeriodDTO = createItineraryRequestDTO.getTimePeriod();
         ILocationDTO locationDTO = locationUtil.buildLocation(createItineraryRequestDTO.getCity(), createItineraryRequestDTO.getCountry());
+        ICoordinateDTO coordinateDTO = discoverCoordinates(locationDTO);
 
         log.debug("Build locationDTO: {}", locationDTO);
 
         CompletableFuture<List<IEventDTO>> eventsFuture = executeWithTimeLimit(
                 () -> externalApiService.getTicketmasterEvents(locationDTO, timePeriodDTO));
 
-        CompletableFuture<ICoordinateDTO> coordinateFuture = executeWithTimeLimit(
-                () -> externalApiService.getOpenStreetMapCoordinate(locationDTO));
+        CompletableFuture<List<IAttractionDTO>> attractionsFuture = executeWithTimeLimit(
+                () -> externalApiService.getOpenStreetMapAttractions(
+                        locationDTO.getRadius(),
+                        coordinateDTO,
+                        DateUtils.countDays(timePeriodDTO)
+                )
+        );
 
-        CompletableFuture<List<IAttractionDTO>> attractionsFuture =
-                coordinateFuture.thenComposeAsync(coordinateDTO ->
-                                                          executeWithTimeLimit(
-                                                                  () -> externalApiService.getOpenStreetMapAttractions(
-                                                                          locationDTO.getRadius(),
-                                                                          coordinateDTO,
-                                                                          DateUtils.countDays(timePeriodDTO)
-                                                                  )
-                                                          )
-                );
-
-        CompletableFuture<Map<LocalDate, WeatherType>> weatherFuture =
-                coordinateFuture.thenComposeAsync(coordinateDTO ->
-                                                          executeWithTimeLimit(
-                                                                  () -> externalApiService.getVirtualCrossingWeather(
-                                                                          timePeriodDTO,
-                                                                          coordinateDTO
-                                                                  )
-                                                          )
-                );
+        CompletableFuture<Map<LocalDate, WeatherType>> weatherFuture = executeWithTimeLimit(
+                () -> externalApiService.getVirtualCrossingWeather(
+                        timePeriodDTO,
+                        coordinateDTO
+                )
+        );
 
 
         try {
@@ -181,5 +176,11 @@ public class CreateItineraryService implements ICreateItineraryService {
                 .totalDays(DateUtils.countDays(timePeriodDTO))
                 .activities(activities)
                 .userRef(userRef).build();
+    }
+
+    private ICoordinateDTO discoverCoordinates(ILocationDTO locationDTO) {
+        return coordinateDiscoverer.discover(locationDTO.getCity(), locationDTO.getCountryCode()).orElseThrow(
+                () -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, "coordinates")
+        );
     }
 }

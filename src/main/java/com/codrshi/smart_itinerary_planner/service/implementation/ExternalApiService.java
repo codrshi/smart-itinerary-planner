@@ -8,7 +8,6 @@ import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.OpenTripMapAttractionResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.OpenTripMapCoordinateResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.TicketMasterEventResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.VirtualCrossingWeatherResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.QuotaExceededException;
@@ -17,13 +16,10 @@ import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
 import com.codrshi.smart_itinerary_planner.util.AttractionLimitCalculator;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
-import com.codrshi.smart_itinerary_planner.util.mapper.ICoordinateMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.IWeatherMapper;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
-import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -35,7 +31,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,7 +42,6 @@ public class ExternalApiService implements IExternalApiService {
     private static final String KEY_OPENSTREETMAP= "openStreetMap";
     public static final String KEY_VIRTUALCROSSING = "virtualCrossing";
     private static final String TICKETMASTER_GET_EVENTS = "events.json";
-    private static final String OPENSTREETMAP_GET_COORDINATES = "en/places/geoname";
     private static final String OPENSTREETMAP_GET_ATTRACTIONS = "en/places/radius";
 
     public static final String ERR_MSG_5XX_SERVER_ERROR = "External API server error occurred for %s. Retry will be " +
@@ -63,33 +57,10 @@ public class ExternalApiService implements IExternalApiService {
     private IEventMapper eventMapper;
 
     @Autowired
-    private ICoordinateMapper coordinateMapper;
-
-    @Autowired
     private IAttractionMapper attractionMapper;
 
     @Autowired
     private IWeatherMapper weatherMapper;
-
-    @Override
-    @Retry(name = "externalApiRetry")
-    //@TimeLimiter(name = "externalApiTimeout")
-    @Cacheable(value = Constant.COORDINATE_CACHE, keyGenerator = Constant.COORDINATE_KEY_GENERATOR)
-    public ICoordinateDTO getOpenStreetMapCoordinate(ILocationDTO locationDTO) {
-        final String URL = buildUrl(locationDTO);
-
-        log.debug("Prepared getOpenStreetMapCoordinate URL: {}", URL);
-        ResponseEntity<OpenTripMapCoordinateResponseDTO> response =
-                restTemplate.getForEntity(URL, OpenTripMapCoordinateResponseDTO.class);
-
-        log.debug("getOpenStreetMapCoordinate response: {}", response);
-        if(response.getStatusCode().is5xxServerError()) {
-            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_OPENSTREETMAP);
-            throw new HttpServerErrorException(null);
-        }
-
-        return coordinateMapper.mapToCoordinateDTO(response.getBody());
-    }
 
     @Override
     @Retry(name = "externalApiRetry")
@@ -193,19 +164,6 @@ public class ExternalApiService implements IExternalApiService {
                 .queryParam("country", locationDTO.getCountryCode())
                 .queryParam("startDateTime", startDateTime)
                 .queryParam("endDateTime", endDateTime)
-                .toUriString();
-    }
-
-    private String buildUrl(ILocationDTO locationDTO) {
-        ItineraryProperties.ApiProperty externalApiProperty =
-                itineraryProperties.getExternalApi().get(KEY_OPENSTREETMAP);
-
-        log.trace("externalApiProperty for {} key: {}", KEY_OPENSTREETMAP, externalApiProperty);
-
-        return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + OPENSTREETMAP_GET_COORDINATES)
-                .queryParam("apikey", externalApiProperty.getApiKey())
-                .queryParam("name", locationDTO.getCity())
-                .queryParam("country", locationDTO.getCountryCode())
                 .toUriString();
     }
 

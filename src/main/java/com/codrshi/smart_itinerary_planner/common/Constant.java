@@ -57,7 +57,6 @@ public class Constant {
     public static final String ITIX_KEY_PREFIX = "itix";
     public static final String ITINERARY_KEY = "itinerary";
     public static final String ACTIVITY_KEY = "activities";
-    public static final String COORDINATE_KEY = "coordinate";
     public static final String EVENT_KEY = "event";
     public static final String WEATHER_KEY = "weather";
     public static final String ATTRACTION_KEY = "attraction";
@@ -65,7 +64,6 @@ public class Constant {
     public static final String BLACKLISTED_MAILS_KEY = "blacklisted_mails";
     public static final String COORDINATE_CACHE = "coordinateCache";
     public static final String EVENT_CACHE = "eventCache";
-    public static final String COORDINATE_KEY_GENERATOR = "coordinateRedisKeyGenerator";
     public static final String EVENT_KEY_GENERATOR = "eventRedisKeyGenerator";
 
     // Error message
