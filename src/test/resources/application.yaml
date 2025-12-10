@@ -62,13 +62,15 @@ itinerary:
     weather:
       apiKey: dummyKey
       baseUrl: https://api.openweathermap.org/data/2.5/
-    openStreetMap:
+    geoapify:
       apiKey: dummyKey
-      baseUrl: https://nominatim.openstreetmap.org/search?
+      baseUrl: https://api.geoapify.com/v2/
   attraction:
-    rate: 3
-    limit: 10
-    kinds: monuments, tourist_object, historic_architecture, beaches, sculptures, view_points, historic_object
+    rate: 3    # popularity rating
+    base: 2    # base value of limit
+    scale: 5   # scale value of limit
+    maxLimit: 30   # maximum value of limit
+    categories: heritage.unesco, tourism.attraction, tourism.sights
   cityRadius:
     defaultRadius: 15  # in km
     radiusMapping:
