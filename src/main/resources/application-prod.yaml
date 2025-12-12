@@ -1,3 +1,13 @@
+spring:
+  data:
+    mongodb:
+      uri: ${MONGODB_URI}
+  redis:
+    uri: ${REDIS_URI}
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+
 management:
   endpoint:
     env:
@@ -14,8 +24,20 @@ logging:
         web: INFO
         boot: INFO
         data: INFO
+        ai: INFO
+        aop:
+          interceptor:
+            AsyncExecutionInterceptor: DEBUG
   pattern:
     console: "%cyan(%d{yyyy-MM-dd HH:mm:ss}) %highlight([%thread]) %highlight(%-5level) %green(%logger{36}) %magenta([%X{X-Trace-Id}]) - %msg%n"
+
+itinerary:
+  async:
+    corePoolSize: 5
+    maxPoolSize: 15
+    queueCapacity: 100
+    timeLimitScheduler:
+      corePoolSize: 4
 
 security:
   require-ssl: true

@@ -23,9 +23,6 @@ spring:
     type: redis
     redis:
       time-to-live: 1h
-  ai:
-    openai:
-      api-key: ${OPENAI_API_KEY}
 
 resilience4j:
   timeLimiter:
