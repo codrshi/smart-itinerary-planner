@@ -2,8 +2,8 @@ spring:
   data:
     mongodb:
       uri: ${MONGODB_URI}
-  redis:
-    uri: ${REDIS_URI}
+    redis:
+      url: ${REDIS_URI}
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}

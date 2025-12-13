@@ -36,9 +36,6 @@ public class AuxiliaryService implements IAuxiliaryService {
     private AiModelService aiModelService;
 
     @Autowired
-    private ApplicationEventPublisher publisher;
-
-    @Autowired
     private IGetItineraryService getItineraryService;
 
     @Autowired
