@@ -16,9 +16,6 @@ import org.springframework.stereotype.Component;
 public class FetchItineraryTool {
 
     @Autowired
-    private ValidationService validationService;
-
-    @Autowired
     private IGetItineraryService getItineraryService;
 
     @Tool(name = "fetchItinerary", description = "Fetch an itinerary.", returnDirect = true)

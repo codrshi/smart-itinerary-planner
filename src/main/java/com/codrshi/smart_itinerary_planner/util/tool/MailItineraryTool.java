@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,6 +16,7 @@ public class MailItineraryTool {
     public static final String TOOL_RESPONSE = "Acknowledged request to send itinerary %s to your email.";
 
     @Autowired
+    @Lazy
     private IAuxiliaryService auxiliaryService;
 
     @Tool(name = "mailItinerary", description = "Send the itinerary to the user's email.", returnDirect = true)
