@@ -2,6 +2,9 @@ package com.codrshi.smart_itinerary_planner.config;
 
 import com.codrshi.smart_itinerary_planner.common.advisor.LoggingAdvisor;
 import com.codrshi.smart_itinerary_planner.common.advisor.SanitizeAdvisor;
+import com.codrshi.smart_itinerary_planner.util.tool.CreateItineraryTool;
+import com.codrshi.smart_itinerary_planner.util.tool.FetchItineraryTool;
+import com.codrshi.smart_itinerary_planner.util.tool.MailItineraryTool;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.openai.OpenAiChatModel;
@@ -40,8 +43,9 @@ public class AiModelConfig {
     }
 
     @Bean("itineraryQueriesAssistantChatClient")
-    public ChatClient itineraryQueriesAssistantChatClient(OpenAiChatModel openAiChatModel,
-                                                          LoggingAdvisor loggingAdvisor, SanitizeAdvisor sanitizeAdvisor) {
+    public ChatClient itineraryQueriesAssistantChatClient(OpenAiChatModel openAiChatModel, LoggingAdvisor loggingAdvisor,
+                                                          SanitizeAdvisor sanitizeAdvisor, FetchItineraryTool fetchItineraryTool,
+                                                          CreateItineraryTool createItineraryTool, MailItineraryTool mailItineraryTool) {
 
         ChatOptions chatOptions = ChatOptions.builder()
                 .temperature(0.2)
@@ -53,6 +57,7 @@ public class AiModelConfig {
                 .defaultSystem(itineraryQueriesAssistantSystemMessage, StandardCharsets.UTF_8)
                 .defaultOptions(chatOptions)
                 .defaultAdvisors(loggingAdvisor, sanitizeAdvisor)
+                .defaultTools(fetchItineraryTool, createItineraryTool, mailItineraryTool)
                 .build();
     }
 
