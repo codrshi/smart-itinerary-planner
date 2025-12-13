@@ -7,7 +7,7 @@ logging:
   level:
     com:
       codrshi:
-        smart_itinerary_planner: INFO
+        smart_itinerary_planner: ${LOGGING_LEVEL:INFO}
     org:
       springframework:
         security: INFO
