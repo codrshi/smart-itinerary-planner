@@ -3,6 +3,9 @@ management:
     env:
       keys-to-sanitize: password, apiKey, secretKey, email
 
+server:
+  forward-headers-strategy: framework
+
 logging:
   level:
     com:
