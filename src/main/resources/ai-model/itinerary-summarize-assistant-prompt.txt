@@ -5,4 +5,4 @@ Each POI has a name, an optional note from the user, and one or more categories 
 Using this data, generate a concise and engaging summary of the trip that can be included directly in an email body (no greeting or signature).
 
 Trip data:
-{{activitiesJson}}
+{activitiesJson}

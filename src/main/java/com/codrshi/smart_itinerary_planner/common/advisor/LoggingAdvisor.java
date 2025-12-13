@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.common.advisor;
 
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.api.Advisor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 @Component
+@Slf4j
 public class LoggingAdvisor implements CallAdvisor {
 
     @Override
@@ -21,8 +23,8 @@ public class LoggingAdvisor implements CallAdvisor {
         long duration = System.currentTimeMillis() - startTime;
         String username = RequestContext.getCurrentContext().getUsername();
 
-        System.out.println("LLM query for " + username + " took " + duration + "ms");
-        System.out.println("LLM query for " + username + " consumed " + chatClientResponse.chatResponse().getMetadata().getUsage() + " tokens.");
+        log.debug("LLM query for {} took {} ms.", username, duration);
+        log.debug("LLM query for {} consumed {} tokens.", username, chatClientResponse.chatResponse().getMetadata().getUsage());
 
         return chatClientResponse;
     }

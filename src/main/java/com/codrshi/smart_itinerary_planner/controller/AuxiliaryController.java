@@ -36,6 +36,6 @@ public class AuxiliaryController {
 
         Object response = auxiliaryService.query(auxiliaryRequestDTO);
 
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
