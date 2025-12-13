@@ -42,7 +42,7 @@ public class SecurityConfig {
         http.csrf(configurer -> configurer.disable());
 
         http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers(Constant.BASE_URI_USER + "/**").permitAll()
+                .requestMatchers(Constant.BASE_URI_USER + "/**", "/error").permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterBefore(traceIdHeaderFilter, UsernamePasswordAuthenticationFilter.class);
