@@ -4,12 +4,12 @@ import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.EventDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.TicketMasterEventResponseDTO;
-import com.codrshi.smart_itinerary_planner.common.enums.ActivityType;
 import com.codrshi.smart_itinerary_planner.util.CounterManager;
 import com.codrshi.smart_itinerary_planner.util.mapper.IEventMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -60,7 +60,7 @@ public class EventMapper implements IEventMapper {
                         Optional.ofNullable(classification).map(TicketMasterEventResponseDTO.Classification::getSubGenre).orElse(null)
                 )
                 .filter(Objects::nonNull)
-                .map(c -> c.getName())
+                .map(TicketMasterEventResponseDTO.Category::getName)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
@@ -68,7 +68,7 @@ public class EventMapper implements IEventMapper {
         LocalDate date = Optional.ofNullable(event.getDates())
                 .map(TicketMasterEventResponseDTO.Dates::getStart)
                 .map(TicketMasterEventResponseDTO.Start::getDateTime)
-                .map(l -> l.toLocalDate())
+                .map(LocalDateTime::toLocalDate)
                 .orElse(null);
 
         eventDTO.setPoiId(counterManager.nextPoiId());

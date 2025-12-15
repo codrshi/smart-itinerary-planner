@@ -2,9 +2,6 @@ package com.codrshi.smart_itinerary_planner.common.aspect;
 
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
-import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.ApiResponseWrapper;
-import com.codrshi.smart_itinerary_planner.dto.request.IPatchItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.ActivityRedisKeyGenerator;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.AuxiliaryRedisKeyGenerator;

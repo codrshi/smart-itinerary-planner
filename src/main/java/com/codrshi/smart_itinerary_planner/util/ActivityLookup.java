@@ -32,6 +32,7 @@ public class ActivityLookup {
     }
 
     public List<IActivityDTO> getFilteredActivities() {
-        return idToActivityMap.values().stream().filter(activity -> activity.getPointOfInterests()!=null && activity.getPointOfInterests().size()>0).collect(Collectors.toList());
+        return idToActivityMap.values().stream().filter(activity -> activity.getPointOfInterests()!=null &&
+                !activity.getPointOfInterests().isEmpty()).collect(Collectors.toList());
     }
 }

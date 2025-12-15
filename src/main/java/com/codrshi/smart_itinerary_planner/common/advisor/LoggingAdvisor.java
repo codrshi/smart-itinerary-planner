@@ -4,7 +4,6 @@ import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
-import org.springframework.ai.chat.client.advisor.api.Advisor;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisor;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisorChain;
 import org.springframework.stereotype.Component;

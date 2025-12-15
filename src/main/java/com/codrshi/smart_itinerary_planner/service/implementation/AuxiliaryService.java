@@ -8,19 +8,16 @@ import com.codrshi.smart_itinerary_planner.service.IAuxiliaryService;
 import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IMailService;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
-import com.codrshi.smart_itinerary_planner.util.generator.redis.AuxiliaryRedisKeyGenerator;
 import com.codrshi.smart_itinerary_planner.util.mapper.IFlattenedActivityMapper;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.List;
 
 @Service
@@ -88,7 +85,7 @@ public class AuxiliaryService implements IAuxiliaryService {
             throw ex;
         }
 
-        if(bodyTemplate == null || bodyTemplate.isEmpty()) {
+        if(bodyTemplate.isEmpty()) {
             throw new ResourceNotFoundException(null, "mail body template");
         }
 

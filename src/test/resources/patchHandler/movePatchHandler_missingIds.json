@@ -8,7 +8,6 @@
     "poiId" : "POI-1",
     "name" : null,
     "date" : null,
-    "activityType" : null,
     "venue" : null,
     "category" : null,
     "note" : null,

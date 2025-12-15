@@ -2,7 +2,6 @@ package com.codrshi.smart_itinerary_planner.service.implementation.patchHandler;
 
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteResourcePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import lombok.extern.slf4j.Slf4j;

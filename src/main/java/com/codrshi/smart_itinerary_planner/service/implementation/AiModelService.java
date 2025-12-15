@@ -4,8 +4,6 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.FlattenedActivityD
 import com.codrshi.smart_itinerary_planner.service.IAiModelService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.ChatClientRequest;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;

@@ -2,7 +2,6 @@ package com.codrshi.smart_itinerary_planner.exception;
 
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 public class BadRequestException extends BaseException {

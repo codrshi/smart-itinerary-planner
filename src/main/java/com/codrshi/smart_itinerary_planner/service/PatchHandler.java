@@ -4,7 +4,6 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.IPatchDataDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.List;

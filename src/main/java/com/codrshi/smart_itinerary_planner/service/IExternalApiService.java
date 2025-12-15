@@ -6,7 +6,6 @@ import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import java.time.LocalDate;
 import java.util.List;

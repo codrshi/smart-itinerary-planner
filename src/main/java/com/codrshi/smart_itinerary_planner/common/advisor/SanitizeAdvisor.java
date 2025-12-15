@@ -1,21 +1,16 @@
 package com.codrshi.smart_itinerary_planner.common.advisor;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisor;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisorChain;
-import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -35,9 +30,7 @@ public class SanitizeAdvisor implements CallAdvisor {
                 .prompt(chatClientRequest.prompt().augmentUserMessage(sanitizedUserMessage))
                 .build();
 
-        ChatClientResponse chatClientResponse = callAdvisorChain.nextCall(sanitizedRequest);
-
-        return chatClientResponse;
+        return callAdvisorChain.nextCall(sanitizedRequest);
     }
 
     @Override

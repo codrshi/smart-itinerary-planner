@@ -2,35 +2,22 @@ package com.codrshi.smart_itinerary_planner.controller;
 
 import com.codrshi.smart_itinerary_planner.TestConfig;
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.common.enums.ActivityType;
-import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
-import com.codrshi.smart_itinerary_planner.dto.implementation.request.GetItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.request.IGetItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
-import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.SneakyThrows;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

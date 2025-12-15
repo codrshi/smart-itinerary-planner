@@ -8,12 +8,9 @@ import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.AuxiliaryRedisKeyGenerator;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.MailException;
@@ -64,7 +61,7 @@ public class AuxiliaryCacheAspect {
         catch (MessagingException | MailException e) {
             log.error("Failed to send mail for itineraryId = {}, blacklisting email = {}", itineraryId, email, e);
 
-            if(Boolean.FALSE.equals(redisTemplate.hasKey(blacklistedMailKey))) {
+            if(!redisTemplate.hasKey(blacklistedMailKey)) {
                 redisTemplate.opsForSet().add(blacklistedMailKey, email);
                 redisTemplate.expire(blacklistedMailKey, Duration.ofMinutes(itineraryProperties.getRedis().getBlacklistedMailsTtl()));
             } else {

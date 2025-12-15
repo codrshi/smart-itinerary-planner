@@ -2,29 +2,19 @@ package com.codrshi.smart_itinerary_planner.common.aspect;
 
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
-import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
-import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
-import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.ApiResponseWrapper;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.ActivityRedisKeyGenerator;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.ItineraryRedisKeyGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
@@ -81,7 +71,7 @@ public class GetItineraryCacheAspect {
                         Optional.ofNullable((List<ActivityDTO>) redisTemplate.opsForValue().get(activitiesRedisKey))
                 .orElse(Collections.emptyList()));
 
-        if(responseDTO == null || activities == null) {
+        if(responseDTO == null) {
             return null;
         }
 

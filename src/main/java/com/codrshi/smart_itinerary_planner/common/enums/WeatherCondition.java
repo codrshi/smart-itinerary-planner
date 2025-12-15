@@ -1,5 +1,8 @@
 package com.codrshi.smart_itinerary_planner.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum WeatherCondition {
     FAVOURABLE("Favourable weather"),
     FINE("Fine weather"),
@@ -11,9 +14,5 @@ public enum WeatherCondition {
 
     WeatherCondition(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

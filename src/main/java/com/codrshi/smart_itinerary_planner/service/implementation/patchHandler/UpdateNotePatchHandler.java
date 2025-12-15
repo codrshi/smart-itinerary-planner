@@ -3,16 +3,14 @@ package com.codrshi.smart_itinerary_planner.service.implementation.patchHandler;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.PatchNoteType;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
-import com.codrshi.smart_itinerary_planner.dto.IPointOfInterestDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.UpdateNotePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
-import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,8 +28,7 @@ public class UpdateNotePatchHandler extends PatchHandler<UpdateNotePatchDataDTO>
 
         patchDataList.forEach(patchData -> {
             String source = patchData.getSource();
-            String incomingId = ACTIVITY_DATE_TO_ID_LOOKUP.containsKey(source)?
-                    ACTIVITY_DATE_TO_ID_LOOKUP.get(source): source;
+            String incomingId = ACTIVITY_DATE_TO_ID_LOOKUP.getOrDefault(source, source);
             PatchNoteType patchNoteType = patchData.getPatchNoteType();
 
             if(idToNoteMap.containsKey(incomingId)) {
@@ -39,7 +36,8 @@ public class UpdateNotePatchHandler extends PatchHandler<UpdateNotePatchDataDTO>
                 String existingNote = idToNoteMap.get(incomingId);
 
                 if(patchNoteType == PatchNoteType.APPEND) {
-                    incomingNote = incomingNote == Constant.EMPTY_NOTE? incomingNote: existingNote.concat(incomingNote);
+                    incomingNote = Objects.equals(incomingNote,
+                                                  Constant.EMPTY_NOTE) ? incomingNote: existingNote.concat(incomingNote);
                 }
 
                 idToNoteMap.put(incomingId, incomingNote);

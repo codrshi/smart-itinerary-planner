@@ -1,6 +1,5 @@
 package com.codrshi.smart_itinerary_planner.dto.implementation.request;
 
-import com.codrshi.smart_itinerary_planner.dto.request.IUserLoginRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.request.IUserRegistrationRequestDTO;
 import com.codrshi.smart_itinerary_planner.util.annotation.ValidPassword;
 import com.codrshi.smart_itinerary_planner.util.annotation.ValidUsername;

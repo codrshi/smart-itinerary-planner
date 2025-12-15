@@ -2,10 +2,6 @@ package com.codrshi.smart_itinerary_planner.util.patch;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.PatchOperation;
-import com.codrshi.smart_itinerary_planner.dto.IPatchDataDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteResourcePatchDataDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.MoveResourcePatchDataDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.UpdateNotePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import com.codrshi.smart_itinerary_planner.service.implementation.patchHandler.DeleteResourcePatchHandler;
 import com.codrshi.smart_itinerary_planner.service.implementation.patchHandler.MoveResourcePatchHandler;
@@ -16,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @Component
 public class PatchHandlerRegistry {

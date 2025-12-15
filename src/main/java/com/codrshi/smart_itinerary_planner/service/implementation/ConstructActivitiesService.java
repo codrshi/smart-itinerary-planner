@@ -53,7 +53,7 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
         populateEvents(events, dateToActivityMap, dateToWeatherMap);
         populateAttractions(attractions, activities, dateToActivityMap.values().stream().toList(), events.size());
 
-        activities.sort(Comparator.comparing(activityDTO -> activityDTO.getActivityDate()));
+        activities.sort(Comparator.comparing(IActivityDTO::getActivityDate));
 
         log.debug("activities after sorting: {}", activities);
         return activities;
@@ -86,7 +86,7 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
                 }
         ));
 
-        activities.addAll(activityMinHeap.stream().filter(activityDTO -> activityDTO.getPointOfInterests().size() > 0)
+        activities.addAll(activityMinHeap.stream().filter(activityDTO -> !activityDTO.getPointOfInterests().isEmpty())
                                   .collect(Collectors.toList()));
 
         log.debug("activities after populating attractions: {}", activities);

@@ -22,8 +22,8 @@ public class PoiToActivityCommand implements IPatchCommand {
 
         log.debug("Executing PoiToActivityCommand for sourceId = {} and targetId = {}", sourceId, targetId);
 
-        if(sourceActivityId == null ||
-                sourceActivityId.equals(targetActivityId) || !activityLookup.containsActivity(sourceActivityId) || !activityLookup.containsActivity(targetActivityId)){
+        if(sourceActivityId == null || sourceActivityId.equals(targetActivityId) ||
+                !activityLookup.containsActivity(sourceActivityId) || !activityLookup.containsActivity(targetActivityId)){
             log.trace("PoiToActivityCommand execution skipped for sourceId = {} and targetId = {}", sourceId, targetId);
             return;
         }

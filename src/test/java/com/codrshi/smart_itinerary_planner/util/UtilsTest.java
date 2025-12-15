@@ -7,8 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Base64;
-
 public class UtilsTest extends BaseTest {
 
     @Autowired

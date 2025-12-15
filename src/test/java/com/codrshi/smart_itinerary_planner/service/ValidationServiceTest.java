@@ -4,7 +4,6 @@ import com.codrshi.smart_itinerary_planner.BaseTest;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.common.enums.DateRangeCriteria;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
-import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteResourcePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.MoveResourcePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.request.PatchItineraryRequestDTO;
@@ -24,14 +23,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
