@@ -1,22 +1,8 @@
 package com.codrshi.smart_itinerary_planner.service;
 
 import com.codrshi.smart_itinerary_planner.BaseTest;
-import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
-import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.LocationDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.TicketMasterEventResponseDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.TimePeriodDTO;
 import com.codrshi.smart_itinerary_planner.service.implementation.ExternalApiService;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.time.LocalDate;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 public class ExternalApiServiceTest extends BaseTest{

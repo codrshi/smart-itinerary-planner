@@ -24,6 +24,15 @@ spring:
     redis:
       time-to-live: 1h
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env
+  endpoint:
+    health:
+      show-details: when_authorized
+
 resilience4j:
   timeLimiter:
     instances:

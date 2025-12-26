@@ -15,16 +15,16 @@ import java.util.Map;
 @ToString
 public class ItineraryProperties {
 
-    private RedisProperties redis;
-    private int weatherRankThreshold;
-    private int patchLimit;
-    private PurgeProperties purge;
-    private ApiProperty internalApi;
-    private Map<String, ApiProperty> externalApi;
-    private String baseUrl;
-    private CityRadiusProperties cityRadius;
-    private AttractionProperties attraction;
-    private AsyncProperties async;
+    private final RedisProperties redis;
+    private final int weatherRankThreshold;
+    private final int patchLimit;
+    private final PurgeProperties purge;
+    private final ApiProperty internalApi;
+    private final Map<String, ApiProperty> externalApi;
+    private final String baseUrl;
+    private final CityRadiusProperties cityRadius;
+    private final AttractionProperties attraction;
+    private final AsyncProperties async;
 
     @ConstructorBinding
     public ItineraryProperties(RedisProperties redis, int weatherRankThreshold, int patchLimit, PurgeProperties purge,

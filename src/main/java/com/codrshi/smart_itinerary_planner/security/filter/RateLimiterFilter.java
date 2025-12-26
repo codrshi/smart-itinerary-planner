@@ -12,12 +12,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.script.DefaultRedisScript;
-import org.springframework.http.HttpStatus;
 import org.springframework.scripting.support.ResourceScriptSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -53,11 +50,11 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         int period = itineraryProperties.getRedis().getRateLimiting().getPeriod();
 
         Long tokens = redisTemplate.execute(redisScript, Collections.singletonList(clientKey),
-                                            String.valueOf(tokensPerPeriod),
-                                            String.valueOf(period),
-                                            String.valueOf(System.currentTimeMillis()));
+                String.valueOf(tokensPerPeriod),
+                String.valueOf(period),
+                String.valueOf(System.currentTimeMillis()));
 
-        if(tokens == -1) {
+        if (tokens == -1) {
             throw new TooManyRequestException();
         }
 
@@ -65,8 +62,8 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        return request.getRequestURI().contains("/user") || request.getRequestURI().contains("/actuator");
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getRequestURI().contains("/user") || request.getRequestURI().contains("/actuator") || request.getRequestURI().contains("/swagger-ui") || request.getRequestURI().contains("/v3/api-docs");
     }
 
     private String fetchUsernameFromJwt(String jwt) {

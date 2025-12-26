@@ -8,11 +8,8 @@ import com.codrshi.smart_itinerary_planner.util.CounterManager;
 import com.codrshi.smart_itinerary_planner.util.mapper.IAttractionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 public class AttractionMapper implements IAttractionMapper {
 

@@ -6,14 +6,12 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.request.CreateItin
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.CreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
-import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.SneakyThrows;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

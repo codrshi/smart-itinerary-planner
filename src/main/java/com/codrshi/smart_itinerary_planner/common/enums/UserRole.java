@@ -1,5 +1,8 @@
 package com.codrshi.smart_itinerary_planner.common.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum UserRole {
     ADMIN("ROLE_ADMIN"),
     USER("ROLE_USER");
@@ -8,9 +11,5 @@ public enum UserRole {
 
     UserRole(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }

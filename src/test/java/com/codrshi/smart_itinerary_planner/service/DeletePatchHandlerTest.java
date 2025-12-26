@@ -4,7 +4,6 @@ import com.codrshi.smart_itinerary_planner.BaseTest;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.DeleteResourcePatchDataDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.MoveResourcePatchDataDTO;
 import com.codrshi.smart_itinerary_planner.service.implementation.patchHandler.DeleteResourcePatchHandler;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.SneakyThrows;

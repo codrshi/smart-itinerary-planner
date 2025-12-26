@@ -1,7 +1,6 @@
 package com.codrshi.smart_itinerary_planner.dto;
 
 import com.codrshi.smart_itinerary_planner.dto.implementation.EventDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.LocationDTO;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonDeserialize(as = EventDTO.class)

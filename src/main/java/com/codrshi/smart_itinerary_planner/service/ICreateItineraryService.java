@@ -1,6 +1,5 @@
 package com.codrshi.smart_itinerary_planner.service;
 
-import com.codrshi.smart_itinerary_planner.dto.implementation.response.ApiResponseWrapper;
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 

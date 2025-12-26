@@ -1,9 +1,7 @@
 package com.codrshi.smart_itinerary_planner.util;
 
 
-import com.codrshi.smart_itinerary_planner.dto.IEventDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.dto.IWeatherDTO;
 import com.codrshi.smart_itinerary_planner.exception.InvalidDateRangeException;
 import com.codrshi.smart_itinerary_planner.util.annotation.ValidDateRange;
 import jakarta.validation.ConstraintValidator;
@@ -13,10 +11,6 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class DateUtils implements ConstraintValidator<ValidDateRange, ITimePeriodDTO> {
 

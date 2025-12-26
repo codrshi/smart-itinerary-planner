@@ -11,7 +11,6 @@ import com.codrshi.smart_itinerary_planner.service.IPatchItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
-import com.codrshi.smart_itinerary_planner.util.patch.PatchDataRegistry;
 import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
 import com.codrshi.smart_itinerary_planner.util.patch.PatchHandlerRegistry;

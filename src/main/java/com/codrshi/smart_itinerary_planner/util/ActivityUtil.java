@@ -6,9 +6,7 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 public class ActivityUtil {

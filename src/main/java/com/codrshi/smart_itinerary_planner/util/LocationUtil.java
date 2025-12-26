@@ -4,8 +4,6 @@ import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.ILocationDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.LocationDTO;
 import com.codrshi.smart_itinerary_planner.exception.InvalidCountryException;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -22,19 +20,19 @@ public class LocationUtil {
 
         String normalizedCity = normalizeLocation(city);
         CountryDetails countryDetails = getCountryDetails(country);
-        int radius = findRadius(countryDetails.getCountryCode());
+        int radius = findRadius(countryDetails.countryCode());
 
         ILocationDTO locationDTO = new LocationDTO();
         locationDTO.setCity(normalizedCity);
-        locationDTO.setCountry(countryDetails.getCountryName());
-        locationDTO.setCountryCode(countryDetails.getCountryCode());
+        locationDTO.setCountry(countryDetails.countryName());
+        locationDTO.setCountryCode(countryDetails.countryCode());
         locationDTO.setRadius(radius);
 
         return locationDTO;
     }
 
     public String toCountryCode(String input) {
-        return getCountryDetails(input).getCountryCode();
+        return getCountryDetails(input).countryCode();
     }
 
     private CountryDetails getCountryDetails(String input) {
@@ -44,8 +42,8 @@ public class LocationUtil {
             CountryDetails countryDetails = new CountryDetails(locale.getDisplayCountry(Locale.ENGLISH),
                                                                locale.getCountry());
 
-            if (countryDetails.getCountryCode().equalsIgnoreCase(input.trim()) ||
-                    countryDetails.getCountryName().equalsIgnoreCase(normalizeLocation(input))) {
+            if (countryDetails.countryCode().equalsIgnoreCase(input.trim()) ||
+                    countryDetails.countryName().equalsIgnoreCase(normalizeLocation(input))) {
                 return countryDetails;
             }
         }
@@ -65,10 +63,6 @@ public class LocationUtil {
         return itineraryProperties.getCityRadius().getRadiusMapping().getOrDefault(countryCode, defaultRadius);
     }
 
-    @AllArgsConstructor
-    @Getter
-    private class CountryDetails {
-        private final String countryName;
-        private final String countryCode;
+    private record CountryDetails(String countryName, String countryCode) {
     }
 }

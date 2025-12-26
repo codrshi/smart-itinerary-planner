@@ -2,7 +2,6 @@ package com.codrshi.smart_itinerary_planner.entity;
 
 import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.dto.IUserRefDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

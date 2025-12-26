@@ -1,12 +1,7 @@
 package com.codrshi.smart_itinerary_planner.util.tool;
 
-import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.request.IGetItineraryRequestDTO;
-import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
-import com.codrshi.smart_itinerary_planner.service.implementation.ValidationService;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package com.codrshi.smart_itinerary_planner.util.tool;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import com.codrshi.smart_itinerary_planner.dto.request.ICreateItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.ICreateItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.exception.BadRequestException;

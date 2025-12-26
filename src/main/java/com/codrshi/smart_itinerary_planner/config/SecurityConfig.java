@@ -16,16 +16,14 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @Configuration
 @EnableWebSecurity
@@ -39,10 +37,10 @@ public class SecurityConfig {
                                                    RateLimiterFilter rateLimiterFilter) throws Exception {
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.csrf(configurer -> configurer.disable());
+        http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers(Constant.BASE_URI_USER + "/**", "/error").permitAll()
+                .requestMatchers(Constant.BASE_URI_USER + "/**", "/error", "/error/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterBefore(traceIdHeaderFilter, UsernamePasswordAuthenticationFilter.class);
@@ -52,11 +50,11 @@ public class SecurityConfig {
 
         http.exceptionHandling(ex -> ex
                 .authenticationEntryPoint((req, res, e) ->
-                                                  ErrorResponseBuilder.build(req, res, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage()))
+                        ErrorResponseBuilder.build(req, res, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage()))
                 .accessDeniedHandler((req, res, e) ->
-                                             ErrorResponseBuilder.build(req, res, HttpServletResponse.SC_FORBIDDEN, e.getMessage()))
+                        ErrorResponseBuilder.build(req, res, HttpServletResponse.SC_FORBIDDEN, e.getMessage()))
         );
-        http.formLogin(formLogin -> formLogin.disable());
+        http.formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
     }

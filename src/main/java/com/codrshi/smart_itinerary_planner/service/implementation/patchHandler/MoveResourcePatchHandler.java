@@ -29,8 +29,8 @@ public class MoveResourcePatchHandler extends PatchHandler<MoveResourcePatchData
             String source = patch.getSource();
             String target = patch.getTarget();
 
-            String sourceId = ACTIVITY_DATE_TO_ID_LOOKUP.containsKey(source)?ACTIVITY_DATE_TO_ID_LOOKUP.get(source): source;
-            String targetId = ACTIVITY_DATE_TO_ID_LOOKUP.containsKey(target)?ACTIVITY_DATE_TO_ID_LOOKUP.get(target): target;
+            String sourceId = ACTIVITY_DATE_TO_ID_LOOKUP.getOrDefault(source, source);
+            String targetId = ACTIVITY_DATE_TO_ID_LOOKUP.getOrDefault(target, target);
 
             log.debug("Dispatching to patch command dispatcher with source id: {} and target id: {}", sourceId, targetId);
             patchCommandDispatcher.dispatch(sourceId, targetId);

@@ -2,11 +2,9 @@ package com.codrshi.smart_itinerary_planner.util.mapper.implementation;
 
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.VirtualCrossingWeatherResponseDTO;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
-import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.mapper.IWeatherMapper;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 

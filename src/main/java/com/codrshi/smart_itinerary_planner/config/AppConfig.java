@@ -16,6 +16,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -95,6 +100,21 @@ public class AppConfig {
     @Bean
     public CoordinateDiscoverer coordinateDiscoverer() {
         return new CoordinateDiscoverer();
+    }
+
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Smart Itinerary Planner API")
+                        .version("2.0.0")
+                        .description("Smart Itinerary Planner API is a Spring Boot–based REST API that generates intelligent travel itineraries for a given location and date range. It integrates with third-party services to fetch local events, attractions, and weather data, and optimizes daily plans by prioritizing favorable weather conditions and evenly distributing activities. The API provides full CRUD operations on itineraries and includes an AI assistant to generate, manage, summarize, and email itinerary details based on user queries."))
+                .components(new Components()
+                                    .addSecuritySchemes("bearerAuth", new SecurityScheme()
+                                            .type(SecurityScheme.Type.HTTP)
+                                            .scheme("bearer")
+                                            .bearerFormat("JWT")))
+                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"));
     }
 
     @Bean

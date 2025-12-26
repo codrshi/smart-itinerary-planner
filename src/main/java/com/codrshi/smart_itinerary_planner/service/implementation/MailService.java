@@ -1,7 +1,5 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
-import com.codrshi.smart_itinerary_planner.dto.ITimePeriodDTO;
-import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import com.codrshi.smart_itinerary_planner.service.IMailService;
 import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import jakarta.mail.MessagingException;
@@ -9,16 +7,12 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 @Service
 @Slf4j
@@ -31,7 +25,7 @@ public class MailService implements IMailService {
     private JavaMailSender javaMailSender;
 
     @Override
-    @Retryable(value = {MessagingException.class, MailException.class}, maxAttempts = 3,
+    @Retryable(retryFor = {MessagingException.class, MailException.class}, maxAttempts = 3,
                backoff = @Backoff(delay = 1000, multiplier = 2))
     public void sendMail(String subject, String body)
             throws MessagingException {

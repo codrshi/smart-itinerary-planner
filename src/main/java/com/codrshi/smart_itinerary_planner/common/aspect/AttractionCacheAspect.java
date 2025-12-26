@@ -3,7 +3,6 @@ package com.codrshi.smart_itinerary_planner.common.aspect;
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.IAttractionDTO;
 import com.codrshi.smart_itinerary_planner.dto.ICoordinateDTO;
-import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.AttractionDTO;
 import com.codrshi.smart_itinerary_planner.util.AttractionLimitCalculator;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.AttractionRedisKeyGenerator;
@@ -40,7 +39,7 @@ public class AttractionCacheAspect {
 
         List<IAttractionDTO> cachedAttractions = fromCache(redisKey);
 
-        if(cachedAttractions != null && limit <= cachedAttractions.size()) {
+        if(limit <= cachedAttractions.size()) {
             log.debug("CACHE HIT: attractions found for coordinateDTO = {} is within the limit: {}", coordinateDTO,
                       limit);
             return cachedAttractions.stream().limit(limit).collect(Collectors.toList());
@@ -65,8 +64,7 @@ public class AttractionCacheAspect {
 
     private int getLimit(int totalDays) {
         ItineraryProperties.AttractionProperties attractionProperties = itineraryProperties.getAttraction();
-        int limit = AttractionLimitCalculator.calculate(totalDays, attractionProperties.getBase(), attractionProperties.getScale(), attractionProperties.getMaxLimit());
-        return limit;
+        return AttractionLimitCalculator.calculate(totalDays, attractionProperties.getBase(), attractionProperties.getScale(), attractionProperties.getMaxLimit());
     }
 
     private List<IAttractionDTO> fromCache(String redisKey) {

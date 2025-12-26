@@ -47,7 +47,7 @@ public class ExternalApiService implements IExternalApiService {
     private static final String TICKETMASTER_GET_EVENTS = "events.json";
     private static final String GEOAPIFY_GET_ATTRACTIONS = "places";
 
-    public static final String ERR_MSG_5XX_SERVER_ERROR = "External API server error occurred for %s. Retry will be " +
+    public static final String ERR_MSG_5XX_SERVER_ERROR = "External API server error occurred for {}. Retry will be " +
             "triggered.";
 
     @Autowired
@@ -106,7 +106,7 @@ public class ExternalApiService implements IExternalApiService {
             throw new HttpServerErrorException(null);
         }
 
-        GeoapifyAttractionResponseDTO attractionResponse = null;
+        GeoapifyAttractionResponseDTO attractionResponse;
         try {
             attractionResponse = objectMapper.readValue(response.getBody(), GeoapifyAttractionResponseDTO.class);
         } catch (JsonProcessingException e) {
@@ -159,7 +159,7 @@ public class ExternalApiService implements IExternalApiService {
         String coordinatePathParams = String.format("/%s,%s",coordinateDTO.getLatitude(),coordinateDTO.getLongitude());
         String timePeriodPathParams = String.format("/%s/%s",timePeriodDTO.getStartDate(),timePeriodDTO.getEndDate());
 
-        return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl())
+        return UriComponentsBuilder.fromUriString(externalApiProperty.getBaseUrl())
                 .path(coordinatePathParams)
                 .path(timePeriodPathParams)
                 .queryParam("key", externalApiProperty.getApiKey())
@@ -178,7 +178,7 @@ public class ExternalApiService implements IExternalApiService {
         String startDateTime = timePeriodDTO.getStartDate().toString() + "T00:00:00Z";
         String endDateTime = timePeriodDTO.getEndDate().toString() + "T23:59:59Z";
 
-        return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + TICKETMASTER_GET_EVENTS)
+        return UriComponentsBuilder.fromUriString(externalApiProperty.getBaseUrl() + TICKETMASTER_GET_EVENTS)
                 .queryParam("apikey", externalApiProperty.getApiKey())
                 .queryParam("city", locationDTO.getCity())
                 .queryParam("country", locationDTO.getCountryCode())
@@ -200,7 +200,7 @@ public class ExternalApiService implements IExternalApiService {
         String filter = String.format("circle:%s,%s,%s",coordinateDTO.getLongitude(), coordinateDTO.getLatitude(), radius * 1000);
         String bias = String.format("proximity:%s,%s", coordinateDTO.getLongitude(), coordinateDTO.getLatitude());
 
-        return UriComponentsBuilder.fromHttpUrl(externalApiProperty.getBaseUrl() + GEOAPIFY_GET_ATTRACTIONS)
+        return UriComponentsBuilder.fromUriString(externalApiProperty.getBaseUrl() + GEOAPIFY_GET_ATTRACTIONS)
                 .queryParam("apiKey", externalApiProperty.getApiKey())
                 .queryParam("filter", filter)
                 .queryParam("bias", bias)
