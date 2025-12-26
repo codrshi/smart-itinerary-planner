@@ -10,7 +10,7 @@ Using this data, the system intelligently generates an itinerary by:
 The Itinerary is the core domain entity of the system. Users can perform full CRUD (Create, Read, Update, Delete) operations on itineraries through well-defined REST APIs.
 The API is designed with extensibility, modular integration, and real-world usability in mind, making it suitable for travel planning platforms and intelligent trip management applications.
 
-## Languages Used
+## Tech Stack
 - **Language**: Java
 - **Framework**: Spring Boot
 - **Persistence**: MongoDB
@@ -29,5 +29,5 @@ In addition to standard REST functionality, the project includes a LLM-based ass
 - Generate a natural-language summary of an itinerary and send it to the user via email
 
 ## External Links
-- [Smart Itinerary Planner] (https://smart-itinerary-planner.onrender.com/itinerary)
-- [Swagger Documentation] (https://smart-itinerary-planner.onrender.com/swagger-ui/index.html)
+- [Smart Itinerary Planner](https://smart-itinerary-planner.onrender.com/itinerary)
+- [Swagger Documentation](https://smart-itinerary-planner.onrender.com/swagger-ui/index.html)
