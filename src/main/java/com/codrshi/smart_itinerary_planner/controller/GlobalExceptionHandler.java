@@ -101,13 +101,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({CompromisedPasswordException.class, UsernameNotFoundException.class})
     ResponseEntity<?> authenticationException(AuthenticationException ex, HttpServletRequest request) {
 
-        String errorMessage = ex.getMessage();
-        if(ex instanceof CompromisedPasswordException) {
-            errorMessage = "The password is known to be compromised. Please use a stronger password.";
-        }
-
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .message(errorMessage)
+                .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .traceId(RequestContext.getCurrentContext().getTraceId())
                 .timestamp(LocalDateTime.now())
