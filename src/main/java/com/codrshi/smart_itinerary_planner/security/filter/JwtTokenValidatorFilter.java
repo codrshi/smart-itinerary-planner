@@ -28,11 +28,16 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String jwt = request.getHeader(Constant.AUTH_HEADER);
 
-        try {
-            if (jwt == null || !jwt.startsWith(Constant.BEARER_TOKEN_PREFIX)) {
-                return;
-            }
+        if (jwt == null || !jwt.startsWith(Constant.BEARER_TOKEN_PREFIX)) {
+            // allow for public routes. AuthorizationFilter (at bottom of security chain) allows public routes
+            // requests by matching authorizeHttpRequests rules
+            // AuthorizationFilter throws AccessDeniedException for protected routes.
+            filterChain.doFilter(request, response);
+            return;
+        }
 
+        // throw BadCredentialsException is token is invalid/tampered/exprired
+        try {
             jwt = jwt.substring(7);
             Claims claims = jwtService.parseToken(jwt);
             String username = claims.get(Constant.USERNAME, String.class);
@@ -46,11 +51,11 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
+            SecurityContextHolder.clearContext();
             throw new BadCredentialsException("Invalid or expired authentication token.");
-        } finally {
-            filterChain.doFilter(request, response);
         }
 
+        filterChain.doFilter(request, response);
     }
 
     @Override

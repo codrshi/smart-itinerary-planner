@@ -3,8 +3,7 @@ package com.codrshi.smart_itinerary_planner.security.filter;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.exception.TooManyRequestException;
-import com.codrshi.smart_itinerary_planner.security.JwtService;
-import io.jsonwebtoken.Claims;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,9 +29,6 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    private JwtService jwtService;
-
-    @Autowired
     private ItineraryProperties itineraryProperties;
 
     @PostConstruct
@@ -45,7 +41,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String clientKey = Constant.RATE_LIMITING_CLIENT_KEY_PREFIX + fetchUsernameFromJwt(request.getHeader(Constant.AUTH_HEADER));
+        String clientKey = Constant.RATE_LIMITING_CLIENT_KEY_PREFIX + RequestContext.getUsername();
         int tokensPerPeriod = itineraryProperties.getRedis().getRateLimiting().getTokensPerPeriod();
         int period = itineraryProperties.getRedis().getRateLimiting().getPeriod();
 
@@ -54,7 +50,7 @@ public class RateLimiterFilter extends OncePerRequestFilter {
                 String.valueOf(period),
                 String.valueOf(System.currentTimeMillis()));
 
-        if (tokens == -1) {
+        if (tokens == null || tokens == -1) {
             throw new TooManyRequestException();
         }
 
@@ -64,11 +60,5 @@ public class RateLimiterFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return request.getRequestURI().contains("/user") || request.getRequestURI().contains("/actuator") || request.getRequestURI().contains("/swagger-ui") || request.getRequestURI().contains("/v3/api-docs");
-    }
-
-    private String fetchUsernameFromJwt(String jwt) {
-        jwt = jwt.substring(7);
-        Claims claims = jwtService.parseToken(jwt);
-        return claims.get(Constant.USERNAME, String.class);
     }
 }
