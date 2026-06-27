@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(errorMessages.toString())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -61,7 +61,7 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(ex.getMostSpecificCause().getMessage())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler(exception = {InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
+    @ExceptionHandler({InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
             MissingWeatherDataException.class, InvalidItineraryIdFormatException.class,
             InvalidEnumInstanceException.class, BadRequestException.class, ResourceAlreadyExistException.class, CannotConstructActivityException.class})
     ResponseEntity<?> handleBusinessException(BaseException ex, HttpServletRequest request) {
@@ -77,7 +77,7 @@ public class GlobalExceptionHandler {
                 .errorCode(ex.getErrorCode())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -90,7 +90,7 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message("Invalid request: " + ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -104,7 +104,7 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -118,7 +118,7 @@ public class GlobalExceptionHandler {
                 .errorCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                 .message(ErrorCode.INTERNAL_SERVER_ERROR.getMessageTemplate())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 

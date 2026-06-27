@@ -36,7 +36,7 @@ public class AuxiliaryCacheAspect {
     public String checkCacheBeforeGeneratingMail(ProceedingJoinPoint joinPoint, String itineraryId)
             throws MessagingException {
 
-        String email = RequestContext.getCurrentContext().getEmail();
+        String email = RequestContext.getEmail();
         String blacklistedMailKey = AuxiliaryRedisKeyGenerator.generateBlacklistedMail();
 
         if(Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(blacklistedMailKey, email))){

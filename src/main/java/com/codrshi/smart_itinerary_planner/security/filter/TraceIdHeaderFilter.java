@@ -26,7 +26,7 @@ public class TraceIdHeaderFilter extends OncePerRequestFilter {
         }
 
         response.setHeader(Constant.TRACE_ID_HEADER, traceId);
-        RequestContext.getCurrentContext().setTraceId(traceId);
+        RequestContext.setTraceId(traceId);
 
         try {
             filterChain.doFilter(request, response);

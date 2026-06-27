@@ -44,7 +44,7 @@ public class ItineraryRepositoryCustomQueryImpl implements ItineraryRepositoryCu
     public void updateActivities(Query query, List<IActivityDTO> activities) {
         Update update = new Update().set(Constant.ACTIVITIES, activities)
                             .set("updatedAt", LocalDate.now())
-                            .set("updatedBy", RequestContext.getCurrentContext().getUsername())
+                            .set("updatedBy", RequestContext.getUsername())
                             .inc(Constant.VERSION, 1);
 
         UpdateResult result = mongoTemplate.updateFirst(query, update, Itinerary.class);

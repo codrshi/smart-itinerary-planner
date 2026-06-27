@@ -92,7 +92,6 @@ public class UserController {
             UserLoginRequestDTO userRequestDTO) {
 
         IUserLoginResponseDTO userResponseDTO = userService.authenticate(userRequestDTO);
-
         EntityModel<IUserLoginResponseDTO> responseModel = EntityModel.of(userResponseDTO,
                                                                                  linkTo(methodOn(ItineraryController.class).createItinerary(null)).withRel("generate itinerary"));
 

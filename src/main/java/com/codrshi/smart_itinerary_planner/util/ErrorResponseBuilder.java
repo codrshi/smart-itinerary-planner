@@ -28,7 +28,7 @@ public class ErrorResponseBuilder {
 
         map.put("message", msg);
         map.put("path", request.getRequestURI());
-        map.put("traceId", RequestContext.getCurrentContext().getTraceId());
+        map.put("traceId", RequestContext.getTraceId());
         map.put("timestamp", Instant.now().toString());
         map.put("_links", links);
 

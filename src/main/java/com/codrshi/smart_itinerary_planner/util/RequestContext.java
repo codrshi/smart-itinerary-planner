@@ -2,6 +2,7 @@ package com.codrshi.smart_itinerary_planner.util;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.security.Principle;
+import lombok.Getter;
 import org.slf4j.MDC;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,23 +12,16 @@ public class RequestContext {
 
     private static final ThreadLocal<RequestContext> context = ThreadLocal.withInitial(RequestContext::new);
 
-    private String traceId;
-
-    public static RequestContext getCurrentContext() {
-        return context.get();
-    }
+    @Getter
+    private static String traceId;
 
     public static void clear() {
         context.remove();
         MDC.clear();
     }
 
-    public String getTraceId() {
-        return traceId;
-    }
-
-    public void setTraceId(String traceId) {
-        this.traceId = traceId;
+    public static void setTraceId(String traceId) {
+        RequestContext.traceId = traceId;
         MDC.put(Constant.TRACE_ID_HEADER, traceId);
     }
 

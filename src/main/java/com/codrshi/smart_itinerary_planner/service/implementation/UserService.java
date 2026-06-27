@@ -58,7 +58,6 @@ public class UserService implements IUserService {
         String username = userRequestDTO.getUsername();
         String email = userRequestDTO.getEmail();
         String password = userRequestDTO.getPassword();
-
         checkIfExistingUser(username, email);
         log.debug("No existing user found. Creating new user...");
 

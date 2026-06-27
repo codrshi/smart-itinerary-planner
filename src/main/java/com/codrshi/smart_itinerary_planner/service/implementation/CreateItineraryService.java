@@ -163,7 +163,7 @@ public class CreateItineraryService implements ICreateItineraryService {
     private Itinerary constructItinerary(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO,
                                          List<IActivityDTO> activities) {
         String itineraryId = ItineraryIdGenerator.generateItineraryId(locationDTO.getCountryCode());
-        String userRef = RequestContext.getCurrentContext().getUsername();
+        String userRef = RequestContext.getUsername();
 
         return Itinerary.builder()
                 .itineraryId(itineraryId)

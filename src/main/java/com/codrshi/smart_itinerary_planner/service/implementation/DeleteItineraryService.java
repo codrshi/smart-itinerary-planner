@@ -37,12 +37,11 @@ public class DeleteItineraryService implements IDeleteItineraryService {
 
         validationService.validateItineraryId(itineraryId, HttpStatus.BAD_REQUEST);
 
-        if(itineraryRepository.existsByItineraryIdAndUserRef(itineraryId, RequestContext.getUsername())) {
-            log.debug("Itinerary with itineraryId {} exists. Proceeding to delete.", itineraryId);
-            itineraryRepository.deleteByItineraryIdAndUserRef(itineraryId, RequestContext.getUsername());
-        } else {
+        if(itineraryRepository.deleteByItineraryIdAndUserRef(itineraryId, RequestContext.getUsername()) == 0) {
             throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY);
         }
+
+        log.debug("Itinerary with itineraryId {} deleted.", itineraryId);
     }
 
     @Override

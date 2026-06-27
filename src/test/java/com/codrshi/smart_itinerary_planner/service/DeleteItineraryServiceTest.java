@@ -33,8 +33,7 @@ public class DeleteItineraryServiceTest extends BaseTest {
 
     @Test
     void givenDeleteItineraryService_whenCorrectRequest_thenDeleteItinerary() {
-
-        when(itineraryRepository.existsByItineraryIdAndUserRef(ITINERARY_1_ID, RequestContext.getUsername())).thenReturn(true);
+        when(itineraryRepository.deleteByItineraryIdAndUserRef(ITINERARY_1_ID, RequestContext.getUsername())).thenReturn(1);
 
         assertDoesNotThrow(() -> deleteItineraryService.deleteItinerary(ITINERARY_1_ID));
 
@@ -44,7 +43,7 @@ public class DeleteItineraryServiceTest extends BaseTest {
     @Test
     void givenDeleteItineraryService_whenItineraryDoesNotExist_ThrowResourceNotFoundException() {
 
-        when(itineraryRepository.existsByItineraryIdAndUserRef(ITINERARY_1_ID, RequestContext.getUsername())).thenReturn(false);
+        when(itineraryRepository.deleteByItineraryIdAndUserRef(ITINERARY_1_ID, RequestContext.getUsername())).thenReturn(0);
 
         ResourceNotFoundException ex = assertThrows(
                 ResourceNotFoundException.class,
@@ -52,7 +51,6 @@ public class DeleteItineraryServiceTest extends BaseTest {
         );
 
         assertEquals(ErrorCode.RESOURCE_NOT_FOUND.formatMessage(Constant.ITINERARY_KEY), ex.getMessage());
-        verify(itineraryRepository, never()).deleteByItineraryIdAndUserRef(anyString(), anyString());
     }
 
     @Test

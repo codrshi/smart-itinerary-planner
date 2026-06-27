@@ -120,7 +120,7 @@ public class AppConfig {
 
     @Bean
     public AuditorAware<String> auditorAware() {
-        return () -> Optional.of(RequestContext.getCurrentContext().getUsername());
+        return () -> Optional.of(RequestContext.getUsername());
     }
 
     @Bean
