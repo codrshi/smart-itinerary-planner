@@ -69,7 +69,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler({InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
+    @ExceptionHandler(exception = {InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
             MissingWeatherDataException.class, InvalidItineraryIdFormatException.class,
             InvalidEnumInstanceException.class, BadRequestException.class, ResourceAlreadyExistException.class, CannotConstructActivityException.class})
     ResponseEntity<?> handleBusinessException(BaseException ex, HttpServletRequest request) {

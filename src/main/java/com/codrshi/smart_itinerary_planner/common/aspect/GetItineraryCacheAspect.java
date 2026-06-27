@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.IActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.ActivityDTO;
 import com.codrshi.smart_itinerary_planner.dto.implementation.response.GetItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
+import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.ActivityRedisKeyGenerator;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.ItineraryRedisKeyGenerator;
@@ -56,7 +57,9 @@ public class GetItineraryCacheAspect {
         log.debug("CACHE MISS: cached itinerary not found for itineraryId = {}", itineraryId);
         try {
             responseDTO = (GetItineraryResponseDTO) joinPoint.proceed();
-        } catch (Throwable e) {
+        } catch(ResourceNotFoundException e){
+            throw e;
+        } catch(Throwable e) {
             throw new RuntimeException(e);
         }
 

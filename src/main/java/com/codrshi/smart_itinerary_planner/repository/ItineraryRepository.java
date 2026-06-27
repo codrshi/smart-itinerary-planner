@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface ItineraryRepository extends MongoRepository<Itinerary, String>, ItineraryRepositoryCustomQuery {
-    Optional<Itinerary> findByItineraryId(String itineraryId);
-    boolean existsByItineraryId(String itineraryId);
-    void deleteByItineraryId(String itineraryId);
+    Optional<Itinerary> findByItineraryIdAndUserRef(String itineraryId, String userRef);
+    boolean existsByItineraryIdAndUserRef(String itineraryId, String userRef);
+    void deleteByItineraryIdAndUserRef(String itineraryId, String userRef);
 }

@@ -24,7 +24,7 @@ public class QueryBuilder {
     private static final String USER_REF_ID = "userRef";
 
     public static Query builder(String itineraryId, Long version) {
-        String userRef = RequestContext.getCurrentContext().getUsername();
+        String userRef = RequestContext.getUsername();
         Query query = new Query();
         query.addCriteria(Criteria.where(ITINERARY_ID).is(itineraryId).and(USER_REF_ID).is(userRef).and(Constant.VERSION).is(version));
 
@@ -32,7 +32,7 @@ public class QueryBuilder {
     }
 
     public static Query builder(IFilterRequestDTO filterRequestDTO) {
-        String userRef = RequestContext.getCurrentContext().getUsername();
+        String userRef = RequestContext.getUsername();
         Query query = new Query();
         List<Criteria> criteriaList = new ArrayList<>();
         String city = filterRequestDTO.getCity();

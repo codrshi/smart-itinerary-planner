@@ -12,6 +12,7 @@ import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.service.PatchHandler;
 import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
 import com.codrshi.smart_itinerary_planner.util.patch.PatchHandlerRegistry;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -48,7 +49,7 @@ public class PatchItineraryService implements IPatchItineraryService {
         validationService.validateItineraryId(itineraryId, HttpStatus.BAD_REQUEST);
         validationService.validatePatchItineraryRequest(patchItineraryRequestDTO);
 
-        Itinerary itinerary = itineraryRepository.findByItineraryId(itineraryId)
+        Itinerary itinerary = itineraryRepository.findByItineraryIdAndUserRef(itineraryId, RequestContext.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY));
 
         log.debug("Found itinerary with itineraryId = {}: {}", itineraryId, itinerary);

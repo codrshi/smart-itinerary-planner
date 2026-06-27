@@ -31,19 +31,19 @@ public class RequestContext {
         MDC.put(Constant.TRACE_ID_HEADER, traceId);
     }
 
-    public String getUsername() {
+    public static String getUsername() {
         Principle principle = getPrinciple();
 
         return principle == null || principle.username() == null? Constant.SYSTEM_USER: principle.username();
     }
 
-    public String getEmail() {
+    public static String getEmail() {
         Principle principle = getPrinciple();
 
         return principle == null || principle.email() == null? null: principle.email();
     }
 
-    private Principle getPrinciple() {
+    private static Principle getPrinciple() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if(authentication==null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
