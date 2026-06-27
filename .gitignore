@@ -6,6 +6,9 @@ target/
 
 .env
 
+### Local notes (do not commit) ###
+.code-review.md
+
 ### STS ###
 .apt_generated
 .classpath
