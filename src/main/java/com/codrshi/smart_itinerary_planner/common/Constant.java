@@ -19,18 +19,17 @@ public class Constant {
     public static final String PREFER_HEADER = "Prefer";
     public static final String AUTH_HEADER = "Authorization";
     public static final String TRACE_ID_HEADER = "X-Trace-Id";
-    public static final String FORWARDED_FOR_HEADER = "X-Forwarded-For";
     public static final String PREFER_HEADER_REPRESENTATION = "return-representation";
     public static final String PREFER_HEADER_MINIMAL = "return-minimal";
     public static final String SYSTEM_USER = "system_user";
     public static final String OVER_QUERY_LIMIT = "OVER_QUERY_LIMIT";
 
     // public APIs rate limited by IP address
-    public static final String[] PUBLIC_APIS_THROTTLED = {"/user", "/actuator"};
+    public static final String[] PUBLIC_APIS_THROTTLED = {"/itinerary/user/"};
     // public APIs exempted from rate limiting.
     public static final String[] PUBLIC_APIS_EXEMPTED = {"/swagger-ui", "/swagger-ui.html", "/v3/api-docs", "/error"};
     public static final String[] PUBLIC_APIS = {"/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**",
-            "/error", "/error/**", "/itinerary/user/**", "/actuator/**"};
+            "/error", "/error/**", "/itinerary/user/**", "/actuator/health/**", "/actuator/info"};
 
     // Resource
     public static final String RESOURCE_POI = "POI(s)";

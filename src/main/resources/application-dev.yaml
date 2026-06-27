@@ -12,6 +12,15 @@ spring:
           model: ai/llama3.2
         base-url: http://localhost:12434
 
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
+    env:
+      show-values: ALWAYS
+    configprops:
+      show-values: ALWAYS
+
 itinerary:
   redis:
     rateLimiting:

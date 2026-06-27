@@ -10,8 +10,12 @@ spring:
 
 management:
   endpoint:
+    health:
+      show-details: WHEN_AUTHORIZED
     env:
-      keys-to-sanitize: password, apiKey, secretKey, email
+      show-values: WHEN_AUTHORIZED
+    configprops:
+      show-values: WHEN_AUTHORIZED
 
 server:
   forward-headers-strategy: framework

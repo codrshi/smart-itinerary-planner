@@ -26,6 +26,9 @@ spring:
     openai:
       api-key: dummyKey
 
+admin:
+  username: admin
+
 itinerary:
   redis:
     coordinate-ttl: 7         # in days

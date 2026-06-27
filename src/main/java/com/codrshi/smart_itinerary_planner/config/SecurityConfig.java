@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.config;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
 import com.codrshi.smart_itinerary_planner.security.filter.RateLimiterFilter;
 import com.codrshi.smart_itinerary_planner.util.ErrorResponseBuilder;
 import com.codrshi.smart_itinerary_planner.security.filter.ExceptionTranslatorFilter;
@@ -41,6 +42,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                 .requestMatchers(Constant.PUBLIC_APIS).permitAll()
+                .requestMatchers("/actuator/**").hasRole(UserRole.ADMIN.getName())
                 .anyRequest().authenticated());
 
         http.addFilterBefore(traceIdHeaderFilter, UsernamePasswordAuthenticationFilter.class);

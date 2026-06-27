@@ -23,7 +23,7 @@ public interface IUserMapper {
     @Mapping(target = "tokenExpiryDate", source = "expiryDate")
     UserLoginResponseDTO mapToUserResponseDTO(Authentication authentication, String jwtToken, Date expiryDate);
 
-    @Mapping(target = "assignedRoles", expression = "java(user.getRoles().stream().map(UserRole::getValue).collect" +
+    @Mapping(target = "assignedRoles", expression = "java(user.getRoles().stream().map(UserRole::getRole).collect" +
             "(Collectors.joining(\", \")))")
     UserRegistrationResponseDTO mapToUserResponseDTO(User user);
 }
