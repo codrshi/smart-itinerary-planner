@@ -40,7 +40,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers(Constant.BASE_URI_USER + "/**", "/error", "/error/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers(Constant.PUBLIC_APIS).permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterBefore(traceIdHeaderFilter, UsernamePasswordAuthenticationFilter.class);

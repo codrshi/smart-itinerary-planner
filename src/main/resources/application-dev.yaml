@@ -14,9 +14,13 @@ spring:
 
 itinerary:
   redis:
-    rate-limiting:
-      tokens-per-period: 1
-      period: 5000
+    rateLimiting:
+      protectedAPI:
+        tokensPerPeriod: 1
+        period: 5000           # in ms
+      publicAPI:
+        tokensPerPeriod: 3
+        period: 10000           # in ms
   async:
     corePoolSize: 5
     maxPoolSize: 10

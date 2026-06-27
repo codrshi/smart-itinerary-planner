@@ -3,6 +3,7 @@ package com.codrshi.smart_itinerary_planner.security.filter;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.security.JwtService;
 import com.codrshi.smart_itinerary_planner.security.Principle;
+import com.codrshi.smart_itinerary_planner.util.RequestUriIdentifier;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
@@ -27,6 +29,7 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String jwt = request.getHeader(Constant.AUTH_HEADER);
+
 
         if (jwt == null || !jwt.startsWith(Constant.BEARER_TOKEN_PREFIX)) {
             // allow for public routes. AuthorizationFilter (at bottom of security chain) allows public routes
@@ -60,6 +63,8 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getRequestURI().contains("/user") || request.getRequestURI().contains("/swagger-ui") || request.getRequestURI().contains("/v3/api-docs");
+        return RequestUriIdentifier.match(request.getRequestURI(),
+                                          Stream.concat(Stream.of(Constant.PUBLIC_APIS_THROTTLED),
+                                                        Stream.of(Constant.PUBLIC_APIS_EXEMPTED)).toArray(String[]::new));
     }
 }

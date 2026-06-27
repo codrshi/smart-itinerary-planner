@@ -52,7 +52,7 @@ public class ItineraryProperties {
         private int weatherTtl;
         private int itineraryTtl;
         private int blacklistedMailsTtl;
-        private RateLimitingProperties rateLimiting;
+        private Map<String, RateLimitingProperties> rateLimiting;
 
         @Getter
         @AllArgsConstructor
