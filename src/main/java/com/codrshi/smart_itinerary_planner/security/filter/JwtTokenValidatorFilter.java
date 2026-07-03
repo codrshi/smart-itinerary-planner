@@ -3,6 +3,7 @@ package com.codrshi.smart_itinerary_planner.security.filter;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import com.codrshi.smart_itinerary_planner.security.JwtService;
 import com.codrshi.smart_itinerary_planner.security.Principle;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.RequestUriIdentifier;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -53,6 +54,7 @@ public class JwtTokenValidatorFilter extends OncePerRequestFilter {
                     AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            RequestContext.setUsername(username);
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
             throw new BadCredentialsException("Invalid or expired authentication token.");

@@ -52,7 +52,6 @@ public class AuxiliaryService implements IAuxiliaryService {
 
         String username = RequestContext.getUsername();
         String email = RequestContext.getEmail();
-        log.debug("Username: {}, Email: {}", username, email);
 
         List<FlattenedActivityDTO> flattenedActivities =
                 flattenedItineraryMapper.mapToFlattenedActivityList(itineraryResponseDTO.getActivities());

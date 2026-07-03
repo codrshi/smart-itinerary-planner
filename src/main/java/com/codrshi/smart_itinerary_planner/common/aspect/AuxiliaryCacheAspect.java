@@ -40,7 +40,7 @@ public class AuxiliaryCacheAspect {
         String blacklistedMailKey = AuxiliaryRedisKeyGenerator.generateBlacklistedMail();
 
         if(Boolean.TRUE.equals(redisTemplate.opsForSet().isMember(blacklistedMailKey, email))){
-            log.warn("Skipping mail generation for {} as mail is either invalid or facing temporary issue.", email);
+            log.warn("Skipping mail generation as mail is either invalid or facing temporary issue.");
             throw new GenerateMailException();
         }
 
@@ -59,7 +59,7 @@ public class AuxiliaryCacheAspect {
             }
         }
         catch (MessagingException | MailException e) {
-            log.error("Failed to send mail for itineraryId = {}, blacklisting email = {}", itineraryId, email, e);
+            log.error("Failed to send mail for itineraryId = {}, blacklisting email...", itineraryId, e);
 
             if(!redisTemplate.hasKey(blacklistedMailKey)) {
                 redisTemplate.opsForSet().add(blacklistedMailKey, email);

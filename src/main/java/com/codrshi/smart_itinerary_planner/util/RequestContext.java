@@ -25,6 +25,10 @@ public class RequestContext {
         MDC.put(Constant.TRACE_ID_HEADER, traceId);
     }
 
+    public static void setUsername(String username) {
+        MDC.put(Constant.USERNAME, username);
+    }
+
     public static String getUsername() {
         Principle principle = getPrinciple();
 

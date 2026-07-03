@@ -22,7 +22,7 @@ public class ActivityUtil {
         int poiPerDay = maxPoiPerDay;
 
         log.debug("calculating poiPerDay for slots: {}, minPoiPerDay: {}, maxPoiPerDay: {}", slots, minPoiPerDay, maxPoiPerDay);
-        //TODO: Check if infinite loop
+
         while (minPoiPerDay < maxPoiPerDay) {
             int mid = minPoiPerDay + (maxPoiPerDay - minPoiPerDay) / 2;
 

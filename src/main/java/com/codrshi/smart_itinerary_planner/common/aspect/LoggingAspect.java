@@ -1,5 +1,10 @@
 package com.codrshi.smart_itinerary_planner.common.aspect;
 
+import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.util.ObfuscatorUtil;
+import com.codrshi.smart_itinerary_planner.util.annotation.Masked;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
@@ -8,8 +13,11 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.Annotation;
 
 @Aspect
 @Order(3)
@@ -21,10 +29,16 @@ public class LoggingAspect {
     private static final String REPOSITORY_POINTCUT = "execution(* com.codrshi.smart_itinerary_planner.repository..*(..))";
     private static final String TOOL_POINTCUT = "execution(public com.codrshi.smart_itinerary_planner.util.tool..*(..))";
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Before(CONTROLLER_POINTCUT)
     public void logBeforeControllerMethods(JoinPoint joinPoint) {
+
+        Object[] args = ObfuscatorUtil.obfuscateArgs(joinPoint);
+
         log.debug("<<< REQUEST INTERCEPTED BY CONTROLLER {}>>>", getMethodName(joinPoint));
-        log.debug("Arguments to {} = {}", getMethodName(joinPoint), joinPoint.getArgs());
+        log.debug("Arguments to {} = {}", getMethodName(joinPoint), args);
     }
 
     @AfterReturning(value = CONTROLLER_POINTCUT, returning = "response")
@@ -44,7 +58,9 @@ public class LoggingAspect {
 
     @Before(REPOSITORY_POINTCUT)
     public void logBeforeRepositoryMethods(JoinPoint joinPoint) {
-        log.debug("Call to repository method {} with arguments = {}", getMethodName(joinPoint), joinPoint.getArgs());
+        Object[] args = ObfuscatorUtil.obfuscateArgs(joinPoint);
+
+        log.debug("Call to repository method {} with arguments = {}", getMethodName(joinPoint), args);
     }
 
     @AfterReturning(value = REPOSITORY_POINTCUT, returning = "response")
@@ -59,7 +75,9 @@ public class LoggingAspect {
 
     @Before(TOOL_POINTCUT)
     public void logBeforeToolMethods(JoinPoint joinPoint) {
-        log.debug("Tool {} invoked with arguments = {}", getMethodName(joinPoint), joinPoint.getArgs());
+        Object[] args = ObfuscatorUtil.obfuscateArgs(joinPoint);
+
+        log.debug("Tool {} invoked with arguments = {}", getMethodName(joinPoint), args);
     }
 
     @AfterReturning(value = TOOL_POINTCUT, returning = "response")
@@ -81,4 +99,5 @@ public class LoggingAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         return signature.getDeclaringTypeName() + "." + signature.getName();
     }
+
 }

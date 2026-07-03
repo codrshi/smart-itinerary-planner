@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.entity;
 
 import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
+import com.codrshi.smart_itinerary_planner.util.annotation.Masked;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,12 +15,14 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-@ToString
+@ToString(exclude = {"password", "email"})
 public class User extends Audit{
     @Id
     private String docId;
     private String username;
+    @Masked
     private String email;
+    @Masked
     private String password;
     private List<UserRole> roles;
 }

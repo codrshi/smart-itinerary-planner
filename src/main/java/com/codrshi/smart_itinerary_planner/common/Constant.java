@@ -58,6 +58,7 @@ public class Constant {
     public static final String JWT_SECRET_KEY = "JWT_SECRET_KEY";
     public static final String EMAIL_REDACTED = "[EMAIL_REDACTED]";
     public static final String PHONE_REDACTED = "[PHONE_REDACTED]";
+    public static final String REDACTED = "[REDACTED]";
     public static final String EXTERNAL_API_TIMEOUT_CONFIG = "externalApiTimeout";
 
     // Redis

@@ -120,11 +120,11 @@ public class UserService implements IUserService {
         List<User> existingUsers = userRepository.findByUsernameOrEmail(username, email);
 
         existingUsers.stream().filter(user -> user.getUsername().equals(username)).findAny().ifPresent(user -> {
-            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "User " + username);
+            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "username");
         });
 
         existingUsers.stream().filter(user -> user.getEmail().equals(email)).findAny().ifPresent(user -> {
-            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "Email " + username);
+            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "email");
         });
     }
 }
