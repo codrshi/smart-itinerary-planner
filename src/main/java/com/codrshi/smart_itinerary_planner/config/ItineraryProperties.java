@@ -51,6 +51,7 @@ public class ItineraryProperties {
         private int attractionTtl;
         private int weatherTtl;
         private int itineraryTtl;
+        private int itineraryMailTtl;
         private int blacklistedMailsTtl;
         private Map<String, RateLimitingProperties> rateLimiting;
 

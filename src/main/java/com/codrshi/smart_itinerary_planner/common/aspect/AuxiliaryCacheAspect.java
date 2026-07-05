@@ -56,16 +56,17 @@ public class AuxiliaryCacheAspect {
                 log.debug("CACHE MISS: mail body not found for itineraryId = {}", itineraryId);
                 mailBody = (String) joinPoint.proceed();
                 redisTemplate.opsForValue().set(mailedItineraryKey, mailBody);
+                redisTemplate.opsForValue().set(mailedItineraryKey, mailBody,
+                                                Duration.ofDays(itineraryProperties.getRedis().getItineraryMailTtl()));
             }
         }
         catch (MessagingException | MailException e) {
             log.error("Failed to send mail for itineraryId = {}, blacklisting email...", itineraryId, e);
 
-            if(!redisTemplate.hasKey(blacklistedMailKey)) {
-                redisTemplate.opsForSet().add(blacklistedMailKey, email);
-                redisTemplate.expire(blacklistedMailKey, Duration.ofMinutes(itineraryProperties.getRedis().getBlacklistedMailsTtl()));
-            } else {
-                redisTemplate.opsForSet().add(blacklistedMailKey, email);
+            Long added = redisTemplate.opsForSet().add(blacklistedMailKey, email);
+            if (added != null && added > 0) {
+                redisTemplate.expire(blacklistedMailKey,
+                                     Duration.ofMinutes(itineraryProperties.getRedis().getBlacklistedMailsTtl()));
             }
 
             throw e;

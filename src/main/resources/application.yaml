@@ -77,6 +77,7 @@ itinerary:
     attraction-ttl: 1         # in days
     weather-ttl: 7            # in days
     itinerary-ttl: 7          # in days
+    itinerary-mail-ttl: 7     # in days
     blacklisted-mails-ttl: 1  # in mins
     rateLimiting:
       protectedAPI:

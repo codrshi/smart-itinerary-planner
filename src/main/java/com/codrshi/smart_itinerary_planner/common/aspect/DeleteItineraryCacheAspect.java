@@ -53,7 +53,7 @@ public class DeleteItineraryCacheAspect {
 
                 operations.delete(idRedisKey);
                 operations.delete(activitiesRedisKey);
-                operations.opsForSet().remove(mailedItineraryKey, itineraryId);
+                operations.delete(mailedItineraryKey);
 
                 return operations.exec();
             }

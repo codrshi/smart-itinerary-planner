@@ -74,11 +74,10 @@ public class GetItineraryCacheAspect {
                         Optional.ofNullable((List<ActivityDTO>) redisTemplate.opsForValue().get(activitiesRedisKey))
                 .orElse(Collections.emptyList()));
 
-        if(responseDTO == null) {
-            return null;
+        if(responseDTO != null) {
+            responseDTO.setActivities(activities);
         }
 
-        responseDTO.setActivities(activities);
         return responseDTO;
     }
 

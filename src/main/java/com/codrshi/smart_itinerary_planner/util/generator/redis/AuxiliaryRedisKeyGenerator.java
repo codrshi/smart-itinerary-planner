@@ -8,10 +8,6 @@ public class AuxiliaryRedisKeyGenerator extends RedisKeyGenerator{
         return generateKeyWithContext(Constant.MAILED_ITINERARIES_KEY, itineraryId);
     }
 
-    public static String generateMailedItinerary(String username, String itineraryId) {
-        return generateKeyMissingContext(username, Constant.MAILED_ITINERARIES_KEY, itineraryId);
-    }
-
     public static String generateBlacklistedMail() {
         return generateKeyWithoutContext(Constant.BLACKLISTED_MAILS_KEY);
     }

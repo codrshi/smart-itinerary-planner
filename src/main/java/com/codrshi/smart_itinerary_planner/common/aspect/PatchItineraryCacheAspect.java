@@ -42,6 +42,6 @@ public class PatchItineraryCacheAspect {
         log.debug("CACHE UPDATE: updating keys with new activities for itineraryId = {} in cache", itineraryId);
 
         redisTemplate.opsForValue().set(activitiesRedisKey, activities, Duration.ofDays(itineraryProperties.getRedis().getItineraryTtl()));
-        redisTemplate.opsForSet().remove(mailedItineraryKey, itineraryId);
+        redisTemplate.delete(mailedItineraryKey);
     }
 }

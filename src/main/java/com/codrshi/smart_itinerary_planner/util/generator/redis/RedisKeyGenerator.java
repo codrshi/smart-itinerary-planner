@@ -26,7 +26,7 @@ public abstract class RedisKeyGenerator {
 
         if(Constant.SYSTEM_USER.equals(username)){
             log.warn("Skipping cache for invalid user context");
-            return UUID.randomUUID().toString(); // force cache miss for anonymous user
+            return generateRandomKey(); // force cache miss for anonymous user
         }
 
         StringBuilder sb = new StringBuilder(Constant.ITIX_KEY_PREFIX);
@@ -37,10 +37,6 @@ public abstract class RedisKeyGenerator {
         }
 
         return sb.toString();
-    }
-
-    protected static String generateKeyMissingContext(String username, Object... params) {
-        return generateKeyWithoutContext(username, params);
     }
 
     protected static String generateRandomKey() {
