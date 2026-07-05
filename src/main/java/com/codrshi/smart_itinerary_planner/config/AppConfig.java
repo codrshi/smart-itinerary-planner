@@ -36,6 +36,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -49,6 +50,7 @@ import java.util.Optional;
 @EnableMongoAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties(ItineraryProperties.class)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableRetry
 public class AppConfig {
 
     @Bean

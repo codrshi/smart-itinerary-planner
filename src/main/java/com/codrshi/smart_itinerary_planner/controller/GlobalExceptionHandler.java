@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.password.CompromisedPasswordException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -58,16 +59,28 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request){
+    @ExceptionHandler({HttpMessageNotReadableException.class, ServletException.class, BadCredentialsException.class})
+    ResponseEntity<?> handleBadRequestException(Exception ex, HttpServletRequest request){
+
+        String errMsg = ex.getMessage();
+
+        if(ex instanceof HttpMessageNotReadableException httpMessageNotReadableException) {
+            log.error("Http message not readable error: {}", ex.getMessage(), ex);
+            errMsg = httpMessageNotReadableException.getMostSpecificCause().getMessage();
+        }
+        else if(ex instanceof ServletException) {
+            log.error("Servlet error: {}", ex.getMessage(), ex);
+            errMsg = "Invalid request: " + ex.getMessage();
+        }
+
+
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .message(ex.getMostSpecificCause().getMessage())
+                .message(errMsg)
                 .path(request.getRequestURI())
                 .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        log.error("Http message not readable error: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
@@ -88,7 +101,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OptimisticLockingFailureException.class)
-    ResponseEntity<?> handleConcurrencyException(OptimisticLockingFailureException ex, HttpServletRequest request) {
+    ResponseEntity<?> handleConflictException(OptimisticLockingFailureException ex, HttpServletRequest request) {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
@@ -100,21 +113,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler(ServletException.class)
-    ResponseEntity<?> handleServletException(ServletException ex, HttpServletRequest request) {
-        IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .message("Invalid request: " + ex.getMessage())
-                .path(request.getRequestURI())
-                .traceId(RequestContext.getTraceId())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        log.error("Servlet error: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
-    }
-
-    @ExceptionHandler({CompromisedPasswordException.class, UsernameNotFoundException.class})
-    ResponseEntity<?> authenticationException(AuthenticationException ex, HttpServletRequest request) {
+    @ExceptionHandler({CompromisedPasswordException.class, UsernameNotFoundException.class, AuthenticationException.class})
+    ResponseEntity<?> handleUnauthorizedException(AuthenticationException ex, HttpServletRequest request) {
 
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(ex.getMessage())
@@ -124,11 +124,11 @@ public class GlobalExceptionHandler {
                 .build();
 
         log.error("Authentication error: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler(Exception.class)
-    ResponseEntity<?> handleException(Exception ex, HttpServletRequest request) {
+    ResponseEntity<?> handleUnknownException(Exception ex, HttpServletRequest request) {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .errorCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                 .message(ErrorCode.INTERNAL_SERVER_ERROR.getMessageTemplate())
