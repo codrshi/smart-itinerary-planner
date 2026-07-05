@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.response.ErrorResp
 import com.codrshi.smart_itinerary_planner.exception.BadRequestException;
 import com.codrshi.smart_itinerary_planner.exception.BaseException;
 import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
+import com.codrshi.smart_itinerary_planner.exception.GenerateMailException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidCountryException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidDateRangeException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidEnumInstanceException;
@@ -18,6 +19,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -70,7 +72,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
-            MissingWeatherDataException.class, InvalidItineraryIdFormatException.class,
+            MissingWeatherDataException.class, InvalidItineraryIdFormatException.class, GenerateMailException.class,
             InvalidEnumInstanceException.class, BadRequestException.class, ResourceAlreadyExistException.class, CannotConstructActivityException.class})
     ResponseEntity<?> handleBusinessException(BaseException ex, HttpServletRequest request) {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
@@ -83,6 +85,19 @@ public class GlobalExceptionHandler {
 
         log.error("Business error: {}", ex.getMessage(), ex);
         return ResponseEntity.status(ex.getHttpStatus()).contentType(getContentType(request)).body(errorResponseDTO);
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    ResponseEntity<?> handleConcurrencyException(OptimisticLockingFailureException ex, HttpServletRequest request) {
+        IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
+                .message(ex.getMessage())
+                .path(request.getRequestURI())
+                .traceId(RequestContext.getTraceId())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        log.error("Concurrency error: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler(ServletException.class)
