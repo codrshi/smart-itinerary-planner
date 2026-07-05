@@ -55,7 +55,6 @@ public class AuxiliaryCacheAspect {
             else {
                 log.debug("CACHE MISS: mail body not found for itineraryId = {}", itineraryId);
                 mailBody = (String) joinPoint.proceed();
-                redisTemplate.opsForValue().set(mailedItineraryKey, mailBody);
                 redisTemplate.opsForValue().set(mailedItineraryKey, mailBody,
                                                 Duration.ofDays(itineraryProperties.getRedis().getItineraryMailTtl()));
             }

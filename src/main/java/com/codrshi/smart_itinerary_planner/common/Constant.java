@@ -66,7 +66,8 @@ public class Constant {
     public static final String RATE_LIMITING_CLIENT_KEY_PREFIX = "rate_limiting_client_key:";
     public static final String ITIX_KEY_PREFIX = "itix";
     public static final String ITINERARY_KEY = "itinerary";
-    public static final String ACTIVITY_KEY = "activities";
+    public static final String ITINERARY_KEY_METADATA = "metadata";
+    public static final String ITINERARY_KEY_ACTIVITIES = "activities";
     public static final String EVENT_KEY = "event";
     public static final String WEATHER_KEY = "weather";
     public static final String ATTRACTION_KEY = "attraction";
