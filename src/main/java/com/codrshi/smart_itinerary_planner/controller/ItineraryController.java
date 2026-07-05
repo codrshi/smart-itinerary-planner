@@ -77,7 +77,7 @@ public class ItineraryController {
     @Operation(summary = "Create an itinerary",
                description = "Create an itinerary in a given city and country for a given date range")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully created itinerary",
+            @ApiResponse(responseCode = "201", description = "Successfully created itinerary",
                          content = @Content(schema = @Schema(implementation = CreateItineraryResponseDTO.class))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                          content = @Content(schema = @Schema(implementation = ErrorResponseDTO.class))),
@@ -109,7 +109,7 @@ public class ItineraryController {
                                                                           linkTo(methodOn(ItineraryController.class).getItinerary(createItineraryResponseDTO.getItineraryId())).withRel("print itinerary"),
                                                                                 linkTo(methodOn(ItineraryController.class).getItineraries(null,null)).withRel("print itineraries"));
 
-        return ResponseEntity.status(HttpStatus.OK).body(responseModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseModel);
     }
 
     @Operation(summary = "Get the itinerary by ID",

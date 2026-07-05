@@ -175,8 +175,6 @@ public class AppConfig {
         ItineraryProperties.RedisProperties redisProperties = itineraryProperties.getRedis();
         Map<String, RedisCacheConfiguration>  cacheConfigurationMap = new HashMap<>();
 
-        cacheConfigurationMap.put(Constant.COORDINATE_CACHE,
-                                  defaultCacheConfig(serializer).entryTtl(Duration.ofDays(redisProperties.getCoordinateTtl())));
         cacheConfigurationMap.put(Constant.EVENT_CACHE,
                                   defaultCacheConfig(serializer).entryTtl(Duration.ofDays(redisProperties.getEventTtl())));
 

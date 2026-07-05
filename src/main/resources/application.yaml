@@ -4,6 +4,8 @@ spring:
   profiles:
     active: ${ACTIVE_PROFILE:default}
   data:
+    mongodb:
+      auto-index-creation: true
     web:
       pageable:
         default-page-size: 10
@@ -11,8 +13,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: sparc.expenses@gmail.com
-    password: ${GMAIL_APP_PASSWORD}
+    username: ${APP_GMAIL_ID}
+    password: ${APP_GMAIL_PASSWORD}
     properties:
       mail:
         smtp:

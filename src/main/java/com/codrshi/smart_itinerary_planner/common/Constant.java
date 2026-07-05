@@ -46,6 +46,8 @@ public class Constant {
     public static final String BEARER_TOKEN_PREFIX = "Bearer ";
     public static final String VERSION = "version";
     public static final String RESOURCE_USER = "user";
+    public static final String UPDATED_AT = "updatedAt";
+    public static final String UPDATED_BY = "updatedBy";
 
     public static final String THREAD_PREFIX = "SIP-TaskExecutor-";
     public static final String TIME_LIMIT_SCHEDULER_PREFIX = "SIP-TimeLimitScheduler-";
@@ -73,7 +75,6 @@ public class Constant {
     public static final String ATTRACTION_KEY = "attraction";
     public static final String MAILED_ITINERARIES_KEY = "mailed_itineraries";
     public static final String BLACKLISTED_MAILS_KEY = "blacklisted_mails";
-    public static final String COORDINATE_CACHE = "coordinateCache";
     public static final String EVENT_CACHE = "eventCache";
     public static final String EVENT_KEY_GENERATOR = "eventRedisKeyGenerator";
 

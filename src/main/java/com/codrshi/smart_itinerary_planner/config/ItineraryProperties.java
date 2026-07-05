@@ -46,7 +46,6 @@ public class ItineraryProperties {
     @AllArgsConstructor
     @ToString
     public static class RedisProperties {
-        private int coordinateTtl;
         private int eventTtl;
         private int attractionTtl;
         private int weatherTtl;

@@ -3,10 +3,6 @@ local tokens_per_period = tonumber(ARGV[1])      -- size of bucket or max tokens
 local period = tonumber(ARGV[2])                 -- time period in ms
 local now = tonumber(ARGV[3])
 
-redis.log(redis.LOG_NOTICE, "ARGV[3]: " .. tostring(ARGV[3]))
-redis.log(redis.LOG_NOTICE, "now: " .. tostring(now))
-redis.log(redis.LOG_NOTICE, "tokens_per_period: " .. tostring(tokens_per_period))
-
 local redisData = redis.call("HMGET", key, "tokens", "timestamp")
 local tokens = tonumber(redisData[1])
 local timestamp = tonumber(redisData[2])
