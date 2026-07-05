@@ -39,12 +39,11 @@ logging:
     console: "%cyan(%d{yyyy-MM-dd HH:mm:ss}) %highlight([%thread]) %highlight(%-5level) %green(%logger{36}) %magenta([%X{X-Trace-Id}]) - %msg%n"
 
 itinerary:
+  security:
+    require-ssl: true
   async:
     corePoolSize: 5
     maxPoolSize: 15
     queueCapacity: 100
     timeLimitScheduler:
       corePoolSize: 4
-
-security:
-  require-ssl: true
