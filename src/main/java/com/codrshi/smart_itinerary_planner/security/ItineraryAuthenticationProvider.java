@@ -39,7 +39,7 @@ public class ItineraryAuthenticationProvider implements AuthenticationProvider {
         return new UsernamePasswordAuthenticationToken(
                 new Principle(username, user.getEmail()),
                 password,
-                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getValue())).collect(Collectors.toList()));
+                user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRole())).collect(Collectors.toList()));
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.codrshi.smart_itinerary_planner.dto.implementation.response.ErrorResp
 import com.codrshi.smart_itinerary_planner.exception.BadRequestException;
 import com.codrshi.smart_itinerary_planner.exception.BaseException;
 import com.codrshi.smart_itinerary_planner.exception.CannotConstructActivityException;
+import com.codrshi.smart_itinerary_planner.exception.GenerateMailException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidCountryException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidDateRangeException;
 import com.codrshi.smart_itinerary_planner.exception.InvalidEnumInstanceException;
@@ -18,11 +19,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.password.CompromisedPasswordException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -47,7 +50,7 @@ public class GlobalExceptionHandler {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .message(errorMessages.toString())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -56,28 +59,40 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, HttpServletRequest request){
+    @ExceptionHandler({HttpMessageNotReadableException.class, ServletException.class, BadCredentialsException.class})
+    ResponseEntity<?> handleBadRequestException(Exception ex, HttpServletRequest request){
+
+        String errMsg = ex.getMessage();
+
+        if(ex instanceof HttpMessageNotReadableException httpMessageNotReadableException) {
+            log.error("Http message not readable error: {}", ex.getMessage(), ex);
+            errMsg = httpMessageNotReadableException.getMostSpecificCause().getMessage();
+        }
+        else if(ex instanceof ServletException) {
+            log.error("Servlet error: {}", ex.getMessage(), ex);
+            errMsg = "Invalid request: " + ex.getMessage();
+        }
+
+
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .message(ex.getMostSpecificCause().getMessage())
+                .message(errMsg)
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        log.error("Http message not readable error: {}", ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler({InvalidDateRangeException.class, InvalidCountryException.class, ResourceNotFoundException.class,
-            MissingWeatherDataException.class, InvalidItineraryIdFormatException.class,
+            MissingWeatherDataException.class, InvalidItineraryIdFormatException.class, GenerateMailException.class,
             InvalidEnumInstanceException.class, BadRequestException.class, ResourceAlreadyExistException.class, CannotConstructActivityException.class})
     ResponseEntity<?> handleBusinessException(BaseException ex, HttpServletRequest request) {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .errorCode(ex.getErrorCode())
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
@@ -85,45 +100,40 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(ex.getHttpStatus()).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler(ServletException.class)
-    ResponseEntity<?> handleServletException(ServletException ex, HttpServletRequest request) {
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    ResponseEntity<?> handleConflictException(OptimisticLockingFailureException ex, HttpServletRequest request) {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .message("Invalid request: " + ex.getMessage())
+                .message(ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
-        log.error("Servlet error: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
+        log.error("Concurrency error: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
-    @ExceptionHandler({CompromisedPasswordException.class, UsernameNotFoundException.class})
-    ResponseEntity<?> authenticationException(AuthenticationException ex, HttpServletRequest request) {
-
-        String errorMessage = ex.getMessage();
-        if(ex instanceof CompromisedPasswordException) {
-            errorMessage = "The password is known to be compromised. Please use a stronger password.";
-        }
+    @ExceptionHandler({CompromisedPasswordException.class, UsernameNotFoundException.class, AuthenticationException.class})
+    ResponseEntity<?> handleUnauthorizedException(AuthenticationException ex, HttpServletRequest request) {
 
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
-                .message(errorMessage)
+                .message(ex.getMessage())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 
         log.error("Authentication error: {}", ex.getMessage(), ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).contentType(getContentType(request)).body(errorResponseDTO);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).contentType(getContentType(request)).body(errorResponseDTO);
     }
 
     @ExceptionHandler(Exception.class)
-    ResponseEntity<?> handleException(Exception ex, HttpServletRequest request) {
+    ResponseEntity<?> handleUnknownException(Exception ex, HttpServletRequest request) {
         IErrorResponseDTO errorResponseDTO = ErrorResponseDTO.builder()
                 .errorCode(ErrorCode.INTERNAL_SERVER_ERROR.getCode())
                 .message(ErrorCode.INTERNAL_SERVER_ERROR.getMessageTemplate())
                 .path(request.getRequestURI())
-                .traceId(RequestContext.getCurrentContext().getTraceId())
+                .traceId(RequestContext.getTraceId())
                 .timestamp(LocalDateTime.now())
                 .build();
 

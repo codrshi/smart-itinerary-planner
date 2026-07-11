@@ -17,6 +17,7 @@ import com.codrshi.smart_itinerary_planner.service.ICreateItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.CoordinateDiscoverer;
 import com.codrshi.smart_itinerary_planner.util.DateUtils;
+import com.codrshi.smart_itinerary_planner.util.FactoryUtil;
 import com.codrshi.smart_itinerary_planner.util.generator.ItineraryIdGenerator;
 import com.codrshi.smart_itinerary_planner.util.LocationUtil;
 import com.codrshi.smart_itinerary_planner.common.enums.WeatherType;
@@ -31,6 +32,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
@@ -110,7 +112,8 @@ public class CreateItineraryService implements ICreateItineraryService {
 
         List<IEventDTO> events = eventsFuture.join();
         List<IAttractionDTO> attractions = attractionsFuture.join();
-        Map<LocalDate, WeatherType> dateToWeatherMap = weatherFuture.join();
+        Map<LocalDate, WeatherType> dateToWeatherMap = Optional.ofNullable(weatherFuture.join())
+                .orElse(FactoryUtil.defaultDateToWeatherMap(timePeriodDTO));
 
         log.debug("events: {}", events);
         log.debug("attractions: {}", attractions);
@@ -163,7 +166,7 @@ public class CreateItineraryService implements ICreateItineraryService {
     private Itinerary constructItinerary(ILocationDTO locationDTO, ITimePeriodDTO timePeriodDTO,
                                          List<IActivityDTO> activities) {
         String itineraryId = ItineraryIdGenerator.generateItineraryId(locationDTO.getCountryCode());
-        String userRef = RequestContext.getCurrentContext().getUsername();
+        String userRef = RequestContext.getUsername();
 
         return Itinerary.builder()
                 .itineraryId(itineraryId)

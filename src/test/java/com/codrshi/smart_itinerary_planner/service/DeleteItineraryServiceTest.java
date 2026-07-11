@@ -7,6 +7,7 @@ import com.codrshi.smart_itinerary_planner.dto.request.IDeleteItineraryRequestDT
 import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +33,17 @@ public class DeleteItineraryServiceTest extends BaseTest {
 
     @Test
     void givenDeleteItineraryService_whenCorrectRequest_thenDeleteItinerary() {
-
-        when(itineraryRepository.existsByItineraryId(ITINERARY_1_ID)).thenReturn(true);
+        when(itineraryRepository.deleteByItineraryIdAndUserRef(ITINERARY_1_ID, RequestContext.getUsername())).thenReturn(1);
 
         assertDoesNotThrow(() -> deleteItineraryService.deleteItinerary(ITINERARY_1_ID));
 
-        verify(itineraryRepository).deleteByItineraryId(ITINERARY_1_ID);
+        verify(itineraryRepository).deleteByItineraryIdAndUserRef(ITINERARY_1_ID, RequestContext.getUsername());
     }
 
     @Test
     void givenDeleteItineraryService_whenItineraryDoesNotExist_ThrowResourceNotFoundException() {
 
-        when(itineraryRepository.existsByItineraryId(ITINERARY_1_ID)).thenReturn(false);
+        when(itineraryRepository.deleteByItineraryIdAndUserRef(ITINERARY_1_ID, RequestContext.getUsername())).thenReturn(0);
 
         ResourceNotFoundException ex = assertThrows(
                 ResourceNotFoundException.class,
@@ -51,7 +51,6 @@ public class DeleteItineraryServiceTest extends BaseTest {
         );
 
         assertEquals(ErrorCode.RESOURCE_NOT_FOUND.formatMessage(Constant.ITINERARY_KEY), ex.getMessage());
-        verify(itineraryRepository, never()).deleteByItineraryId(anyString());
     }
 
     @Test

@@ -50,9 +50,8 @@ public class AuxiliaryService implements IAuxiliaryService {
     public String mailItinerary(String itineraryId) throws IOException, MessagingException {
         IItineraryResponseDTO itineraryResponseDTO = getItineraryService.getItinerary(itineraryId);
 
-        String username = RequestContext.getCurrentContext().getUsername();
-        String email = RequestContext.getCurrentContext().getEmail();
-        log.debug("Username: {}, Email: {}", username, email);
+        String username = RequestContext.getUsername();
+        String email = RequestContext.getEmail();
 
         List<FlattenedActivityDTO> flattenedActivities =
                 flattenedItineraryMapper.mapToFlattenedActivityList(itineraryResponseDTO.getActivities());

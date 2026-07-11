@@ -2,7 +2,6 @@ package com.codrshi.smart_itinerary_planner.common.aspect;
 
 import com.codrshi.smart_itinerary_planner.config.ItineraryProperties;
 import com.codrshi.smart_itinerary_planner.dto.response.IDeleteItineraryResponseDTO;
-import com.codrshi.smart_itinerary_planner.util.generator.redis.ActivityRedisKeyGenerator;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.AuxiliaryRedisKeyGenerator;
 import com.codrshi.smart_itinerary_planner.util.generator.redis.ItineraryRedisKeyGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +40,7 @@ public class DeleteItineraryCacheAspect {
     }
 
     private void deleteFromCache(String itineraryId) {
-        String idRedisKey = ItineraryRedisKeyGenerator.generateWithItineraryId(itineraryId);
-        String activitiesRedisKey = ActivityRedisKeyGenerator.generate(itineraryId);
+        String itineraryKey = ItineraryRedisKeyGenerator.generate(itineraryId);
         String mailedItineraryKey = AuxiliaryRedisKeyGenerator.generateMailedItinerary(itineraryId);
 
         log.debug("CACHE CLEAR: deleting keys for itineraryId = {} from cache", itineraryId);
@@ -51,9 +49,8 @@ public class DeleteItineraryCacheAspect {
             public Object execute(RedisOperations operations) throws DataAccessException {
                 operations.multi();
 
-                operations.delete(idRedisKey);
-                operations.delete(activitiesRedisKey);
-                operations.opsForSet().remove(mailedItineraryKey, itineraryId);
+                operations.delete(itineraryKey);
+                operations.delete(mailedItineraryKey);
 
                 return operations.exec();
             }

@@ -67,8 +67,9 @@ public class EventMapper implements IEventMapper {
         //TODO: support for dateTime
         LocalDate date = Optional.ofNullable(event.getDates())
                 .map(TicketMasterEventResponseDTO.Dates::getStart)
-                .map(TicketMasterEventResponseDTO.Start::getDateTime)
-                .map(LocalDateTime::toLocalDate)
+                .map(start-> start.getDateTime() != null?
+                        start.getDateTime().toLocalDate():
+                        start.getLocalDate())
                 .orElse(null);
 
         eventDTO.setPoiId(counterManager.nextPoiId());

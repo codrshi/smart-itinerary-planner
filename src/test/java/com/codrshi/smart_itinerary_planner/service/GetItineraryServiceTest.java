@@ -8,6 +8,7 @@ import com.codrshi.smart_itinerary_planner.dto.request.IGetItineraryRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IItineraryResponseDTO;
 import com.codrshi.smart_itinerary_planner.entity.Itinerary;
 import com.codrshi.smart_itinerary_planner.exception.ResourceNotFoundException;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class GetItineraryServiceTest extends BaseTest {
         IItineraryResponseDTO expectedGetItineraryResponseDTO = getJsonObject("GetItineraryServiceTest/GetItineraryValidReponse.json",
                                                             new TypeReference<GetItineraryResponseDTO>() {});
 
-        when(itineraryRepository.findByItineraryId(ITINERARY_ID))
+        when(itineraryRepository.findByItineraryIdAndUserRef(ITINERARY_ID, RequestContext.getUsername()))
                 .thenReturn(Optional.of(mockedItinerary));
 
         IItineraryResponseDTO getItineraryResponseDTO = getItineraryService.getItinerary(ITINERARY_ID);
@@ -48,7 +49,7 @@ public class GetItineraryServiceTest extends BaseTest {
     @Test
     void givenGetItineraryService_whenItineraryNotFound_thenThrowResourceNotFoundException() {
 
-        when(itineraryRepository.findByItineraryId(ITINERARY_ID))
+        when(itineraryRepository.findByItineraryIdAndUserRef(ITINERARY_ID, RequestContext.getUsername()))
                 .thenReturn(Optional.empty());
 
         ResourceNotFoundException ex = assertThrows(

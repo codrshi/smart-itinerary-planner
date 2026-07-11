@@ -17,6 +17,7 @@ public class ResourceEventListener {
 
         if(event == null || event.getResourceEventDTO() == null) {
             log.warn("Received null event or event data");
+            return;
         }
 
         String resourceEventType = event.getClass().getSimpleName();

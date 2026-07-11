@@ -1,11 +1,7 @@
 package com.codrshi.smart_itinerary_planner.util;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.web.context.WebApplicationContext;
 
-@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CounterManager {
     private Counter activityCounter;
     private Counter poiCounter;

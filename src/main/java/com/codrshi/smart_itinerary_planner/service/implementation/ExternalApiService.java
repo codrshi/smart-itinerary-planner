@@ -80,10 +80,8 @@ public class ExternalApiService implements IExternalApiService {
                                                                                           TicketMasterEventResponseDTO.class);
 
         log.debug("getTicketmasterEvents response: {}", response);
-        if(response.getStatusCode().is5xxServerError()) {
-            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_TICKETMASTER);
-            throw new HttpServerErrorException(null);
-        }
+
+        validateResponse(response, KEY_TICKETMASTER);
 
         return eventMapper.mapToEventDTO(response.getBody());
     }
@@ -98,12 +96,11 @@ public class ExternalApiService implements IExternalApiService {
         log.debug("Prepared getGeoapifyAttractions URL: {}", URL);
         ResponseEntity<String> response = restTemplate.getForEntity(URL, String.class);
 
+        validateResponse(response, KEY_GEOAPIFY);
+
         if(response.getBody().contains(Constant.OVER_QUERY_LIMIT) ) {
             log.warn("Quota exceeded for getGeoapifyAttractions. Fallback logic will be triggered.");
             throw new QuotaExceededException(LocalDate.now().toString());
-        } else if(response.getStatusCode().is5xxServerError()) {
-            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_GEOAPIFY);
-            throw new HttpServerErrorException(null);
         }
 
         GeoapifyAttractionResponseDTO attractionResponse;
@@ -130,10 +127,9 @@ public class ExternalApiService implements IExternalApiService {
         if(response.getStatusCode() == HttpStatus.TOO_MANY_REQUESTS) {
             log.warn("Quota exceeded for getVirtualCrossingWeather. Fallback logic will be triggered.");
             throw new QuotaExceededException(LocalDate.now().toString());
-        } else if(response.getStatusCode().is5xxServerError()) {
-            log.warn(ERR_MSG_5XX_SERVER_ERROR, KEY_VIRTUALCROSSING);
-            throw new HttpServerErrorException(null);
         }
+
+        validateResponse(response, KEY_VIRTUALCROSSING);
 
         log.debug("getVirtualCrossingWeather response: {}", response);
         return weatherMapper.mapDateToWeather(response.getBody());
@@ -208,5 +204,12 @@ public class ExternalApiService implements IExternalApiService {
                 .queryParam("limit", limit)
                 .queryParam("lang", "en")
                 .toUriString();
+    }
+
+    private void validateResponse(ResponseEntity<?> response, String apiName) {
+        if(response == null || response.getBody() == null || response.getStatusCode().is5xxServerError()){
+            log.warn(ERR_MSG_5XX_SERVER_ERROR, apiName);
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -43,8 +43,8 @@ public class ItineraryRepositoryCustomQueryImpl implements ItineraryRepositoryCu
     @Override
     public void updateActivities(Query query, List<IActivityDTO> activities) {
         Update update = new Update().set(Constant.ACTIVITIES, activities)
-                            .set("updatedAt", LocalDate.now())
-                            .set("updatedBy", RequestContext.getCurrentContext().getUsername())
+                            .set(Constant.UPDATED_AT, Instant.now())
+                            .set(Constant.UPDATED_BY, RequestContext.getUsername())
                             .inc(Constant.VERSION, 1);
 
         UpdateResult result = mongoTemplate.updateFirst(query, update, Itinerary.class);

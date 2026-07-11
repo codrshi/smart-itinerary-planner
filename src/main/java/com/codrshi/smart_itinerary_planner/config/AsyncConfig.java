@@ -1,5 +1,6 @@
 package com.codrshi.smart_itinerary_planner.config;
 
+import com.codrshi.smart_itinerary_planner.async.ContextPropogateTaskDecorator;
 import com.codrshi.smart_itinerary_planner.common.Constant;
 import io.github.resilience4j.timelimiter.TimeLimiter;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
@@ -32,6 +33,9 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setMaxPoolSize(itineraryProperties.getAsync().getMaxPoolSize());
         executor.setQueueCapacity(itineraryProperties.getAsync().getQueueCapacity());
         executor.setThreadNamePrefix(Constant.THREAD_PREFIX);
+
+        executor.setTaskDecorator(new ContextPropogateTaskDecorator());
+
         executor.initialize();
         return executor;
     }

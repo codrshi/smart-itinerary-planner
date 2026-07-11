@@ -20,7 +20,7 @@ public class LoggingAdvisor implements CallAdvisor {
         ChatClientResponse chatClientResponse = callAdvisorChain.nextCall(chatClientRequest);
 
         long duration = System.currentTimeMillis() - startTime;
-        String username = RequestContext.getCurrentContext().getUsername();
+        String username = RequestContext.getUsername();
 
         log.debug("LLM query for {} took {} ms.", username, duration);
         log.debug("LLM query for {} consumed {} tokens.", username, chatClientResponse.chatResponse().getMetadata().getUsage());

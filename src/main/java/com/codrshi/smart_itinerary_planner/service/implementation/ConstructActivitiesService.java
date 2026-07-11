@@ -97,12 +97,15 @@ public class ConstructActivitiesService implements IConstructActivitiesService {
 
         events.forEach(event -> {
             LocalDate date = event.getDate();
-            IActivityDTO activityDTO = dateToActivityMap.getOrDefault(date, ActivityDTO.builder()
-                    .activityId(counterManager.nextActivityId())
-                    .activityDate(date)
-                    .weatherType(dateToWeatherMap.get(date))
-                    .pointOfInterests(new ArrayList<>())
-                    .build());
+            IActivityDTO activityDTO = dateToActivityMap.computeIfAbsent(date, dateKey ->
+                ActivityDTO.builder()
+                        .activityId(counterManager.nextActivityId())
+                        .activityDate(dateKey)
+                        .weatherType(dateToWeatherMap.get(dateKey))
+                        .pointOfInterests(new ArrayList<>())
+                        .build()
+            );
+
             List<IPointOfInterestDTO> poiList = activityDTO.getPointOfInterests();
 
             poiList.add(event);

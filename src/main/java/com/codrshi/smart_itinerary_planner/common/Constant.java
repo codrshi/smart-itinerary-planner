@@ -24,6 +24,13 @@ public class Constant {
     public static final String SYSTEM_USER = "system_user";
     public static final String OVER_QUERY_LIMIT = "OVER_QUERY_LIMIT";
 
+    // public APIs rate limited by IP address
+    public static final String[] PUBLIC_APIS_THROTTLED = {"/itinerary/user/"};
+    // public APIs exempted from rate limiting.
+    public static final String[] PUBLIC_APIS_EXEMPTED = {"/swagger-ui", "/swagger-ui.html", "/v3/api-docs", "/error"};
+    public static final String[] PUBLIC_APIS = {"/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs", "/v3/api-docs/**",
+            "/error", "/error/**", "/itinerary/user/**", "/actuator/health/**", "/actuator/info"};
+
     // Resource
     public static final String RESOURCE_POI = "POI(s)";
     public static final String RESOURCE_ITINERARY = "itinerary";
@@ -39,6 +46,8 @@ public class Constant {
     public static final String BEARER_TOKEN_PREFIX = "Bearer ";
     public static final String VERSION = "version";
     public static final String RESOURCE_USER = "user";
+    public static final String UPDATED_AT = "updatedAt";
+    public static final String UPDATED_BY = "updatedBy";
 
     public static final String THREAD_PREFIX = "SIP-TaskExecutor-";
     public static final String TIME_LIMIT_SCHEDULER_PREFIX = "SIP-TimeLimitScheduler-";
@@ -51,19 +60,21 @@ public class Constant {
     public static final String JWT_SECRET_KEY = "JWT_SECRET_KEY";
     public static final String EMAIL_REDACTED = "[EMAIL_REDACTED]";
     public static final String PHONE_REDACTED = "[PHONE_REDACTED]";
+    public static final String REDACTED = "[REDACTED]";
     public static final String EXTERNAL_API_TIMEOUT_CONFIG = "externalApiTimeout";
 
     // Redis
+    public static final String RATE_LIMITING_IP_KEY_PREFIX     = "rate_limiting_ip_key:";
     public static final String RATE_LIMITING_CLIENT_KEY_PREFIX = "rate_limiting_client_key:";
     public static final String ITIX_KEY_PREFIX = "itix";
     public static final String ITINERARY_KEY = "itinerary";
-    public static final String ACTIVITY_KEY = "activities";
+    public static final String ITINERARY_KEY_METADATA = "metadata";
+    public static final String ITINERARY_KEY_ACTIVITIES = "activities";
     public static final String EVENT_KEY = "event";
     public static final String WEATHER_KEY = "weather";
     public static final String ATTRACTION_KEY = "attraction";
     public static final String MAILED_ITINERARIES_KEY = "mailed_itineraries";
     public static final String BLACKLISTED_MAILS_KEY = "blacklisted_mails";
-    public static final String COORDINATE_CACHE = "coordinateCache";
     public static final String EVENT_CACHE = "eventCache";
     public static final String EVENT_KEY_GENERATOR = "eventRedisKeyGenerator";
 

@@ -9,6 +9,7 @@ import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;
 import com.codrshi.smart_itinerary_planner.service.IDeleteItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +37,11 @@ public class DeleteItineraryService implements IDeleteItineraryService {
 
         validationService.validateItineraryId(itineraryId, HttpStatus.BAD_REQUEST);
 
-        if(itineraryRepository.existsByItineraryId(itineraryId)) {
-            log.debug("Itinerary with itineraryId {} exists. Proceeding to delete.", itineraryId);
-            itineraryRepository.deleteByItineraryId(itineraryId);
-        } else {
+        if(itineraryRepository.deleteByItineraryIdAndUserRef(itineraryId, RequestContext.getUsername()) == 0) {
             throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY);
         }
+
+        log.debug("Itinerary with itineraryId {} deleted.", itineraryId);
     }
 
     @Override

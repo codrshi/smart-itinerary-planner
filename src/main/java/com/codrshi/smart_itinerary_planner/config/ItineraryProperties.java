@@ -46,13 +46,13 @@ public class ItineraryProperties {
     @AllArgsConstructor
     @ToString
     public static class RedisProperties {
-        private int coordinateTtl;
         private int eventTtl;
         private int attractionTtl;
         private int weatherTtl;
         private int itineraryTtl;
+        private int itineraryMailTtl;
         private int blacklistedMailsTtl;
-        private RateLimitingProperties rateLimiting;
+        private Map<String, RateLimitingProperties> rateLimiting;
 
         @Getter
         @AllArgsConstructor

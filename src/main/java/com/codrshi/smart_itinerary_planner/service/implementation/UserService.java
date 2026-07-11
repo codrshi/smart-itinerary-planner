@@ -1,5 +1,6 @@
 package com.codrshi.smart_itinerary_planner.service.implementation;
 
+import com.codrshi.smart_itinerary_planner.common.enums.ErrorCode;
 import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
 import com.codrshi.smart_itinerary_planner.dto.request.IUserRegistrationRequestDTO;
 import com.codrshi.smart_itinerary_planner.dto.response.IUserLoginResponseDTO;
@@ -19,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.springframework.security.authentication.password.CompromisedPasswordException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,19 +53,18 @@ public class UserService implements IUserService {
     @Autowired
     private JwtService jwtService;
 
-    @Autowired
-    private ValidationService validationService;
-
     @Override
     public IUserRegistrationResponseDTO createUser(IUserRegistrationRequestDTO userRequestDTO) {
         String username = userRequestDTO.getUsername();
         String email = userRequestDTO.getEmail();
         String password = userRequestDTO.getPassword();
-
         checkIfExistingUser(username, email);
         log.debug("No existing user found. Creating new user...");
 
-        compromisedPasswordChecker.check(password);
+        if(compromisedPasswordChecker.check(password).isCompromised()){
+            throw new CompromisedPasswordException("The password is known to be compromised. Please use a stronger password.");
+        }
+
         log.trace("Compromised password verification passed.");
 
         User user = buildUser(username, email, password);
@@ -119,11 +120,11 @@ public class UserService implements IUserService {
         List<User> existingUsers = userRepository.findByUsernameOrEmail(username, email);
 
         existingUsers.stream().filter(user -> user.getUsername().equals(username)).findAny().ifPresent(user -> {
-            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "User " + username);
+            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "username");
         });
 
         existingUsers.stream().filter(user -> user.getEmail().equals(email)).findAny().ifPresent(user -> {
-            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "Email " + username);
+            throw new ResourceAlreadyExistException(HttpStatus.BAD_REQUEST, "email");
         });
     }
 }

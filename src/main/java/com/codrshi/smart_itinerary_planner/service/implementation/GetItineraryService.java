@@ -9,6 +9,7 @@ import com.codrshi.smart_itinerary_planner.repository.ItineraryRepository;
 import com.codrshi.smart_itinerary_planner.service.IGetItineraryService;
 import com.codrshi.smart_itinerary_planner.service.IValidationService;
 import com.codrshi.smart_itinerary_planner.util.QueryBuilder;
+import com.codrshi.smart_itinerary_planner.util.RequestContext;
 import com.codrshi.smart_itinerary_planner.util.mapper.IItineraryMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class GetItineraryService implements IGetItineraryService {
     public IItineraryResponseDTO getItinerary(String itineraryId) {
         validationService.validateItineraryId(itineraryId, HttpStatus.BAD_REQUEST);
 
-        Optional<Itinerary> itineraryOpt = itineraryRepository.findByItineraryId(itineraryId);
+        Optional<Itinerary> itineraryOpt = itineraryRepository.findByItineraryIdAndUserRef(itineraryId, RequestContext.getUsername());
 
         return itineraryOpt.map(itinerary -> itineraryMapper.mapToGetItineraryResponseDTO(itinerary))
                 .orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, Constant.RESOURCE_ITINERARY));

@@ -4,6 +4,8 @@ spring:
   profiles:
     active: ${ACTIVE_PROFILE:default}
   data:
+    mongodb:
+      auto-index-creation: true
     web:
       pageable:
         default-page-size: 10
@@ -11,8 +13,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: sparc.expenses@gmail.com
-    password: ${GMAIL_APP_PASSWORD}
+    username: ${APP_GMAIL_ID}
+    password: ${APP_GMAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -32,6 +34,10 @@ management:
   endpoint:
     health:
       show-details: when_authorized
+    env:
+      keys-to-sanitize: password, pwd, secret, key, token, credential, uri, url, email, dsn, conn
+    configprops:
+      keys-to-sanitize: password, pwd, secret, key, token, credential, uri, url, email, dsn, conn
 
 resilience4j:
   timeLimiter:
@@ -61,6 +67,11 @@ resilience4j:
         record-exceptions:
           - com.codrshi.smart_itinerary_planner.exception.QuotaExceededException
 
+admin:
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}
+  email: ${ADMIN_EMAIL}
+
 itinerary:
   redis:
     coordinate-ttl: 7         # in days
@@ -68,10 +79,15 @@ itinerary:
     attraction-ttl: 1         # in days
     weather-ttl: 7            # in days
     itinerary-ttl: 7          # in days
+    itinerary-mail-ttl: 7     # in days
     blacklisted-mails-ttl: 1  # in mins
-    rate-limiting:
-      tokens-per-period: 10
-      period: 1000            # in ms
+    rateLimiting:
+      protectedAPI:
+        tokensPerPeriod: 10
+        period: 1000            # in ms
+      publicAPI:
+        tokensPerPeriod: 10
+        period: 30000            # in ms
   weatherRankThreshold: 18
   patchLimit: 10
   purge:

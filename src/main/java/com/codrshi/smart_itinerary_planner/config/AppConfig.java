@@ -11,10 +11,9 @@ import com.codrshi.smart_itinerary_planner.util.mapper.implementation.Attraction
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.EventMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.ItineraryHistoryMapper;
 import com.codrshi.smart_itinerary_planner.util.mapper.implementation.WeatherMapper;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -25,6 +24,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -34,9 +36,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +50,7 @@ import java.util.Optional;
 @EnableMongoAuditing(auditorAwareRef = "auditorAware")
 @EnableConfigurationProperties(ItineraryProperties.class)
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@EnableRetry
 public class AppConfig {
 
     @Bean
@@ -88,6 +94,7 @@ public class AppConfig {
     }
 
     @Bean
+    @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public CounterManager counterManager() {
         return new CounterManager();
     }
@@ -119,22 +126,31 @@ public class AppConfig {
 
     @Bean
     public AuditorAware<String> auditorAware() {
-        return () -> Optional.of(RequestContext.getCurrentContext().getUsername());
+        return () -> Optional.of(RequestContext.getUsername());
     }
 
     @Bean
-    public GenericJackson2JsonRedisSerializer redisSerializer() {
+    public GenericJackson2JsonRedisSerializer redisSerializer(Environment environment) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
-        objectMapper.activateDefaultTyping(
-                LaissezFaireSubTypeValidator.instance,
-                ObjectMapper.DefaultTyping.NON_FINAL,
-                JsonTypeInfo.As.PROPERTY
-        );
+        if(Arrays.stream(environment.getActiveProfiles()).anyMatch(profile -> profile.equals("dev"))){
+            objectMapper.configure(StreamReadFeature.INCLUDE_SOURCE_IN_LOCATION.mappedFeature(), true);
+        }
 
-        return new GenericJackson2JsonRedisSerializer(objectMapper);
+//        objectMapper.activateDefaultTyping(
+//                LaissezFaireSubTypeValidator.instance,
+//                ObjectMapper.DefaultTyping.NON_FINAL,
+//                JsonTypeInfo.As.PROPERTY
+//        );
+
+        return GenericJackson2JsonRedisSerializer.builder()
+                .objectMapper(objectMapper)
+                .defaultTyping(true)
+                .writer((mapper, source) ->
+                                mapper.writerFor(Object.class).writeValueAsBytes(source))
+                .build();
     }
 
     @Bean
@@ -159,8 +175,6 @@ public class AppConfig {
         ItineraryProperties.RedisProperties redisProperties = itineraryProperties.getRedis();
         Map<String, RedisCacheConfiguration>  cacheConfigurationMap = new HashMap<>();
 
-        cacheConfigurationMap.put(Constant.COORDINATE_CACHE,
-                                  defaultCacheConfig(serializer).entryTtl(Duration.ofDays(redisProperties.getCoordinateTtl())));
         cacheConfigurationMap.put(Constant.EVENT_CACHE,
                                   defaultCacheConfig(serializer).entryTtl(Duration.ofDays(redisProperties.getEventTtl())));
 

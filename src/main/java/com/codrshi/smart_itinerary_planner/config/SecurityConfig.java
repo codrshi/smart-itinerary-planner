@@ -1,6 +1,7 @@
 package com.codrshi.smart_itinerary_planner.config;
 
 import com.codrshi.smart_itinerary_planner.common.Constant;
+import com.codrshi.smart_itinerary_planner.common.enums.UserRole;
 import com.codrshi.smart_itinerary_planner.security.filter.RateLimiterFilter;
 import com.codrshi.smart_itinerary_planner.util.ErrorResponseBuilder;
 import com.codrshi.smart_itinerary_planner.security.filter.ExceptionTranslatorFilter;
@@ -8,6 +9,7 @@ import com.codrshi.smart_itinerary_planner.security.ItineraryAuthenticationProvi
 import com.codrshi.smart_itinerary_planner.security.filter.JwtTokenValidatorFilter;
 import com.codrshi.smart_itinerary_planner.security.filter.TraceIdHeaderFilter;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,18 +31,33 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${itinerary.security.require-ssl:false}")
+    private boolean requireSsl;
+
+    @Value("${itinerary.security.hsts-max-age-seconds:63072000}")
+    private long hstsMaxAgeSeconds;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    ExceptionTranslatorFilter exceptionTranslatorFilter,
                                                    JwtTokenValidatorFilter jwtTokenValidatorFilter,
                                                    TraceIdHeaderFilter traceIdHeaderFilter,
                                                    RateLimiterFilter rateLimiterFilter) throws Exception {
+        if (requireSsl) {
+            http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
+            http.headers(headers -> headers
+                    .httpStrictTransportSecurity(hsts -> hsts
+                            .includeSubDomains(true)
+                            .maxAgeInSeconds(hstsMaxAgeSeconds)));
+        }
+
         http.sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.csrf(AbstractHttpConfigurer::disable);
 
         http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                .requestMatchers(Constant.BASE_URI_USER + "/**", "/error", "/error/**", "/swagger-ui.html", "/v3/api-docs/**", "/swagger-ui/**").permitAll()
+                .requestMatchers(Constant.PUBLIC_APIS).permitAll()
+                .requestMatchers("/actuator/**").hasRole(UserRole.ADMIN.getName())
                 .anyRequest().authenticated());
 
         http.addFilterBefore(traceIdHeaderFilter, UsernamePasswordAuthenticationFilter.class);

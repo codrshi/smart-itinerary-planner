@@ -19,12 +19,11 @@ import java.util.List;
 
 public class PatchRequestDeserializer extends JsonDeserializer<IPatchItineraryRequestDTO> {
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @Override
     public IPatchItineraryRequestDTO deserialize(JsonParser jsonParser, DeserializationContext context)
             throws IOException {
+
+        ObjectMapper objectMapper = (ObjectMapper) jsonParser.getCodec();
 
         JsonNode node = jsonParser.readValueAsTree();
         JsonNode patchOpNode = node.get(Constant.PATCH_OPERATION);
